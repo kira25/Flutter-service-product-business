@@ -1,0 +1,36 @@
+name: service_products_business
+description: A new Flutter project.
+
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.7.0 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.0
+  font_awesome_flutter: ^8.10.0
+  flutter_bloc: ^6.1.1
+  dio: ^3.0.10
+  shared_preferences: ^0.5.12+4
+  socket_io_client: ^0.9.11
+  google_fonts: ^1.1.1
+  responsive_screen: ^1.0.0
+  pin_code_text_field: ^1.7.1
+  formz: ^0.3.2
+  equatable: ^1.2.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/
+
