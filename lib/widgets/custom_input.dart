@@ -11,6 +11,8 @@ class CustomInput extends StatelessWidget {
   final Function function;
   final String errorText;
   final Border border;
+  final double hp;
+  final int hintMaxLines;
 
   CustomInput(
       {this.icon,
@@ -20,11 +22,12 @@ class CustomInput extends StatelessWidget {
       this.isPassword = false,
       this.function,
       this.errorText = '',
-      this.border});
+      this.border, this.hp, this.hintMaxLines});
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: hp,
       margin: EdgeInsets.only(bottom: 20),
       padding: EdgeInsets.only(top: 5, bottom: 5, left: 25, right: 20),
       decoration: BoxDecoration(
@@ -45,6 +48,7 @@ class CustomInput extends StatelessWidget {
         onChanged: function,
         keyboardType: keyboardType,
         decoration: InputDecoration(
+          hintMaxLines: hintMaxLines,
             suffixIcon: Icon(icon),
             focusedBorder: InputBorder.none,
             hintStyle:

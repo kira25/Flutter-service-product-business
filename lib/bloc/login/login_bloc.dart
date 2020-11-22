@@ -40,7 +40,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         password: password, status: Formz.validate([password]));
   }
 
-
   //LOGIN
   Stream<LoginState> _mapLoginSubmitted(
       LoginSubmitted event, LoginState state) async* {
@@ -54,7 +53,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
             await _authService.logIn(state.email.value, state.password.value);
         if (login) {
           yield state.copyWith(status: FormzStatus.submissionSuccess);
-          yield state.copyWith(status: FormzStatus.pure);
         } else {
           yield state.copyWith(status: FormzStatus.submissionFailure);
         }

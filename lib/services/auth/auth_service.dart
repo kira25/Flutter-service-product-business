@@ -2,7 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:service_products_business/models/user_response.dart';
 import 'package:service_products_business/repository/preferences/preferences_repository.dart';
 
-const String HOST = 'http://10.0.2.2:5000';
+const String MYP = '192.168.1.5';
+const String LOCAL = '10.0.2.2';
+const String HOST = 'http://$MYP:5000';
 
 class AuthService {
   AuthService._privateConstructor();

@@ -52,13 +52,12 @@ class LoginPage extends StatelessWidget {
                 }, child: BlocBuilder<LoginBloc, LoginState>(
                   builder: (BuildContext context, state) {
                     return Container(
-                      height: hp(100),
                       child: Column(
                         children: [
                           _header(hp, wp),
                           Container(
-                            height: hp(38),
-                            margin: EdgeInsets.only(top: 40),
+                            height: hp(45),
+                            margin: EdgeInsets.only(top: hp(4)),
                             padding: EdgeInsets.symmetric(horizontal: 20),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -217,7 +216,7 @@ class LoginPage extends StatelessWidget {
 
   Container _header(Function hp, Function wp) {
     return Container(
-      height: hp(50),
+      height: hp(45),
       width: double.infinity,
       decoration: BoxDecoration(
           image: DecorationImage(
