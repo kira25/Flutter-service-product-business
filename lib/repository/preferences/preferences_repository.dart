@@ -10,7 +10,12 @@ class PreferencesRepository {
     print('saveUser');
   }
 
-  
+  Future<User> getUser(String name) async {
+    final prefs = await SharedPreferences.getInstance();
+    final temp = prefs.getString(name);
+    final data = jsonDecode(temp);
+    return data;
+  }
 
   Future<String> getData(String name) async {
     final prefs = await SharedPreferences.getInstance();

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:service_products_business/models/user_response.dart';
 import 'package:service_products_business/repository/preferences/preferences_repository.dart';
@@ -21,6 +23,20 @@ class AuthService {
   final _sendEmailPath = '$HOST/users/sendEmail';
   final _verifyPasswordPinPath = '$HOST/users/verifyPasswordPin';
   final _resetPasswordPath = '$HOST/users/resetPassword';
+  final _renewPath = '$HOST/users/renew';
+
+  Future renew(String token) async {
+    final resp = await _dio.get(_renewPath,
+        options: Options(
+            headers: {HttpHeaders.authorizationHeader: 'Bearer $token'}));
+    print(resp.data);
+    if (resp.data['ok'] == true) {
+      return true;
+    } else {
+      _preferencesRepository.clear();
+      return false;
+    }
+  }
 
   Future register(
     String firstname,

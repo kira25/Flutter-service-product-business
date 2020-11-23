@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:service_products_business/repository/preferences/preferences_repository.dart';
+import 'package:service_products_business/services/auth/auth_service.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -11,6 +12,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(AuthState());
 
   PreferencesRepository _preferencesRepository = PreferencesRepository();
+  AuthService _authService = AuthService();
 
   @override
   Stream<AuthState> mapEventToState(
@@ -27,10 +29,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<AuthState> _mapAuthenticationStatus(
       AuthenticationStatus event, AuthState state) async {
     final data = await _preferencesRepository.getData('token');
-    if (data == null) {
-      return state.copyWith(authenticated: false);
-    } else {
+    final resp = await _authService.renew(data);
+    if (resp) {
       return state.copyWith(authenticated: true);
+    } else {
+      return state.copyWith(authenticated: false);
     }
   }
 

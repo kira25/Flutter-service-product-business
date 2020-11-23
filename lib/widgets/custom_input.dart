@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:service_products_business/bloc/login/login_bloc.dart';
+import 'package:service_products_business/helpers/colors.dart';
 
 class CustomInput extends StatelessWidget {
   final IconData icon;
@@ -41,6 +42,7 @@ class CustomInput extends StatelessWidget {
           color: Colors.white,
           borderRadius: BorderRadius.circular(30)),
       child: TextField(
+        enableSuggestions: true,
         autofocus: true,
         controller: textEditingController,
         obscureText: isPassword,
@@ -52,7 +54,7 @@ class CustomInput extends StatelessWidget {
             suffixIcon: Icon(icon),
             focusedBorder: InputBorder.none,
             hintStyle:
-                errorText.isNotEmpty ? TextStyle(color: Colors.red) : null,
+                errorText.isNotEmpty ? TextStyle(color: Colors.red) : TextStyle(color: kintroNotSelected),
             hintText: errorText.isNotEmpty ? errorText : placeholder,
             border: InputBorder.none),
       ),

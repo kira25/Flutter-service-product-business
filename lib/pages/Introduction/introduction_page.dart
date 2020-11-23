@@ -13,6 +13,9 @@ class IntroductionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    precacheImage(AssetImage('./assets/splash_1.jpg'), context);
+    precacheImage(AssetImage('./assets/splash_2.jpg'), context);
+    precacheImage(AssetImage('./assets/splash_3.jpg'), context);
     final Function wp = Screen(context).wp;
     final Function hp = Screen(context).hp;
     return BlocListener<AuthBloc, AuthState>(
