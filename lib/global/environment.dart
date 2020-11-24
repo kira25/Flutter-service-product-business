@@ -1,9 +1,11 @@
 import 'dart:io';
-
-class Environment{
-
-  static String apiUrl = Platform.isAndroid ? 'http://10.0.2.2:5000/api' : 'http://localhost:5000/api';
-  static String socketUrl = Platform.isAndroid ? 'http://10.0.2.2:5000' : 'http://localhost:5000';
+  const String myip = '192.168.1.5';
+  const String local = '10.0.2.2';
+class Environment {
 
 
+  static String apiUrl =
+      Platform.isAndroid ? 'http://$myip:5000' : 'http://$myip:5000';
+  static String socketUrl =
+      Platform.isAndroid ? 'http://$myip:5000' : 'http://$myip:5000';
 }

@@ -4,6 +4,7 @@ import 'package:service_products_business/bloc/auth/auth_bloc.dart';
 import 'package:service_products_business/bloc/forgotpassword/forgotpassword_bloc.dart';
 import 'package:service_products_business/bloc/login/login_bloc.dart';
 import 'package:service_products_business/bloc/register/register_bloc.dart';
+import 'package:service_products_business/bloc/shop/shop_bloc.dart';
 import 'package:service_products_business/routes/routes.dart';
 
 void main() => runApp(MyApp());
@@ -24,6 +25,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => RegisterBloc(),
+        ),
+        BlocProvider(
+          create: (context) => ShopBloc(),
         ),
       ],
       child: MaterialApp(

@@ -23,7 +23,9 @@ class CustomInput extends StatelessWidget {
       this.isPassword = false,
       this.function,
       this.errorText = '',
-      this.border, this.hp, this.hintMaxLines});
+      this.border,
+      this.hp,
+      this.hintMaxLines});
 
   @override
   Widget build(BuildContext context) {
@@ -44,17 +46,19 @@ class CustomInput extends StatelessWidget {
       child: TextField(
         enableSuggestions: true,
         autofocus: true,
+        maxLines: null,
         controller: textEditingController,
         obscureText: isPassword,
         autocorrect: false,
         onChanged: function,
         keyboardType: keyboardType,
         decoration: InputDecoration(
-          hintMaxLines: hintMaxLines,
+            hintMaxLines: hintMaxLines,
             suffixIcon: Icon(icon),
             focusedBorder: InputBorder.none,
-            hintStyle:
-                errorText.isNotEmpty ? TextStyle(color: Colors.red) : TextStyle(color: kintroNotSelected),
+            hintStyle: errorText.isNotEmpty
+                ? TextStyle(color: Colors.red)
+                : TextStyle(color: kintroNotSelected),
             hintText: errorText.isNotEmpty ? errorText : placeholder,
             border: InputBorder.none),
       ),

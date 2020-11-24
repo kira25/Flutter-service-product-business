@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:responsive_screen/responsive_screen.dart';
+import 'package:service_products_business/bloc/shop/shop_bloc.dart';
 import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/route_transitions.dart';
+import 'package:service_products_business/helpers/show_alert.dart';
+import 'package:service_products_business/pages/Orders/orders_page.dart';
 import 'package:service_products_business/widgets/custom_input.dart';
+import 'package:formz/formz.dart';
 
 class BankPhotoPage extends StatelessWidget {
   TextEditingController bankAccount = TextEditingController();
@@ -21,7 +26,7 @@ class BankPhotoPage extends StatelessWidget {
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
             onPressed: () =>
-                CustomRouteTransition(context: context, child: BankPhotoPage()),
+                BlocProvider.of<ShopBloc>(context).add(ShopSubmitted()),
             child: Container(
                 height: 45,
                 width: wp(80),
@@ -46,21 +51,49 @@ class BankPhotoPage extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: SafeArea(
-            child: Container(
-          child: Column(
-            children: [
-              _header(hp, wp,context),
-              _form(hp, wp),
-            ],
-          ),
-        )),
+      body: BlocListener<ShopBloc, ShopState>(
+        listener: (_, state) {
+          if (state.shopStatus.isSubmissionSuccess) {
+            showAlert(context,
+                child: OrdersPage(), subtitle: 'Tienda creada con exito');
+            if (state.shopStatus.isSubmissionFailure) {
+              showDialog(
+                  context: _,
+                  builder: (_) => new AlertDialog(
+                        title: new Text("Bad credentials"),
+                      ));
+            }
+            if (state.failShop) {
+              showDialog(
+                  context: _,
+                  builder: (_) => new AlertDialog(
+                        title: new Text("Fail to connect"),
+                      ));
+            }
+          }
+          // TODO: implement listener
+        },
+        child: SingleChildScrollView(
+          child: SafeArea(
+              child: Container(
+            child: Column(
+              children: [
+                _header(hp, wp, context),
+                BlocBuilder<ShopBloc, ShopState>(
+                  builder: (context, state) {
+                    return _form(hp, wp, state, context);
+                  },
+                ),
+              ],
+            ),
+          )),
+        ),
       ),
     );
   }
 
-  Widget _form(Function hp, Function wp) {
+  Widget _form(
+      Function hp, Function wp, ShopState state, BuildContext context) {
     return Container(
       margin: EdgeInsets.only(left: 30, right: 30, top: 20),
       height: hp(76),
@@ -127,8 +160,33 @@ class BankPhotoPage extends StatelessWidget {
             height: hp(3),
           ),
           CustomInput(
-              placeholder: 'N° de cuenta', textEditingController: bankAccount),
+              function: (value) => BlocProvider.of<ShopBloc>(context)
+                  .add(BankAccountChange(value)),
+              border:
+                  BlocProvider.of<ShopBloc>(context).state.bankAccount.invalid
+                      ? Border.all(color: Colors.red)
+                      : Border.all(color: Colors.white),
+              errorText:
+                  BlocProvider.of<ShopBloc>(context).state.bankAccount.invalid
+                      ? 'Ingrese su N° de cuenta'
+                      : '',
+              placeholder: 'N° de cuenta',
+              textEditingController: bankAccount),
           CustomInput(
+              function: (value) => BlocProvider.of<ShopBloc>(context)
+                  .add(InterbankAccountChange(value)),
+              border: BlocProvider.of<ShopBloc>(context)
+                      .state
+                      .interbankAccount
+                      .invalid
+                  ? Border.all(color: Colors.red)
+                  : Border.all(color: Colors.white),
+              errorText: BlocProvider.of<ShopBloc>(context)
+                      .state
+                      .interbankAccount
+                      .invalid
+                  ? 'Ingrese su N° de cuenta interbancaria'
+                  : '',
               placeholder: 'N° de cuenta interbancaria',
               textEditingController: interbankAccount),
           SizedBox(
@@ -152,9 +210,11 @@ class BankPhotoPage extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            IconButton(icon: Icon(Icons.arrow_back), onPressed: () {
-              Navigator.pop(context);
-            }),
+            IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.pop(context);
+                }),
             Container(
               height: 30,
               width: 60,
