@@ -7,6 +7,7 @@ import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/route_transitions.dart';
 import 'package:service_products_business/pages/Introduction/introduction_page.dart';
 import 'package:service_products_business/pages/Login/login_page.dart';
+import 'package:service_products_business/pages/Orders/orders_page.dart';
 import 'package:service_products_business/widgets/logo.dart';
 
 class SplashPage extends StatelessWidget {
@@ -21,9 +22,15 @@ class SplashPage extends StatelessWidget {
     return Scaffold(
         body: BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state.authenticated) {
+        if (state.authenticated == true && state.isShopInfo == false) {
           CustomRouteTransition(
               child: IntroductionPage(),
+              context: context,
+              animation: AnimationType.fadeIn,
+              replacement: true);
+        } else if (state.authenticated == true && state.isShopInfo == true) {
+          CustomRouteTransition(
+              child: OrdersPage(),
               context: context,
               animation: AnimationType.fadeIn,
               replacement: true);
@@ -82,15 +89,5 @@ class SplashPage extends StatelessWidget {
         ),
       )),
     ));
-  }
-
-  Future checkLoginState(BuildContext context) {
-    //TODO: check login status to send to Login or Profile
-    return Future.delayed(Duration(milliseconds: 2000)).then((value) =>
-        CustomRouteTransition(
-            child: LoginPage(),
-            context: context,
-            animation: AnimationType.fadeIn,
-            replacement: true));
   }
 }

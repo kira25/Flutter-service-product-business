@@ -1,8 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:service_products_business/models/shop/bankaccount.dart';
 import 'package:service_products_business/models/shop/interbankaccount.dart';
 import 'package:service_products_business/models/shop/shop_models.dart';
@@ -20,7 +22,6 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
   Stream<ShopState> mapEventToState(
     ShopEvent event,
   ) async* {
-    // TODO: implement mapEventToState
     if (event is DescriptionChange) {
       yield _mapDescriptionChange(event, state);
     } else if (event is StateChange) {
@@ -41,6 +42,46 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
       yield* _mapShopSubmitted(event, state);
     } else if (event is DeliveryChange) {
       yield _mapDeliveryChange(event, state);
+    } else if (event is OnProfilePhoto) {
+      yield await _mapOnProfilePhoto(event, state);
+    } else if (event is OnProfileTitle) {
+      yield await _mapOnProfileTitle(event, state);
+    } else if (event is OnRemoveProfilePhoto) {
+      yield _mapOnRemoveProfilePhoto(event, state);
+    } else if (event is OnRemoveProfileTitle) {
+      yield state.copyWith(profileTitle: null);
+    }
+  }
+
+  Future<ShopState> _mapOnProfileTitle(
+      OnProfileTitle event, ShopState state) async {
+    final profilePicker = ImagePicker();
+    final picketFile =
+        await profilePicker.getImage(source: ImageSource.gallery);
+    print(File(picketFile.path).uri);
+    if (picketFile != null) {
+      return state.copyWith(profileTitle: File(picketFile.path));
+    } else {
+      return state.copyWith(profileTitle: null);
+    }
+  }
+
+  ShopState _mapOnRemoveProfilePhoto(
+      OnRemoveProfilePhoto event, ShopState state) {
+    print('OnRemoveProfilePhoto');
+    return state.copyWith(profilePhoto: null);
+  }
+
+  Future<ShopState> _mapOnProfilePhoto(
+      OnProfilePhoto event, ShopState state) async {
+    final profilePicker = ImagePicker();
+    final picketFile =
+        await profilePicker.getImage(source: ImageSource.gallery);
+    print(File(picketFile.path).uri);
+    if (picketFile != null) {
+      return state.copyWith(profilePhoto: File(picketFile.path));
+    } else {
+      return state.copyWith(profilePhoto: null);
     }
   }
 
@@ -118,7 +159,11 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
           state.interbankAccount.value,
           "",
           "");
-      if (resp) {
+      final update =
+          await _shopService.updateShop(state.profilePhoto, state.profileTitle);
+      print(resp);
+      print(update);
+      if (resp && update) {
         yield state.copyWith(shopStatus: FormzStatus.submissionSuccess);
       } else {
         yield state.copyWith(shopStatus: FormzStatus.submissionFailure);

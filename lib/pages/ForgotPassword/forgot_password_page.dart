@@ -45,7 +45,6 @@ class ForgotPasswordPage extends StatelessWidget {
                 previous.status != current.status ||
                 previous.failSendEmail != current.failSendEmail,
             listener: (context, state) {
-              // TODO: implement listener
               if (state.status.isSubmissionFailure) {
                 showDialog(
                     context: context,
@@ -151,7 +150,6 @@ class ForgotPasswordPage extends StatelessWidget {
                   splashColor: Colors.transparent,
                   onPressed: state.status.isValid
                       ? () =>
-                          //TODO: SEND EMAIL
                           BlocProvider.of<ForgotpasswordBloc>(context)
                               .add(SendEmail())
                       : null,

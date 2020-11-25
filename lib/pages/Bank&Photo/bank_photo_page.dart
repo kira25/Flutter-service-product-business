@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:responsive_screen/responsive_screen.dart';
 import 'package:service_products_business/bloc/shop/shop_bloc.dart';
 import 'package:service_products_business/helpers/colors.dart';
-import 'package:service_products_business/helpers/route_transitions.dart';
 import 'package:service_products_business/helpers/show_alert.dart';
 import 'package:service_products_business/pages/Orders/orders_page.dart';
 import 'package:service_products_business/widgets/custom_input.dart';
@@ -19,37 +19,43 @@ class BankPhotoPage extends StatelessWidget {
     final Function wp = Screen(context).wp;
     final Function hp = Screen(context).hp;
     return Scaffold(
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          MaterialButton(
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            onPressed: () =>
-                BlocProvider.of<ShopBloc>(context).add(ShopSubmitted()),
-            child: Container(
-                height: 45,
-                width: wp(80),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  gradient: LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: [
-                      primaryColor,
-                      secondaryColor,
-                    ],
-                  ),
-                ),
-                child: Center(
-                  child: Text(
-                    'Crear tienda',
-                    style: GoogleFonts.oswald(
-                        color: Colors.white, fontSize: wp(4.5)),
-                  ),
-                )),
-          ),
-        ],
+      floatingActionButton: KeyboardVisibilityBuilder(
+        builder: (_, visible) {
+          return visible
+              ? Container()
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    MaterialButton(
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onPressed: () => BlocProvider.of<ShopBloc>(context)
+                          .add(ShopSubmitted()),
+                      child: Container(
+                          height: 45,
+                          width: wp(80),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.0),
+                            gradient: LinearGradient(
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                              colors: [
+                                primaryColor,
+                                secondaryColor,
+                              ],
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Crear tienda',
+                              style: GoogleFonts.oswald(
+                                  color: Colors.white, fontSize: wp(4.5)),
+                            ),
+                          )),
+                    ),
+                  ],
+                );
+        },
       ),
       body: BlocListener<ShopBloc, ShopState>(
         listener: (_, state) {
@@ -71,7 +77,6 @@ class BankPhotoPage extends StatelessWidget {
                       ));
             }
           }
-          // TODO: implement listener
         },
         child: SingleChildScrollView(
           child: SafeArea(
@@ -107,47 +112,100 @@ class BankPhotoPage extends StatelessWidget {
           SizedBox(
             height: hp(3),
           ),
-          MaterialButton(
-            height: hp(6),
-            color: kprimarycolorlight,
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            onPressed: () {
-              print('foto perfil');
-            },
-            elevation: 3,
-            child: Row(
-              children: [
-                Icon(
-                  Icons.add_box_rounded,
-                  color: Colors.blue,
+          state.profilePhoto != null
+              ? MaterialButton(
+                  height: hp(8),
+                  color: kprimarycolorlight,
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  onPressed: () =>
+                      BlocProvider.of<ShopBloc>(context).add(OnProfilePhoto()),
+                  elevation: 3,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      CircleAvatar(
+                          radius: wp(5),
+                          backgroundImage:
+                              Image.file(state.profilePhoto).image),
+                      Text(
+                        '${state.profilePhoto.path.split('/').last}',
+                        style: GoogleFonts.lato(fontSize: 10),
+                      ),
+                      IconButton(
+                          icon: Icon(Icons.close),
+                          onPressed: () => BlocProvider.of<ShopBloc>(context)
+                              .add(OnRemoveProfilePhoto())),
+                    ],
+                  ),
+                )
+              : MaterialButton(
+                  height: hp(6),
+                  color: kprimarycolorlight,
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  onPressed: () =>
+                      BlocProvider.of<ShopBloc>(context).add(OnProfilePhoto()),
+                  elevation: 3,
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.add_box_rounded,
+                        color: Colors.blue,
+                      ),
+                      Text(' Seleccione foto de perfil')
+                    ],
+                  ),
                 ),
-                Text(' Seleccione foto de perfil')
-              ],
-            ),
-          ),
           SizedBox(
             height: hp(2),
           ),
-          MaterialButton(
-            height: hp(6),
-            onPressed: () {
-              print('foto portada');
-            },
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            elevation: 5,
-            color: kprimarycolorlight,
-            child: Row(
-              children: [
-                Icon(
-                  Icons.add_box_rounded,
-                  color: Colors.blue,
+          //PROFILE TITLE IMAGE
+          state.profileTitle != null
+              ? MaterialButton(
+                  height: hp(8),
+                  color: kprimarycolorlight,
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  onPressed: () =>
+                      BlocProvider.of<ShopBloc>(context).add(OnProfileTitle()),
+                  elevation: 3,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      CircleAvatar(
+                          radius: wp(5),
+                          backgroundImage:
+                              Image.file(state.profileTitle).image),
+                      Text(
+                        '${state.profileTitle.path.split('/').last}',
+                        style: GoogleFonts.lato(fontSize: 10),
+                      ),
+                      IconButton(
+                          icon: Icon(Icons.close),
+                          onPressed: () => BlocProvider.of<ShopBloc>(context)
+                              .add(OnRemoveProfileTitle())),
+                    ],
+                  ),
+                )
+              : MaterialButton(
+                  height: hp(6),
+                  color: kprimarycolorlight,
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  onPressed: () =>
+                      BlocProvider.of<ShopBloc>(context).add(OnProfileTitle()),
+                  elevation: 3,
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.add_box_rounded,
+                        color: Colors.blue,
+                      ),
+                      Text(' Seleccione foto de portada')
+                    ],
+                  ),
                 ),
-                Text(' Seleccione foto de portada')
-              ],
-            ),
-          ),
           SizedBox(
             height: hp(3),
           ),

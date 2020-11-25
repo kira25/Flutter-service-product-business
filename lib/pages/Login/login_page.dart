@@ -6,9 +6,9 @@ import 'package:responsive_screen/responsive_screen.dart';
 import 'package:service_products_business/bloc/login/login_bloc.dart';
 import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/route_transitions.dart';
-import 'package:service_products_business/helpers/show_alert.dart';
 import 'package:service_products_business/pages/ForgotPassword/forgot_password_page.dart';
 import 'package:service_products_business/pages/Introduction/introduction_page.dart';
+import 'package:service_products_business/pages/Orders/orders_page.dart';
 import 'package:service_products_business/pages/Register/register_page.dart';
 import 'package:service_products_business/widgets/custom_input.dart';
 import 'package:service_products_business/widgets/logo.dart';
@@ -42,11 +42,20 @@ class LoginPage extends StatelessWidget {
                               title: new Text("Fail to connect"),
                             ));
                   }
-                  if (state.status.isSubmissionSuccess) {
+                  if (state.status.isSubmissionSuccess &&
+                      state.isShopInfo == false) {
                     CustomRouteTransition(
                         animation: AnimationType.fadeIn,
                         context: context,
                         child: IntroductionPage(),
+                        replacement: true);
+                  }
+                  if (state.status.isSubmissionSuccess &&
+                      state.isShopInfo == true) {
+                    CustomRouteTransition(
+                        animation: AnimationType.fadeIn,
+                        context: context,
+                        child: OrdersPage(),
                         replacement: true);
                   }
                 }, child: BlocBuilder<LoginBloc, LoginState>(
@@ -186,8 +195,6 @@ class LoginPage extends StatelessWidget {
                                         TextSpan(
                                             recognizer: TapGestureRecognizer()
                                               ..onTap = () {
-                                                //TODO: Implement register
-
                                                 CustomRouteTransition(
                                                     context: context,
                                                     child: RegisterPage(),

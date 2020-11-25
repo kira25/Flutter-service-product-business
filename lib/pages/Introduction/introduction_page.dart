@@ -13,7 +13,7 @@ class IntroductionPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    precacheImage(AssetImage('./assets/splash_1.jpg'), context);
+    precacheImage(AssetImage('./assets/splash_1.jpg'), context,);
     precacheImage(AssetImage('./assets/splash_2.jpg'), context);
     precacheImage(AssetImage('./assets/splash_3.jpg'), context);
     final Function wp = Screen(context).wp;
@@ -23,18 +23,17 @@ class IntroductionPage extends StatelessWidget {
         if (!state.authenticated) {
           CustomRouteTransition(context: context, child: LoginPage());
         }
-        // TODO: implement listener
       },
       child: Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-                icon: IconButton(
-                  icon: Icon(Icons.arrow_back_outlined),
-                  onPressed: () => BlocProvider.of<AuthBloc>(context)
-                      .add(AuthenticationLogout()),
-                ),
-                onPressed: null),
-          ),
+          // appBar: AppBar(
+          //   leading: IconButton(
+          //       icon: IconButton(
+          //         icon: Icon(Icons.arrow_back_outlined),
+          //         onPressed: () => BlocProvider.of<AuthBloc>(context)
+          //             .add(AuthenticationLogout()),
+          //       ),
+          //       onPressed: null),
+          // ),
           body: SafeArea(
               child: Container(
             child: Column(children: [
@@ -55,7 +54,7 @@ class IntroductionPage extends StatelessWidget {
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
         onPressed: () =>
-            CustomRouteTransition(context: context, child: ShopInfo()),
+            CustomRouteTransition(context: context, child: ShopInfoPage()),
         child: Container(
             height: 45,
             width: double.infinity,
@@ -82,7 +81,7 @@ class IntroductionPage extends StatelessWidget {
 
   Widget _header(Function hp, Function wp) {
     return Container(
-      height: hp(50),
+      height: hp(60),
       child: PageView(
         physics: BouncingScrollPhysics(),
         scrollDirection: Axis.horizontal,
@@ -172,6 +171,7 @@ class IntroSlider extends StatelessWidget {
         ),
         decoration: BoxDecoration(
             image: DecorationImage(
+
                 colorFilter: ColorFilter.mode(
                     Colors.black87.withOpacity(0.6), BlendMode.darken),
                 fit: BoxFit.cover,

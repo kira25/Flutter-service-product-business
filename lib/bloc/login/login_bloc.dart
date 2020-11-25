@@ -19,7 +19,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Stream<LoginState> mapEventToState(
     LoginEvent event,
   ) async* {
-    // TODO: implement mapEventToState
     if (event is EmailChanged) {
       yield _mapEmailChanged(event, state);
     } else if (event is PasswordChanged) {
@@ -51,8 +50,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       try {
         final login =
             await _authService.logIn(state.email.value, state.password.value);
-        if (login) {
-          yield state.copyWith(status: FormzStatus.submissionSuccess);
+        print(login);
+        if (login[0] == true && login[1] == true) {
+          yield state.copyWith(
+              status: FormzStatus.submissionSuccess, isShopInfo: true);
+        } else if (login[0] == true && login[1] == false) {
+          yield state.copyWith(
+              status: FormzStatus.submissionSuccess, isShopInfo: false);
         } else {
           yield state.copyWith(status: FormzStatus.submissionFailure);
         }

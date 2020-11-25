@@ -4,14 +4,12 @@ abstract class ForgotpasswordEvent extends Equatable {}
 
 class SendEmail extends ForgotpasswordEvent {
   @override
-  // TODO: implement props
   List<Object> get props => throw UnimplementedError();
  
 }
 
 class VerifyPasswordPin extends ForgotpasswordEvent {
   @override
-  // TODO: implement props
   List<Object> get props => throw UnimplementedError();
 
 }
@@ -21,13 +19,11 @@ class PinChanged extends ForgotpasswordEvent {
 
   PinChanged({this.pin});
   @override
-  // TODO: implement props
   List<Object> get props => [pin];
 }
 
 class ResetPassword extends ForgotpasswordEvent {
   @override
-  // TODO: implement props
   List<Object> get props => [];
 }
 
@@ -37,7 +33,6 @@ class EmailChanged extends ForgotpasswordEvent {
   EmailChanged(this.email);
 
   @override
-  // TODO: implement props
   List<Object> get props => [email];
 }
 
@@ -47,7 +42,6 @@ class PasswordChanged extends ForgotpasswordEvent {
   PasswordChanged(this.password);
 
   @override
-  // TODO: implement props
   List<Object> get props => [password];
 }
 
@@ -57,6 +51,5 @@ class ConfirmPasswordChanged extends ForgotpasswordEvent {
   ConfirmPasswordChanged(this.confirmpassword);
 
   @override
-  // TODO: implement props
   List<Object> get props => [confirmpassword];
 }

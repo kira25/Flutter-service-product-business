@@ -18,7 +18,6 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
   Stream<RegisterState> mapEventToState(
     RegisterEvent event,
   ) async* {
-    // TODO: implement mapEventToState
     if (event is FirstNameChanged) {
       yield _mapFirstNameChanged(event, state);
     } else if (event is LastNameChanged) {

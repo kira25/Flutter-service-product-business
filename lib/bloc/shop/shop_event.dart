@@ -26,7 +26,6 @@ class DeliveryChange extends ShopEvent {
   DeliveryChange(this.deliveryTime);
 
   @override
-  // TODO: implement props
   List<Object> get props => [deliveryTime];
 }
 
@@ -85,6 +84,25 @@ class InterbankAccountChange extends ShopEvent {
 }
 
 class ShopSubmitted extends ShopEvent {
+  @override
+  List<Object> get props => throw UnimplementedError();
+}
+
+class OnProfilePhoto extends ShopEvent {
+  @override
+  List<Object> get props => throw UnimplementedError();
+}
+
+class OnRemoveProfilePhoto extends ShopEvent {
+  @override
+  List<Object> get props => throw UnimplementedError();
+}
+class OnProfileTitle extends ShopEvent {
+  @override
+  List<Object> get props => throw UnimplementedError();
+}
+
+class OnRemoveProfileTitle extends ShopEvent {
   @override
   List<Object> get props => throw UnimplementedError();
 }

@@ -11,7 +11,6 @@ class EmailChanged extends LoginEvent {
   EmailChanged(this.email);
 
   @override
-  // TODO: implement props
   List<Object> get props => [email];
 }
 
@@ -21,14 +20,14 @@ class PasswordChanged extends LoginEvent {
   PasswordChanged(this.password);
 
   @override
-  // TODO: implement props
+  
   List<Object> get props => [password];
 }
 
 
 class LoginSubmitted extends LoginEvent {
   @override
-  // TODO: implement props
+  
   List<Object> get props => [];
 }
 

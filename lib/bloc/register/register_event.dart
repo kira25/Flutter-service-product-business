@@ -13,7 +13,7 @@ class FirstNameChanged extends RegisterEvent {
   FirstNameChanged(this.firstname);
 
   @override
-  // TODO: implement props
+  
   List<Object> get props => [firstname];
 }
 
@@ -23,7 +23,7 @@ class LastNameChanged extends RegisterEvent {
   LastNameChanged(this.lastname);
 
   @override
-  // TODO: implement props
+  
   List<Object> get props => [lastname];
 }
 
@@ -33,7 +33,7 @@ class PasswordChanged extends RegisterEvent {
   PasswordChanged(this.password);
 
   @override
-  // TODO: implement props
+  
   List<Object> get props => [password];
 }
 
@@ -43,7 +43,7 @@ class EmailChanged extends RegisterEvent {
   EmailChanged(this.email);
 
   @override
-  // TODO: implement props
+  
   List<Object> get props => [email];
 }
 
@@ -53,7 +53,7 @@ class IdentifierChanged extends RegisterEvent {
   IdentifierChanged(this.identifier);
 
   @override
-  // TODO: implement props
+  
   List<Object> get props => [identifier];
 }
 
@@ -63,7 +63,7 @@ class CellphoneChanged extends RegisterEvent {
   CellphoneChanged(this.cellphone);
 
   @override
-  // TODO: implement props
+  
   List<Object> get props => [cellphone];
 }
 
@@ -73,7 +73,7 @@ class ShopNameChanged extends RegisterEvent {
   ShopNameChanged(this.shopname);
 
   @override
-  // TODO: implement props
+  
   List<Object> get props => [shopname];
 }
 
@@ -83,12 +83,12 @@ class ConfirmPasswordChanged extends RegisterEvent {
   ConfirmPasswordChanged(this.confirmpassword);
 
   @override
-  // TODO: implement props
+  
   List<Object> get props => [confirmpassword];
 }
 
 class RegisterSubmitted extends RegisterEvent {
   @override
-  // TODO: implement props
+  
   List<Object> get props => [];
 }

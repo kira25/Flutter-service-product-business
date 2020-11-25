@@ -19,6 +19,7 @@ dependencies:
   font_awesome_flutter: ^8.10.0
   formz: ^0.3.2
   google_fonts: ^1.1.1
+  image_picker: ^0.6.7+14
   pin_code_text_field: ^1.7.1
   responsive_screen: ^1.0.0
   shared_preferences: ^0.5.12+4

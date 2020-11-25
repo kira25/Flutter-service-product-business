@@ -24,15 +24,25 @@ class AuthService {
   final _renewPath = '${Environment.apiUrl}/users/renew';
 
   Future renew(String token) async {
-    if (token == null) return false;
-    final resp = await _dio.get(_renewPath,
-        options: Options(
-            headers: {HttpHeaders.authorizationHeader: 'Bearer $token'}));
-    print(resp.data);
-    if (resp.data['ok'] == true) {
-      return true;
-    } else {
-      _preferencesRepository.clear();
+    if (token == null) return [false, false];
+    try {
+      final resp = await _dio.get(_renewPath,
+          options: Options(
+              headers: {HttpHeaders.authorizationHeader: 'Bearer $token'}));
+      print(resp.data);
+      final data = UserResponse.fromJson(resp.data);
+      print(data);
+
+      if (resp.data['ok'] == true && resp.data['user']['isShopInfo'] == true) {
+        return [true, true];
+      } else if (resp.data['ok'] == true && resp.data['user']['isShopInfo'] == false) {
+        return [true, false];
+      } else {
+        _preferencesRepository.clear();
+        return [false, false];
+      }
+    } catch (e) {
+      print(e);
       return false;
     }
   }
@@ -74,15 +84,20 @@ class AuthService {
   Future logIn(String email, String password) async {
     final data = {"password": password, "email": email};
     final resp = await _dio.post(_loginPath, data: data);
-    if (resp.data['ok'] == true) {
-      final data = UserResponse.fromJson(resp.data);
-      _preferencesRepository.saveUser('user', data.user);
-      _preferencesRepository.setData('token', data.token);
+    if (resp.data['ok'] == true && resp.data['user']['isShopInfo'] == false) {
+      final user = UserResponse.fromJson(resp.data);
+      _preferencesRepository.saveUser('user', user.user);
+      _preferencesRepository.setData('token', user.token);
       print(data);
       print(resp.data);
-      return true;
+      return [true, false];
+    } else if (resp.data['ok'] == true && resp.data['user']['isShopInfo'] == true) {
+      final user = UserResponse.fromJson(resp.data);
+      _preferencesRepository.saveUser('user', user.user);
+      _preferencesRepository.setData('token', user.token);
+      return [true, true];
     } else {
-      return false;
+      return [false, false];
     }
   }
 

@@ -18,7 +18,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Stream<AuthState> mapEventToState(
     AuthEvent event,
   ) async* {
-    // TODO: implement mapEventToState
     if (event is AuthenticationStatus) {
       yield await _mapAuthenticationStatus(event, state);
     } else if (event is AuthenticationLogout) {
@@ -30,8 +29,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       AuthenticationStatus event, AuthState state) async {
     final data = await _preferencesRepository.getData('token');
     final resp = await _authService.renew(data);
-    if (resp) {
-      return state.copyWith(authenticated: true);
+    if (resp[0]== true && resp[1] == false) {
+      return state.copyWith(authenticated: true, isShopInfo: false);
+    } else if (resp[0] == true && resp[1] == true) {
+      return state.copyWith(authenticated: true, isShopInfo: true);
     } else {
       return state.copyWith(authenticated: false);
     }

@@ -20,7 +20,7 @@ class PreferencesRepository {
   Future<String> getData(String name) async {
     final prefs = await SharedPreferences.getInstance();
     String data = prefs.getString(name);
-    print('getData');
+    print('getData : $data');
     return data;
   }
 

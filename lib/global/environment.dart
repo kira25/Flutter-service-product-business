@@ -7,5 +7,5 @@ class Environment {
   static String apiUrl =
       Platform.isAndroid ? 'http://$myip:5000' : 'http://$myip:5000';
   static String socketUrl =
-      Platform.isAndroid ? 'http://$myip:5000' : 'http://$myip:5000';
+      Platform.isAndroid ? 'http://$myip:5001' : 'http://$myip:5001';
 }

@@ -7,7 +7,6 @@ import 'package:service_products_business/bloc/forgotpassword/forgotpassword_blo
 import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/route_transitions.dart';
 import 'package:service_products_business/pages/ResetPassword/reset_password_page.dart';
-import 'package:formz/formz.dart';
 
 class VerifyPasswordPinPage extends StatelessWidget {
   final TextEditingController pinCtrl = TextEditingController();
@@ -24,8 +23,6 @@ class VerifyPasswordPinPage extends StatelessWidget {
           listenWhen: (previous, current) =>
               previous.failPin != current.failPin,
           listener: (context, state) {
-            print('listening');
-            // TODO: implement listener
             if (state.failPin == FailPinType.success) {
               print('Correct pin');
               CustomRouteTransition(
@@ -84,7 +81,6 @@ class VerifyPasswordPinPage extends StatelessWidget {
                       pinCtrl.text = '';
                     }
                   : null
-              //TODO: GO TO RESET PASSWORD
 
               ,
               child: Container(

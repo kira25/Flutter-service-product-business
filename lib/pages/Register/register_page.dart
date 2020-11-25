@@ -7,7 +7,6 @@ import 'package:responsive_screen/responsive_screen.dart';
 import 'package:service_products_business/bloc/register/register_bloc.dart';
 import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/route_transitions.dart';
-import 'package:service_products_business/helpers/show_alert.dart';
 import 'package:service_products_business/pages/Introduction/introduction_page.dart';
 import 'package:service_products_business/pages/Login/login_page.dart';
 import 'package:service_products_business/widgets/custom_input.dart';

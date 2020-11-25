@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:responsive_screen/responsive_screen.dart';
 import 'package:service_products_business/bloc/shop/shop_bloc.dart';
@@ -11,7 +12,7 @@ import 'package:service_products_business/widgets/custom_input.dart';
 enum deliveryTime { ONE_HR, TWO_HR, THREE_HR }
 
 // ignore: must_be_immutable
-class ShopInfo extends StatelessWidget {
+class ShopInfoPage extends StatelessWidget {
   TextEditingController name = TextEditingController();
   TextEditingController info = TextEditingController();
   TextEditingController dpto = TextEditingController();
@@ -26,37 +27,43 @@ class ShopInfo extends StatelessWidget {
     final Function wp = Screen(context).wp;
     final Function hp = Screen(context).hp;
     return Scaffold(
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          MaterialButton(
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            onPressed: () =>
-                CustomRouteTransition(context: context, child: BankPhotoPage()),
-            child: Container(
-                height: 45,
-                width: wp(80),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.0),
-                  gradient: LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                    colors: [
-                      primaryColor,
-                      secondaryColor,
-                    ],
-                  ),
-                ),
-                child: Center(
-                  child: Text(
-                    'Siguiente',
-                    style: GoogleFonts.oswald(
-                        color: Colors.white, fontSize: wp(4.5)),
-                  ),
-                )),
-          ),
-        ],
+      floatingActionButton: KeyboardVisibilityBuilder(
+        builder: (_, visible) {
+          return visible
+              ? Container()
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    MaterialButton(
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onPressed: () => CustomRouteTransition(
+                          context: context, child: BankPhotoPage()),
+                      child: Container(
+                          height: 45,
+                          width: wp(80),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.0),
+                            gradient: LinearGradient(
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                              colors: [
+                                primaryColor,
+                                secondaryColor,
+                              ],
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Siguiente',
+                              style: GoogleFonts.oswald(
+                                  color: Colors.white, fontSize: wp(4.5)),
+                            ),
+                          )),
+                    ),
+                  ],
+                );
+        },
       ),
       body: SingleChildScrollView(
         child: SafeArea(
@@ -151,6 +158,7 @@ class ShopInfo extends StatelessWidget {
             placeholder: 'Informacion',
             keyboardType: TextInputType.multiline,
             textEditingController: info,
+            maxlines: null,
             hp: hp(30),
             hintMaxLines: 4,
           ),

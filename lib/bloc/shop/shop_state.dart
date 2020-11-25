@@ -8,11 +8,13 @@ class ShopState extends Equatable {
       this.whatsapp = const Whatsapp.pure(),
       this.facebook = const Facebook.pure(),
       this.instagram = const Instagram.pure(),
-      this.bankAccount = const BankAccount.dirty(),
+      this.bankAccount = const BankAccount.pure(),
       this.interbankAccount = const InterbankAccount.pure(),
       this.shopStatus = FormzStatus.pure,
       this.failShop = false,
-      this.deliveryTime = '1 hrs'});
+      this.deliveryTime = '1 hrs',
+      this.profilePhoto,
+      this.profileTitle});
 
   final Description description;
   final State state;
@@ -24,6 +26,8 @@ class ShopState extends Equatable {
   final BankAccount bankAccount;
   final InterbankAccount interbankAccount;
   final FormzStatus shopStatus;
+  final File profilePhoto;
+  final File profileTitle;
   final bool failShop;
 
   ShopState copyWith(
@@ -37,7 +41,9 @@ class ShopState extends Equatable {
       InterbankAccount interbankAccount,
       FormzStatus shopStatus,
       String deliveryTime,
-      bool failShop}) {
+      bool failShop,
+      File profilePhoto,
+      File profileTitle}) {
     return ShopState(
         description: description ?? this.description,
         state: state ?? this.state,
@@ -49,7 +55,10 @@ class ShopState extends Equatable {
         shopStatus: shopStatus ?? this.shopStatus,
         deliveryTime: deliveryTime ?? this.deliveryTime,
         facebook: facebook ?? this.facebook,
-        failShop: failShop ?? this.failShop);
+        failShop: failShop ?? this.failShop,
+        profilePhoto: profilePhoto ?? this.profilePhoto,
+        profileTitle: profileTitle ?? this.profileTitle
+        );
   }
 
   @override
@@ -63,6 +72,8 @@ class ShopState extends Equatable {
         bankAccount,
         interbankAccount,
         shopStatus,
-        deliveryTime
+        deliveryTime,
+        profilePhoto,
+        profileTitle
       ];
 }

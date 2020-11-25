@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:service_products_business/bloc/login/login_bloc.dart';
 import 'package:service_products_business/helpers/colors.dart';
 
 class CustomInput extends StatelessWidget {
@@ -14,6 +12,7 @@ class CustomInput extends StatelessWidget {
   final Border border;
   final double hp;
   final int hintMaxLines;
+  final int maxlines;
 
   CustomInput(
       {this.icon,
@@ -25,7 +24,8 @@ class CustomInput extends StatelessWidget {
       this.errorText = '',
       this.border,
       this.hp,
-      this.hintMaxLines});
+      this.hintMaxLines,
+      this.maxlines = 1});
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class CustomInput extends StatelessWidget {
       child: TextField(
         enableSuggestions: true,
         autofocus: true,
-        maxLines: null,
+        maxLines: maxlines,
         controller: textEditingController,
         obscureText: isPassword,
         autocorrect: false,

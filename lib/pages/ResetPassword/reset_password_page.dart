@@ -6,7 +6,6 @@ import 'package:service_products_business/bloc/forgotpassword/forgotpassword_blo
 import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/route_transitions.dart';
 import 'package:service_products_business/pages/Login/login_page.dart';
-import 'package:service_products_business/widgets/custom_button.dart';
 import 'package:service_products_business/widgets/custom_input.dart';
 import 'package:formz/formz.dart';
 
@@ -103,7 +102,6 @@ class ResetPasswordPage extends StatelessWidget {
               splashColor: Colors.transparent,
               onPressed: state.statusResetPassword.isValid
                   ? () =>
-                      //TODO: SEND EMAIL
                       BlocProvider.of<ForgotpasswordBloc>(context)
                           .add(ResetPassword())
                   : null,

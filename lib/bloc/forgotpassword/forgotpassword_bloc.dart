@@ -19,7 +19,6 @@ class ForgotpasswordBloc
   Stream<ForgotpasswordState> mapEventToState(
     ForgotpasswordEvent event,
   ) async* {
-    // TODO: implement mapEventToState
     if (event is SendEmail) {
       yield await _mapSendEmail(event, state);
     } else if (event is VerifyPasswordPin) {
