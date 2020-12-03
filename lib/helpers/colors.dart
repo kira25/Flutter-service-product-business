@@ -6,3 +6,8 @@ const kprimarycolorlight = Colors.white;
 const kwrongAnswer = Color(0xFFff304f);
 const kintroselected = Colors.blue;
 const kintroNotSelected = Colors.grey;
+const kdarkcolor = Colors.black87;
+
+//COLOR STOCK
+const kyellowcolor = Colors.yellow;
+

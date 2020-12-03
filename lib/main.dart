@@ -3,7 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:service_products_business/bloc/auth/auth_bloc.dart';
 import 'package:service_products_business/bloc/forgotpassword/forgotpassword_bloc.dart';
 import 'package:service_products_business/bloc/login/login_bloc.dart';
+import 'package:service_products_business/bloc/orders_products/orders_products_bloc.dart';
+import 'package:service_products_business/bloc/orders_services/orders_services_bloc.dart';
+import 'package:service_products_business/bloc/products/products_bloc.dart';
 import 'package:service_products_business/bloc/register/register_bloc.dart';
+import 'package:service_products_business/bloc/services/services_bloc.dart';
 import 'package:service_products_business/bloc/shop/shop_bloc.dart';
 import 'package:service_products_business/routes/routes.dart';
 
@@ -15,25 +19,37 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => AuthBloc()..add(AuthenticationStatus()),
+          create: (_) => AuthBloc()..add(AuthenticationStatus()),
         ),
         BlocProvider(
-          create: (context) => LoginBloc(),
+          create: (_) => LoginBloc(),
         ),
         BlocProvider(
-          create: (context) => ForgotpasswordBloc(),
+          create: (_) => ForgotpasswordBloc(),
         ),
         BlocProvider(
-          create: (context) => RegisterBloc(),
+          create: (_) => RegisterBloc(),
+        ),
+        BlocProvider<ShopBloc>(
+          create: (_) => ShopBloc(),
         ),
         BlocProvider(
-          create: (context) => ShopBloc(),
+          create: (_) => OrdersProductsBloc(),
+        ),
+        BlocProvider(
+          create: (_) => OrdersServicesBloc(),
+        ),
+        BlocProvider(
+          create: (_) => ProductsBloc(),
+        ),
+        BlocProvider(
+          create: (_) => ServicesBloc(),
         ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Material App',
-        initialRoute: SPLASH_SCREEN,
+        initialRoute: SPLASH_PAGE,
         routes: appRoutes,
       ),
     );

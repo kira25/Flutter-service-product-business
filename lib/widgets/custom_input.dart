@@ -37,15 +37,14 @@ class CustomInput extends StatelessWidget {
           border: border,
           boxShadow: [
             BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                offset: Offset(0, 5),
-                blurRadius: 5),
+              color: Colors.black.withOpacity(0.05),
+            ),
           ],
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(30)),
+          color: Colors.grey[200],
+          borderRadius: BorderRadius.circular(20)),
       child: TextField(
+       
         enableSuggestions: true,
-        autofocus: true,
         maxLines: maxlines,
         controller: textEditingController,
         obscureText: isPassword,

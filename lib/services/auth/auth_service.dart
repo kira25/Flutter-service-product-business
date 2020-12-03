@@ -35,14 +35,15 @@ class AuthService {
 
       if (resp.data['ok'] == true && resp.data['user']['isShopInfo'] == true) {
         return [true, true];
-      } else if (resp.data['ok'] == true && resp.data['user']['isShopInfo'] == false) {
+      } else if (resp.data['ok'] == true &&
+          resp.data['user']['isShopInfo'] == false) {
         return [true, false];
       } else {
         _preferencesRepository.clear();
         return [false, false];
       }
     } catch (e) {
-      print(e);
+      print('error: $e');
       return false;
     }
   }
@@ -91,7 +92,8 @@ class AuthService {
       print(data);
       print(resp.data);
       return [true, false];
-    } else if (resp.data['ok'] == true && resp.data['user']['isShopInfo'] == true) {
+    } else if (resp.data['ok'] == true &&
+        resp.data['user']['isShopInfo'] == true) {
       final user = UserResponse.fromJson(resp.data);
       _preferencesRepository.saveUser('user', user.user);
       _preferencesRepository.setData('token', user.token);

@@ -4,8 +4,12 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:responsive_screen/responsive_screen.dart';
 import 'package:service_products_business/bloc/auth/auth_bloc.dart';
+import 'package:service_products_business/bloc/orders_products/orders_products_bloc.dart';
+import 'package:service_products_business/bloc/shop/shop_bloc.dart';
 import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/route_transitions.dart';
+import 'package:service_products_business/models/shop_response.dart';
+import 'package:service_products_business/pages/AddProducts/add_products_page.dart';
 import 'package:service_products_business/pages/Login/login_page.dart';
 import 'package:service_products_business/widgets/logo.dart';
 
@@ -18,10 +22,17 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
   int tabIndex = 0;
   TabController tabController;
 
+  // loadData() {
+  //   setState(() {
+  //     BlocProvider.of<ShopBloc>(context)..add(OnLoadShopData());
+  //   });
+  // }
+
   @override
   void initState() {
     super.initState();
     tabController = TabController(length: 2, vsync: this);
+    // loadData();
   }
 
   @override
@@ -57,24 +68,28 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
             BottomNavigationBarItem(
                 icon: Icon(FontAwesomeIcons.user), label: 'Mi cuenta'),
           ]),
-      body: BlocListener<AuthBloc, AuthState>(
-        listener: (context, state) {
-          // TODO: implement listener
-          if (!state.authenticated) {
-            CustomRouteTransition(context: context, child: LoginPage());
-          }
-        },
-        child: IndexedStack(
-          index: tabIndex,
-          children: [
-            _orders(hp, wp),
-            //PRODUCTS
-            _products(hp, wp),
-            //SERVICES
-            _services(hp, wp),
-            //USER
-            _user(hp, wp),
-          ],
+      body: BlocProvider<ShopBloc>(
+        lazy: false,
+        create: (context) => ShopBloc()..add(OnLoadShopData()),
+        child: BlocListener<AuthBloc, AuthState>(
+          listener: (context, state) {
+            // TODO: implement listener
+            if (!state.authenticated) {
+              CustomRouteTransition(context: context, child: LoginPage());
+            }
+          },
+          child: IndexedStack(
+            index: tabIndex,
+            children: [
+              _orders(hp, wp),
+              //PRODUCTS
+              _products(hp, wp),
+              //SERVICES
+              _services(hp, wp),
+              //USER
+              _user(hp, wp),
+            ],
+          ),
         ),
       ),
     );
@@ -110,76 +125,111 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
       ),
       body: SafeArea(
           child: Container(
-              height: 400,
               child: TabBarView(
                   physics: NeverScrollableScrollPhysics(),
                   controller: tabController,
                   children: [
-                    Container(
-                      margin: EdgeInsets.only(top: 20, left: 20, right: 20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Container(
-                            height: 40,
-                            width: double.infinity,
-                            child: ListView.separated(
-                              itemCount: 4,
-                              physics: BouncingScrollPhysics(),
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (BuildContext context, int index) {
-                                List list = [
-                                  'Pendientes',
-                                  'Seguimiento',
-                                  'Completados',
-                                  'Rechazados'
-                                ];
-                                return MaterialButton(
-                                  height: 10,
-                                  key: Key(index.toString()),
-                                  onPressed: () {},
-                                  color: Colors.blue[200],
-                                  child: Text(list[index],
-                                      style: GoogleFonts.lato(
-                                        fontSize: wp(4),
-                                      )),
-                                  shape: StadiumBorder(),
-                                );
-                              },
-                              separatorBuilder:
-                                  (BuildContext context, int index) => Divider(
-                                indent: 10,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(FontAwesomeIcons.listUl,
-                                    size: 45, color: Colors.purple),
-                                Text(
-                                  'No tienes solicitudes de pedidos',
-                                  style: GoogleFonts.lato(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20),
-                                ),
-                                Text('Administra los pedidos de tus clientes',
-                                    style: GoogleFonts.lato(fontSize: 15)),
-                              ],
-                            ),
-                          )
-                        ],
+            Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 40,
+                    margin: EdgeInsets.only(top: 10, left: 10),
+                    width: double.infinity,
+                    child: ListView.separated(
+                      padding: EdgeInsets.all(5),
+                      itemCount: 4,
+                      physics: BouncingScrollPhysics(),
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (BuildContext context, int index) {
+                        List list = [
+                          'Pendientes',
+                          'Seguimiento',
+                          'Completados',
+                          'Rechazados'
+                        ];
+                        return MaterialButton(
+                          key: Key(index.toString()),
+                          onPressed: () {
+                            switch (index) {
+                              case 0:
+                                BlocProvider.of<OrdersProductsBloc>(context)
+                                    .add(OnProductPending());
+
+                                break;
+                              case 1:
+                                BlocProvider.of<OrdersProductsBloc>(context)
+                                    .add(OnProductFollowing());
+                                break;
+                              case 2:
+                                BlocProvider.of<OrdersProductsBloc>(context)
+                                    .add(OnProductCompleted());
+                                break;
+                              case 3:
+                                BlocProvider.of<OrdersProductsBloc>(context)
+                                    .add(OnProductRejected());
+                                break;
+
+                              default:
+                            }
+                          },
+                          color: Colors.blue[200],
+                          child: Text(list[index],
+                              style: GoogleFonts.lato(
+                                fontSize: wp(4),
+                              )),
+                          shape: StadiumBorder(),
+                        );
+                      },
+                      separatorBuilder: (BuildContext context, int index) =>
+                          Divider(
+                        indent: 10,
                       ),
                     ),
-                    Expanded(
-                      child: Column(
-                        children: [
-                          Icon(Icons.meeting_room),
-                        ],
-                      ),
-                    ),
-                  ]))),
+                  ),
+                  BlocBuilder<OrdersProductsBloc, OrdersProductsState>(
+                    builder: (context, state) {
+                      if (state.showPending) {
+                        return OrdersProducts(
+                          hp: hp,
+                          title: 'No tienes solicitudes de pedidos',
+                          subtitle: 'Administra los pedidos de tus clientes',
+                        );
+                      } else if (state.showFollowing) {
+                        return OrdersProducts(
+                          hp: hp,
+                          title: 'No tienes pedidos en proceso de envio',
+                          subtitle: 'Realiza el seguimiento de tu pedido',
+                        );
+                      } else if (state.showCompleted) {
+                        return OrdersProducts(
+                          hp: hp,
+                          title: 'No tienes pedidos completados',
+                          subtitle: 'Verifica tus pedidos entregados',
+                        );
+                      } else if (state.showRejected) {
+                        return OrdersProducts(
+                          hp: hp,
+                          title: 'No tienes pedidos rechazados',
+                          subtitle: 'Verifica tus pedidos rechazados',
+                        );
+                      } else {
+                        return Container();
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Column(
+                children: [
+                  Icon(Icons.meeting_room),
+                ],
+              ),
+            ),
+          ]))),
     );
   }
 
@@ -227,104 +277,114 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
             style: GoogleFonts.lato(
                 fontWeight: FontWeight.bold, color: Colors.black),
           )),
-      body: SafeArea(
-          child: Container(
-        child: Column(
-          children: [
-            //USERS INFO
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: wp(6), vertical: hp(3)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      CircleAvatar(
-                        radius: wp(7),
-                        backgroundImage: Image.network(
-                                'https://th.bing.com/th/id/OIP.wNLVREqBLW1b2KiVFrTt3gHaEH?pid=Api&rs=1')
-                            .image,
-                      ),
-                      SizedBox(
-                        width: wp(3),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Mi tienda',
-                            style: GoogleFonts.lato(
-                                fontWeight: FontWeight.bold, fontSize: wp(5)),
-                          ),
-                          Text('erick.gutierrez@pucp.pe',
-                              style: GoogleFonts.lato(
-                                  color: kintroNotSelected, fontSize: wp(4)))
-                        ],
-                      ),
-                    ],
-                  ),
-                  //0xFF81CCEE
-                  IconButton(
-                      icon: CircleAvatar(
-                        radius: wp(3),
-                        child: Icon(
-                          Icons.arrow_forward_ios,
-                          color: kprimarycolorlight,
-                          size: wp(2.5),
-                        ),
-                      ),
-                      onPressed: () {
-                        print('my account');
-                      })
-                ],
-              ),
-            ),
-            //REVENUE
-            UserOptions(
-              hp: hp,
-              wp: wp,
-              iconData: FontAwesomeIcons.shoppingBag,
-              title: 'Mis ganancias',
-              subTitle: 'Revisa el detalle de tus ganancias generales',
-            ),
-            //ACCOUNT BANK
-            UserOptions(
-              hp: hp,
-              wp: wp,
-              iconData: FontAwesomeIcons.creditCard,
-              title: 'Mis cuentas bancarias',
-              subTitle: 'Administra tus cuentas bancarias',
-            ),
-            //Terms and conditions
-            UserOptions(
-              hp: hp,
-              wp: wp,
-              iconData: FontAwesomeIcons.calendarCheck,
-              title: 'Terminos y condiciones',
-              subTitle: 'Información legal de Kallpa Business',
-            ),
-            // Contact kallpa business
-            UserOptions(
-              hp: hp,
-              wp: wp,
-              iconData: FontAwesomeIcons.whatsapp,
-              title: 'Contactate con Kallpa Business',
-              subTitle: '¿Tienes alguna consulta o queja? Contactanos',
-            )
-            // Log out
-            ,
-            UserOptions(
-              onPressed: () => BlocProvider.of<AuthBloc>(context)
-                  .add(AuthenticationLogout()),
-              hp: hp,
-              wp: wp,
-              iconData: FontAwesomeIcons.signOutAlt,
-              title: 'Cerrar sesión',
-              subTitle: 'Cierra sesion de tu cuenta Kallpa Business',
-            )
-          ],
-        ),
+      body: SafeArea(child: BlocBuilder<ShopBloc, ShopState>(
+        builder: (context, state) {
+          return Container(
+            child: _userShopOptions(wp, hp, state),
+          );
+        },
       )),
+    );
+  }
+
+  Column _userShopOptions(Function wp, Function hp, ShopState state) {
+    return Column(
+      children: [
+        //USERS INFO
+        state.shopResponse == null
+            ? CircularProgressIndicator()
+            : Container(
+                margin:
+                    EdgeInsets.symmetric(horizontal: wp(6), vertical: hp(3)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Row(
+                      children: [
+                        CircleAvatar(
+                          radius: wp(7),
+                          backgroundImage: Image.network(
+                                  state.shopResponse.shop.profilePhoto)
+                              .image,
+                        ),
+                        SizedBox(
+                          width: wp(3),
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              state.shopResponse.shop.title,
+                              style: GoogleFonts.lato(
+                                  fontWeight: FontWeight.bold, fontSize: wp(5)),
+                            ),
+                            Text(state.shopResponse.shop.email,
+                                style: GoogleFonts.lato(
+                                    color: kintroNotSelected, fontSize: wp(4)))
+                          ],
+                        ),
+                      ],
+                    ),
+                    //0xFF81CCEE
+                    IconButton(
+                        icon: CircleAvatar(
+                          radius: wp(3),
+                          child: Icon(
+                            Icons.arrow_forward_ios,
+                            color: kprimarycolorlight,
+                            size: wp(2.5),
+                          ),
+                        ),
+                        onPressed: () {
+                          print('my account');
+                        })
+                  ],
+                ),
+              ),
+        //REVENUE
+        UserOptions(
+          hp: hp,
+          wp: wp,
+          iconData: FontAwesomeIcons.shoppingBag,
+          title: 'Mis ganancias',
+          subTitle: 'Revisa el detalle de tus ganancias generales',
+        ),
+        //ACCOUNT BANK
+        UserOptions(
+          hp: hp,
+          wp: wp,
+          iconData: FontAwesomeIcons.creditCard,
+          title: 'Mis cuentas bancarias',
+          subTitle: 'Administra tus cuentas bancarias',
+        ),
+        //Terms and conditions
+        UserOptions(
+          hp: hp,
+          wp: wp,
+          iconData: FontAwesomeIcons.calendarCheck,
+          title: 'Terminos y condiciones',
+          subTitle: 'Información legal de Kallpa Business',
+        ),
+        // Contact kallpa business
+        UserOptions(
+          hp: hp,
+          wp: wp,
+          iconData: FontAwesomeIcons.whatsapp,
+          title: 'Contactate con Kallpa Business',
+          subTitle: '¿Tienes alguna consulta o queja? Contactanos',
+        )
+        // Log out
+        ,
+        UserOptions(
+          onPressed: () =>
+              BlocProvider.of<AuthBloc>(context).add(AuthenticationLogout()),
+          hp: hp,
+          wp: wp,
+          iconData: FontAwesomeIcons.signOutAlt,
+          title: 'Cerrar sesión',
+          subTitle: 'Cierra sesion de tu cuenta Kallpa Business',
+        )
+      ],
     );
   }
 
@@ -387,7 +447,9 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
             Icons.add,
             size: 35,
           ),
-          onPressed: () {}),
+          onPressed: () {
+            CustomRouteTransition(context: context, child: AddProducts());
+          }),
       appBar: AppBar(
           elevation: 4,
           backgroundColor: kprimarycolorlight,
@@ -426,6 +488,40 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
           ],
         ),
       )),
+    );
+  }
+}
+
+class OrdersProducts extends StatelessWidget {
+  final Function hp;
+  final String title;
+  final String subtitle;
+  const OrdersProducts({
+    this.hp,
+    this.title,
+    this.subtitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(FontAwesomeIcons.listUl, size: 45, color: Colors.purple),
+          SizedBox(
+            height: hp(3),
+          ),
+          Text(
+            title,
+            style: GoogleFonts.lato(fontWeight: FontWeight.bold, fontSize: 20),
+          ),
+          SizedBox(
+            height: hp(3),
+          ),
+          Text(subtitle, style: GoogleFonts.lato(fontSize: 15)),
+        ],
+      ),
     );
   }
 }

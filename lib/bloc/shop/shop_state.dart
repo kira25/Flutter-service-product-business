@@ -14,7 +14,8 @@ class ShopState extends Equatable {
       this.failShop = false,
       this.deliveryTime = '1 hrs',
       this.profilePhoto,
-      this.profileTitle});
+      this.profileTitle,
+      this.shopResponse});
 
   final Description description;
   final State state;
@@ -29,6 +30,7 @@ class ShopState extends Equatable {
   final File profilePhoto;
   final File profileTitle;
   final bool failShop;
+  final ShopResponse shopResponse;
 
   ShopState copyWith(
       {Description description,
@@ -43,7 +45,8 @@ class ShopState extends Equatable {
       String deliveryTime,
       bool failShop,
       File profilePhoto,
-      File profileTitle}) {
+      File profileTitle,
+      ShopResponse shopResponse}) {
     return ShopState(
         description: description ?? this.description,
         state: state ?? this.state,
@@ -57,8 +60,8 @@ class ShopState extends Equatable {
         facebook: facebook ?? this.facebook,
         failShop: failShop ?? this.failShop,
         profilePhoto: profilePhoto ?? this.profilePhoto,
-        profileTitle: profileTitle ?? this.profileTitle
-        );
+        profileTitle: profileTitle ?? this.profileTitle,
+        shopResponse: shopResponse ?? this.shopResponse);
   }
 
   @override
@@ -74,6 +77,7 @@ class ShopState extends Equatable {
         shopStatus,
         deliveryTime,
         profilePhoto,
-        profileTitle
+        profileTitle,
+        shopResponse
       ];
 }

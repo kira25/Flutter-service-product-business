@@ -8,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:service_products_business/models/shop/bankaccount.dart';
 import 'package:service_products_business/models/shop/interbankaccount.dart';
 import 'package:service_products_business/models/shop/shop_models.dart';
+import 'package:service_products_business/models/shop_response.dart';
 import 'package:service_products_business/services/shop/shop_service.dart';
 
 part 'shop_event.dart';
@@ -50,6 +51,20 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
       yield _mapOnRemoveProfilePhoto(event, state);
     } else if (event is OnRemoveProfileTitle) {
       yield state.copyWith(profileTitle: null);
+    } else if (event is OnLoadShopData) {
+      yield await _mapOnLoadShopInfo(event, state);
+    }
+  }
+
+  Future<ShopState> _mapOnLoadShopInfo(
+      OnLoadShopData event, ShopState state) async {
+    print('OnLoadShopData');
+    final resp = await _shopService.getShopInfo();
+    print(resp[1].ok);
+    if (resp[0]) {
+      return state.copyWith(shopResponse: resp[1]);
+    } else {
+      return state.copyWith(shopResponse: null);
     }
   }
 

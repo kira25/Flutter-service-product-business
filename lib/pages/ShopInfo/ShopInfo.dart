@@ -70,6 +70,7 @@ class ShopInfoPage extends StatelessWidget {
             child: Container(
           child: Column(
             children: [
+              //HEADER
               Material(
                 elevation: 5,
                 child: Container(

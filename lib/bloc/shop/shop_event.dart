@@ -97,12 +97,18 @@ class OnRemoveProfilePhoto extends ShopEvent {
   @override
   List<Object> get props => throw UnimplementedError();
 }
+
 class OnProfileTitle extends ShopEvent {
   @override
   List<Object> get props => throw UnimplementedError();
 }
 
 class OnRemoveProfileTitle extends ShopEvent {
+  @override
+  List<Object> get props => throw UnimplementedError();
+}
+
+class OnLoadShopData extends ShopEvent {
   @override
   List<Object> get props => throw UnimplementedError();
 }
