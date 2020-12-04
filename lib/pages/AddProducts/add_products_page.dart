@@ -24,6 +24,7 @@ class AddProducts extends StatelessWidget {
 
   TextEditingController normalPrice = TextEditingController();
   TextEditingController offertPrice = TextEditingController();
+  TextEditingController uniqueStock = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -107,7 +108,7 @@ class AddProducts extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  state.category != null
+                  state.category != null && state.subCategory != null
                       ? Text(
                           '${handleProductCategory(state.category)}- ${handleProductSubcategory(state.subCategory)}')
                       : Text(
@@ -140,43 +141,52 @@ class AddProducts extends StatelessWidget {
             icon: Icons.keyboard_arrow_down,
           ),
           //ADMIN STOCK TYPE
-          GestureDetector(
-            onTap: () =>
-                CustomRouteTransition(context: context, child: StockPage()),
-            child: Container(
-              height: hp(7),
-              margin: EdgeInsets.only(bottom: 20),
-              padding: EdgeInsets.only(top: 5, bottom: 5, left: 25, right: 20),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30.0),
-                color: Colors.grey[200],
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    state.adminStockType != null
-                        ? handleAdminStockType(state.adminStockType)
-                        : 'Cantidad',
-                    style: GoogleFonts.oswald(
-                        color: state.adminStockType != null
-                            ? kintroselected
-                            : kintroNotSelected,
-                        fontSize: wp(4.5)),
+          state.stocktype == StockType.UNIQUE
+              ? CustomInput(
+                  placeholder: 'Cantidad',
+                  textEditingController: uniqueStock,
+                  function: (value) => BlocProvider.of<ProductsBloc>(context)
+                      .add(OnStockChange(value, 0)),
+                  keyboardType: TextInputType.number,
+                )
+              : GestureDetector(
+                  onTap: () => CustomRouteTransition(
+                      context: context, child: StockPage()),
+                  child: Container(
+                    height: hp(7),
+                    margin: EdgeInsets.only(bottom: 20),
+                    padding:
+                        EdgeInsets.only(top: 5, bottom: 5, left: 25, right: 20),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30.0),
+                      color: Colors.grey[200],
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          state.adminStockType != null
+                              ? handleAdminStockType(state.adminStockType)
+                              : 'Cantidad',
+                          style: GoogleFonts.oswald(
+                              color: state.adminStockType != null
+                                  ? kintroselected
+                                  : kintroNotSelected,
+                              fontSize: wp(4.5)),
+                        ),
+                        Icon(
+                          state.adminStockType != null
+                              ? Icons.arrow_forward_ios
+                              : Icons.keyboard_arrow_down,
+                          size: 23,
+                          color: state.adminStockType != null
+                              ? kintroselected
+                              : kintroNotSelected,
+                        ),
+                      ],
+                    ),
                   ),
-                  Icon(
-                    state.adminStockType != null
-                        ? Icons.arrow_forward_ios
-                        : Icons.keyboard_arrow_down,
-                    size: 23,
-                    color: state.adminStockType != null
-                        ? kintroselected
-                        : kintroNotSelected,
-                  ),
-                ],
-              ),
-            ),
-          ),
+                ),
           Text('Precio',
               style: GoogleFonts.lato(
                   color: Colors.black,

@@ -27,6 +27,7 @@ class ProductService {
       ProductSubCategory subcategory,
       int stockType,
       List stock,
+   
       int priceType,
       String normalPrice,
       String offerPrice,
@@ -36,14 +37,14 @@ class ProductService {
       "description": description,
       "productCategory": {
         "category": category.index,
-        "subcategory": subcategory.index
+        "subcategory": subcategory.index,
       },
       "stockType": stockType,
       "stock": stock,
       "priceType": priceType,
       "price": {
         "normalPrice": int.parse(normalPrice),
-        "offertPrice": int.parse(offerPrice),
+        "offertPrice": offerPrice != null ? int.parse(offerPrice) : null,
       },
       "imageProduct": imageProduct
     };
@@ -54,7 +55,7 @@ class ProductService {
         options: Options(
           headers: {HttpHeaders.authorizationHeader: 'Bearer $token'},
         ));
-        print(resp.data);
+    print(resp.data);
     if (resp.data['ok'] == true) {
       return true;
     } else {

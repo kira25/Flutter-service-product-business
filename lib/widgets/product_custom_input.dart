@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class ProductCustomInput extends StatelessWidget {
-
   final Function function;
   final String text;
   final IconData icon;
@@ -10,7 +9,8 @@ class ProductCustomInput extends StatelessWidget {
     @required this.wp,
     this.function,
     this.text,
-    this.icon, this.hp,
+    this.icon,
+    this.hp,
   });
 
   final Function wp;
@@ -22,7 +22,7 @@ class ProductCustomInput extends StatelessWidget {
       onTap: function,
       child: Container(
         height: hp,
-        margin: EdgeInsets.only(bottom: 20, top: 20),
+        margin: EdgeInsets.only(bottom: 20, ),
         padding: EdgeInsets.only(top: 5, bottom: 5, left: 25, right: 20),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20.0),
@@ -33,7 +33,7 @@ class ProductCustomInput extends StatelessWidget {
           children: [
             Text(
               text,
-              style: GoogleFonts.oswald(color: Colors.black, fontSize: wp(4.5)),
+              style: GoogleFonts.oswald(color: Colors.black, fontSize: wp(4)),
             ),
             Icon(
               icon,

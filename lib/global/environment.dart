@@ -1,6 +1,6 @@
 import 'dart:io';
 
-const String myip = '192.168.1.10';
+const String myip = '192.168.1.140';
 const String local = '10.0.2.2';
 
 class Environment {

@@ -69,7 +69,7 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
                 icon: Icon(FontAwesomeIcons.user), label: 'Mi cuenta'),
           ]),
       body: BlocProvider<ShopBloc>(
-        lazy: false,
+        
         create: (context) => ShopBloc()..add(OnLoadShopData()),
         child: BlocListener<AuthBloc, AuthState>(
           listener: (context, state) {

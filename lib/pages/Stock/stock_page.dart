@@ -6,6 +6,7 @@ import 'package:responsive_screen/responsive_screen.dart';
 import 'package:service_products_business/bloc/products/products_bloc.dart';
 import 'package:service_products_business/helpers/botton_sheet.dart';
 import 'package:service_products_business/helpers/colors.dart';
+import 'package:service_products_business/helpers/enums.dart';
 import 'package:service_products_business/helpers/products.dart';
 import 'package:service_products_business/helpers/route_transitions.dart';
 import 'package:service_products_business/models/AdminProduct/admin_product.dart';
@@ -36,6 +37,8 @@ class _StockPageState extends State<StockPage> {
 
   @override
   Widget build(BuildContext context) {
+    // ignore: close_sinks
+    ProductsBloc productsBloc = BlocProvider.of<ProductsBloc>(context);
     final Function wp = Screen(context).wp;
     final Function hp = Screen(context).hp;
 
@@ -60,10 +63,11 @@ class _StockPageState extends State<StockPage> {
       ),
       body: SingleChildScrollView(
         child: BlocBuilder<ProductsBloc, ProductsState>(
-          buildWhen: (previous, current) =>
-              previous.adminStock != current.adminStock,
+          // buildWhen: (previous, current) =>
+          //     previous.adminStock != current.adminStock,
           builder: (context, state) {
-            print('stock page:  ${state.adminStock}');
+           print(state.category);
+           print(state.subCategory);
             return SafeArea(
               child: _stock(wp, hp, state, context),
             );
@@ -76,12 +80,14 @@ class _StockPageState extends State<StockPage> {
   Container _stock(
       Function wp, Function hp, ProductsState state, BuildContext context) {
     return Container(
+      width: double.infinity,
       margin: EdgeInsets.symmetric(horizontal: wp(5), vertical: hp(3)),
       child: Column(
         children: [
           //LIST OF ADMIN STOCKS
           Container(
               height: hp(75),
+              width: double.infinity,
               child: ListView.builder(
                 physics: BouncingScrollPhysics(),
                 itemCount: state.adminStock.length,
@@ -130,27 +136,138 @@ class _StockPageState extends State<StockPage> {
                           ],
                         ),
                       ),
-                      ProductCustomInput(
-                        wp: wp,
-                        hp: hp(7),
-                        icon: Icons.keyboard_arrow_down,
-                        function: () =>
-                            displayModalBottomSheetAdminStock(context, index),
-                        text: state.adminStock[index].adminColorType != null
-                            ? handleAdminColorStock(
-                                state.adminStock[index].adminColorType)
-                            : 'Color',
+                      SizedBox(
+                        height: hp(3),
                       ),
-                      CustomInput(
-                        hp: hp(7),
-                        placeholder: 'Stock',
-                        keyboardType: TextInputType.phone,
-                        textEditingController: state.adminStock[index].stock,
-                        function: (value) =>
-                            BlocProvider.of<ProductsBloc>(context).add(
-                                OnAdminStock(
-                                    state.adminStock[index].stock.text, index)),
-                      ),
+                      state.stocktype == StockType.BY_SIZE
+                          ? Container(
+                              width: double.infinity,
+                              margin: EdgeInsets.only(bottom: 20),
+                              padding: EdgeInsets.only(
+                                  top: 5, bottom: 5, left: 25, right: 20),
+                              decoration: BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.05),
+                                    ),
+                                  ],
+                                  color: Colors.grey[200],
+                                  borderRadius: BorderRadius.circular(20)),
+                              child: DropdownButtonHideUnderline(
+                                  child: DropdownButton(
+                                      value:
+                                          state.adminStock[index].size != null
+                                              ? handleAdminProductSize(
+                                                  state.adminStock[index].size)
+                                              : 'S',
+                                      items: [
+                                        DropdownMenuItem(
+                                          child: Text('S'),
+                                          value: 'S',
+                                        ),
+                                        DropdownMenuItem(
+                                          child: Text('M'),
+                                          value: 'M',
+                                        ),
+                                        DropdownMenuItem(
+                                          child: Text('L'),
+                                          value: 'L',
+                                        ),
+                                        DropdownMenuItem(
+                                          child: Text('XL'),
+                                          value: 'XL',
+                                        ),
+                                        DropdownMenuItem(
+                                          child: Text('XXL'),
+                                          value: 'XXL',
+                                        ),
+                                      ],
+                                      onChanged: (value) =>
+                                          BlocProvider.of<ProductsBloc>(context)
+                                              .add(OnAdminSize(
+                                                  handleAdminProductSizeToValue(
+                                                      value),
+                                                  index)))),
+                            )
+                          : ProductCustomInput(
+                              wp: wp,
+                              hp: hp(7),
+                              icon: Icons.keyboard_arrow_down,
+                              function: () => displayModalBottomSheetAdminStock(
+                                  context, index),
+                              text: handleAdminColorStock(
+                                  state.adminStock[index].adminColorType),
+                            ),
+                      //STOCK TYPE BY COLOR AND SIZE
+                      state.stocktype == StockType.BY_COLOR_SIZE
+                          ? Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                BlocBuilder<ProductsBloc, ProductsState>(
+                                  builder: (context, state) {
+                                    return Container(
+                                      height: hp(10),
+                                      child: ListView.builder(
+                                          physics: BouncingScrollPhysics(),
+                                          itemCount:
+                                              BlocProvider.of<ProductsBloc>(
+                                                      context)
+                                                  .state
+                                                  .adminStock[index]
+                                                  .sizeProduct
+                                                  .length,
+                                          itemBuilder: (_, indexProduct) {
+                                            return Container(
+                                              height: hp(10),
+                                              child: _sizeProduct(
+                                                  state,
+                                                  index,
+                                                  indexProduct,
+                                                  context,
+                                                  wp,
+                                                  hp),
+                                            );
+                                          }),
+                                    );
+                                  },
+                                ),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                        color: kintroselected,
+                                        icon: Icon(
+                                          FontAwesomeIcons.ruler,
+                                          size: wp(5),
+                                        ),
+                                        onPressed: () =>
+                                            BlocProvider.of<ProductsBloc>(
+                                                    context)
+                                                .add(OnAddSizeProduct(
+                                                    index: index,
+                                                    sizeProduct: SizeProduct(
+                                                        size: Size.S)))),
+                                    Text(
+                                      'Añadir talla',
+                                      style: GoogleFonts.lato(
+                                          color: kintroselected,
+                                          fontSize: wp(4)),
+                                    )
+                                  ],
+                                )
+                              ],
+                            )
+                          : CustomInput(
+                              hp: hp(7),
+                              placeholder: 'Stock',
+                              keyboardType: TextInputType.phone,
+                              textEditingController:
+                                  state.adminStock[index].stock,
+                              function: (value) =>
+                                  BlocProvider.of<ProductsBloc>(context).add(
+                                      OnAdminStock(
+                                          state.adminStock[index].stock.text,
+                                          index)),
+                            ),
                     ],
                   );
                 },
@@ -161,10 +278,10 @@ class _StockPageState extends State<StockPage> {
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
             onPressed: () {
-              BlocProvider.of<ProductsBloc>(context)
-                  .add(OnAddAdminStock(adminProduct: AdminProduct()));
+              BlocProvider.of<ProductsBloc>(context).add(OnAddAdminStock(
+                  adminProduct:
+                      AdminProduct(sizeProduct: [SizeProduct(size: Size.S)])));
             }
-
             //TODO: change to manage with Bloc
             // setState(() {
             //   names.add('Color ${names.length}');
@@ -183,11 +300,108 @@ class _StockPageState extends State<StockPage> {
               ],
             ),
           ),
-          RaisedButton(
-              onPressed: () => BlocProvider.of<ProductsBloc>(context)
-                  .add(OnHandleCreateProduct())),
+          RaisedButton(onPressed: () {
+            // List list = state.adminStock.map((e) => e.toJsonSizeProduct()).toList();
+            // print(state.adminStock[0].sizeProduct[0].size);
+            // print(state.adminStock[0].sizeProduct[0].sizeStock.text);
+            // print(state.adminStock[0].toJson());
+            // print(state.adminStock[0].toJsonSize());
+            // print(state.adminStock[0].toJsonSizeProduct());
+            // print(list);
+          }),
         ],
       ),
+    );
+  }
+
+  Row _sizeProduct(ProductsState state, int index, int indexProduct,
+      BuildContext context, Function wp, Function hp) {
+    return Row(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        //TALLA
+        Expanded(
+          child: Container(
+            margin: EdgeInsets.only(bottom: 20),
+            padding: EdgeInsets.only(top: 5, bottom: 5, left: 25, right: 20),
+            decoration: BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                  ),
+                ],
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(20)),
+            child: DropdownButtonHideUnderline(
+                child: DropdownButton(
+                    value: state.adminStock[index].sizeProduct[indexProduct]
+                                .size !=
+                            null
+                        ? handleAdminProductSize(state
+                            .adminStock[index].sizeProduct[indexProduct].size)
+                        : 'Talla',
+                    items: [
+                      DropdownMenuItem(
+                        child: Text('S'),
+                        value: 'S',
+                      ),
+                      DropdownMenuItem(
+                        child: Text('M'),
+                        value: 'M',
+                      ),
+                      DropdownMenuItem(
+                        child: Text('L'),
+                        value: 'L',
+                      ),
+                      DropdownMenuItem(
+                        child: Text('XL'),
+                        value: 'XL',
+                      ),
+                      DropdownMenuItem(
+                        child: Text('XXL'),
+                        value: 'XXL',
+                      ),
+                    ],
+                    onChanged: (value) => BlocProvider.of<ProductsBloc>(context)
+                        .add(OnAdminSizeProduct(
+                            index,
+                            handleAdminProductSizeToValue(value),
+                            indexProduct)))),
+          ),
+        ),
+        SizedBox(
+          width: wp(2),
+        ),
+        Expanded(
+          child: CustomInput(
+              function: (value) => BlocProvider.of<ProductsBloc>(context)
+                  .add(OnAdminSizeProductStock(value, index, indexProduct)),
+              hp: hp(7),
+              placeholder: 'Stock',
+              keyboardType: TextInputType.phone,
+              textEditingController:
+                  state.adminStock[index].sizeProduct[indexProduct].sizeStock),
+        ),
+        indexProduct > 0
+            ? Container(
+                margin: EdgeInsets.only(bottom: 15, left: 15),
+                child: CircleAvatar(
+                  backgroundColor: kwrongAnswer,
+                  radius: wp(4),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.close,
+                      color: kprimarycolorlight,
+                      size: wp(3.5),
+                    ),
+                    onPressed: () => BlocProvider.of<ProductsBloc>(context)
+                        .add(OnDeleteAdminSizeProduct(index, indexProduct)),
+                  ),
+                ),
+              )
+            : Container(),
+      ],
     );
   }
 }

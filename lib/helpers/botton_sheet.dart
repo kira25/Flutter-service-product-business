@@ -7,6 +7,11 @@ import 'package:service_products_business/bloc/products/products_bloc.dart';
 import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/enums.dart';
 
+
+
+
+
+
 void displayModalBottomSheetAdminStock(context, int indexStock) {
   final Function wp = Screen(context).wp;
   final Function hp = Screen(context).hp;

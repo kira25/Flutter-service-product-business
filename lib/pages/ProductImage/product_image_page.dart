@@ -26,14 +26,16 @@ class ProductImagePage extends StatelessWidget {
       ),
       body: SafeArea(
           child: BlocListener<ProductsBloc, ProductsState>(
+        listenWhen: (previous, current) =>
+            previous.isProductCreated != current.isProductCreated,
         listener: (_, state) {
-          // TODO: implement listener
-          if (state.isProductCreated) {
+          if (state.isProductCreated == IsProductCreated.SUCCESS) {
             showAlert(context,
                 title: 'Producto creado con exito',
                 subtitle: 'Aceptar',
                 child: OrdersPage());
-          } else {
+            BlocProvider.of<ProductsBloc>(context).add(OnCleanProductData());
+          } else if (state.isProductCreated == IsProductCreated.FAIL) {
             showDialog(
                 context: _,
                 builder: (_) => new AlertDialog(
@@ -95,11 +97,19 @@ class ProductImagePage extends StatelessWidget {
                                 '${state.productImage[index]["product"].split('/').last}',
                                 style: GoogleFonts.lato(fontSize: 10),
                               ),
-                              IconButton(
-                                icon: Icon(Icons.close),
-                                onPressed: () =>
-                                    BlocProvider.of<ProductsBloc>(context)
-                                        .add(OnDeleteProductImage(index)),
+                              CircleAvatar(
+                                backgroundColor: kwrongAnswer,
+                                radius: wp(4),
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.close,
+                                    color: kprimarycolorlight,
+                                    size: wp(3.5),
+                                  ),
+                                  onPressed: () =>
+                                      BlocProvider.of<ProductsBloc>(context)
+                                          .add(OnDeleteProductImage(index)),
+                                ),
                               ),
                             ],
                           ),
@@ -112,7 +122,7 @@ class ProductImagePage extends StatelessWidget {
             color: kprimarycolorlight,
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
-            onPressed: () => state.productImage.length > 5
+            onPressed: () => state.productImage.length > 4
                 ? null
                 : BlocProvider.of<ProductsBloc>(context)
                     .add(OnAddProductImage()),

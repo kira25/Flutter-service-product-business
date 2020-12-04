@@ -21,6 +21,7 @@ showAlert(BuildContext context, {String title, String subtitle, Widget child}) {
       ),
     );
   }
+  //ANDROID
   showDialog(
     
     context: context,

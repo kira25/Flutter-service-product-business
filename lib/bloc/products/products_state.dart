@@ -1,28 +1,39 @@
 part of 'products_bloc.dart';
 
-class ProductsState extends Equatable {
+enum IsProductCreated { UNDEFINED, SUCCESS, FAIL }
+
+class ProductsState {
   ProductsState(
-      {this.isProductCreated = false,
+      {this.isProductCreated = IsProductCreated.UNDEFINED,
       List<AdminProduct> adminStock,
       this.adminColorType,
-      this.stock,
       this.adminStockType,
       this.priceType,
       this.normalPrice,
       this.offerPrice,
       this.productName,
       this.description,
-      this.stocktype,
+      this.stocktype = StockType.UNIQUE,
       this.category,
       this.subCategory,
       this.productImage = const []})
-      : this.adminStock = (adminStock == null) ? [AdminProduct()] : adminStock;
+      : this.adminStock = (adminStock == null)
+            ? [
+                AdminProduct(
+                    adminColorType: AdminColorType.YELLOW,
+                    sizeProduct: [
+                      SizeProduct(
+                          size: Size.S,
+                          sizeStock: TextEditingController(text: ''))
+                    ])
+              ]
+            : adminStock;
 
   final String productName;
   final String description;
   final ProductCategory category;
   final ProductSubCategory subCategory;
-  final bool isProductCreated;
+  final IsProductCreated isProductCreated;
   final AdminStockType adminStockType;
   final List productImage;
   final StockType stocktype;
@@ -31,12 +42,10 @@ class ProductsState extends Equatable {
   final String offerPrice;
   final List<AdminProduct> adminStock;
   final AdminColorType adminColorType;
-  final String stock;
 
   ProductsState copyWith(
-      {bool isProductCreated,
+      {IsProductCreated isProductCreated,
       List<AdminColorType> adminColorType,
-      String stock,
       String productName,
       String description,
       ProductCategory category,
@@ -60,7 +69,6 @@ class ProductsState extends Equatable {
         productName: productName ?? this.productName,
         stocktype: stocktype ?? this.stocktype,
         adminColorType: adminColorType ?? this.adminColorType,
-        stock: stock ?? this.stock,
         adminStock: adminStock ?? this.adminStock,
         isProductCreated: isProductCreated ?? this.isProductCreated);
   }
@@ -79,7 +87,6 @@ class ProductsState extends Equatable {
         offerPrice,
         adminStock,
         adminColorType,
-        stock,
         adminStock,
         isProductCreated
       ];

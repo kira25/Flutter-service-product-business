@@ -1,6 +1,60 @@
 import 'package:flutter/material.dart';
 import 'package:service_products_business/helpers/enums.dart';
 
+Size handleAdminProductSizeToValue(String text) {
+  switch (text) {
+    case 'S':
+      return Size.S;
+
+      break;
+    case 'M':
+      return Size.M;
+
+      break;
+    case 'L':
+      return Size.L;
+
+      break;
+    case 'XL':
+      return Size.XL;
+
+      break;
+    case 'XXL':
+      return Size.XXL;
+
+      break;
+    default:
+      return Size.S;
+  }
+}
+
+String handleAdminProductSize(Size size) {
+  switch (size) {
+    case Size.S:
+      return 'S';
+
+      break;
+    case Size.M:
+      return 'M';
+
+      break;
+    case Size.L:
+      return 'L';
+
+      break;
+    case Size.XL:
+      return 'XL';
+
+      break;
+    case Size.XXL:
+      return 'XXL';
+
+      break;
+    default:
+      return 'Tallas';
+  }
+}
+
 String handleStockType(StockType stockType) {
   switch (stockType) {
     case StockType.UNIQUE:
