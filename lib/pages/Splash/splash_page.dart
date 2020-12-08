@@ -7,7 +7,7 @@ import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/route_transitions.dart';
 import 'package:service_products_business/pages/Introduction/introduction_page.dart';
 import 'package:service_products_business/pages/Login/login_page.dart';
-import 'package:service_products_business/pages/Orders/orders_page.dart';
+import 'package:service_products_business/pages/Main/main_page.dart';
 import 'package:service_products_business/widgets/logo.dart';
 
 class SplashPage extends StatelessWidget {
@@ -30,7 +30,7 @@ class SplashPage extends StatelessWidget {
               replacement: true);
         } else if (state.authenticated == true && state.isShopInfo == true) {
           CustomRouteTransition(
-              child: OrdersPage(),
+              child: MainPage(),
               context: context,
               animation: AnimationType.fadeIn,
               replacement: true);

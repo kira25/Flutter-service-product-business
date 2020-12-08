@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:service_products_business/helpers/colors.dart';
-import 'package:service_products_business/helpers/route_transitions.dart';
-import 'package:service_products_business/pages/Subcategory/subcategory_page.dart';
 
 class CategoryOptions extends StatelessWidget {
   final String option;

@@ -1,12 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:service_products_business/helpers/enums.dart';
 import 'package:service_products_business/models/AdminProduct/admin_product.dart';
+import 'package:service_products_business/models/product_response.dart';
 import 'package:service_products_business/services/product/product_service.dart';
 
 part 'products_event.dart';
@@ -19,6 +19,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   List<AdminProduct> listProduct = [];
 
   List imageList = [];
+  List<File> filesImage = [];
 
   ProductService _productService = ProductService();
 
@@ -26,23 +27,20 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   Stream<ProductsState> mapEventToState(
     ProductsEvent event,
   ) async* {
-    // TODO: implement mapEventToState
     if (event is OnSelectCategory) {
-      print('OnSelectCategory');
       yield _mapOnSelectCategory(event, state);
+      print(state.category.index);
     } else if (event is OnSelectSubcategory) {
-      print('OnSelectSubcategory');
       yield _mapOnSelectSubcategory(event, state);
+       print(state.subCategory.index);
     } else if (event is OnNameChanged) {
       yield state.copyWith(productName: event.name);
     } else if (event is OnDescriptionChange) {
       yield state.copyWith(description: event.description);
     } else if (event is OnStockType) {
-      print('OnStockType');
       yield state.copyWith(stocktype: event.stockType);
     } else if (event is OnStockChange) {
       yield _mapOnStockChange(event, state);
-      print(state.adminStock[0].stock.text);
     } else if (event is OnPriceTypeChange) {
       yield state.copyWith(priceType: event.priceType);
     } else if (event is OnNormalPriceChange) {
@@ -64,84 +62,90 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       yield _mapOnDeleteAdminStock(event, state);
     } else if (event is OnAddProductImage) {
       yield await _mapOnAddProductImage(event, state);
+      print(state.filesProduct);
     } else if (event is OnProductImageChange) {
     } else if (event is OnDeleteProductImage) {
       yield _mapOnDeleteProductImage(event, state);
     } else if (event is OnHandleCreateProduct) {
-      //TODO: SEND DATA TO BACKEND
-      // print(state.productName);
-      // print(state.description);
-      // Map data = {"category": state.category, "subcategory": state.subCategory};
-      // // print(state.category);
-      // // print(state.subCategory);
-      // print('productCategory : $data');
-      // print(state.stocktype);
-
-      // List list = state.adminStock.map((e) => e.toJson()).toList();
-      // print(list);
-      // print(state.priceType);
-      // Map priceData = {
-      //   "normalPrice": state.normalPrice,
-      //   "offertPrice": state.offerPrice
-      // };
-      // print(priceData);
-
-      // print(state.productImage);
       yield await _mapHandleCreateProduct(event, state);
     } else if (event is OnAddSizeProduct) {
-      print('OnAddSizeProduct');
       yield _mapOnAddSizeProduct(event, state);
-      print(state.adminStock[0].sizeProduct);
     } else if (event is OnDeleteAdminSizeProduct) {
       yield _mapOnDeleteAdminSizeProduct(event, state);
     } else if (event is OnAdminSizeProduct) {
-      print('OnAdminSizeProduct');
       yield _mapOnAdminSizeProduct(event, state);
-      print(state.adminStock[0].sizeProduct[0].size);
     } else if (event is OnAdminSizeProductStock) {
       yield _mapOnAdminSizeProductStock(event, state);
-      print(state.adminStock[0].sizeProduct[0].sizeStock.text);
     } else if (event is OnAdminSize) {
       yield _mapOnAdminSize(event, state);
     } else if (event is OnCleanProductData) {
       yield state.copyWith(
-        adminColorType: null,
-        adminStock: [
-          AdminProduct(adminColorType: AdminColorType.YELLOW, sizeProduct: [
-            SizeProduct(
-                size: Size.S, sizeStock: TextEditingController(text: ''))
-          ])
-        ],
-        adminStockType: null,
-        category: null,
-        description: null,
-        isProductCreated: IsProductCreated.UNDEFINED,
-        normalPrice: null,
-        offerPrice: null,
-        priceType: null,
-        productImage: [],
-        productName: null,
-        stocktype: StockType.UNIQUE,
-        subCategory: null,
-      );
+          adminColorType: null,
+          adminStock: [
+            AdminProduct(adminColorType: AdminColorType.YELLOW, sizeProduct: [
+              SizeProduct(
+                  size: Sizes.S, sizeStock: TextEditingController(text: ''))
+            ])
+          ],
+          adminStockType: null,
+          category: ProductCategory.UNDEFINED,
+          description: null,
+          isProductCreated: IsProductCreated.UNDEFINED,
+          normalPrice: null,
+          offerPrice: null,
+          priceType: PriceType.NORMAL,
+          productImage: [],
+          productName: null,
+          stocktype: StockType.UNIQUE,
+          subCategory: ProductSubCategory.UNDEFINED,
+          filesProduct: []);
+    } else if (event is OnLoadShopProducts) {
+      yield await _mapOnLoadShopProducts(event, state);
+    } else if (event is OnShowProducts) {
+      yield state.copyWith(showProducts: event.category);
+    } else if (event is OnAddOnlySize) {
+      listProduct = [...state.adminStock];
+      listProduct[0].sizeProduct.add(event.sizeProduct);
+
+      yield state.copyWith(adminStock: listProduct);
+    } else if (event is OnAdminBySizeStock) {
+      List<AdminProduct> admin = [...state.adminStock];
+      admin[0].sizeProduct[event.index].sizeStock.value = TextEditingValue(
+          text: event.sizeStock,
+          selection: TextSelection.fromPosition(
+              TextPosition(offset: event.sizeStock.length)));
+
+      print(admin[0].toJsonSize());
+      yield state.copyWith(adminStock: admin);
+    }
+  }
+
+  Future<ProductsState> _mapOnLoadShopProducts(
+      OnLoadShopProducts event, ProductsState state) async {
+    print('OnLoadShopProducts');
+    final resp = await _productService.getProductByUser();
+    print(resp);
+    if (resp[0]) {
+      return state.copyWith(
+          productResponse: resp[1], showProducts: ProductCategory.HOME);
+    } else {
+      return state.copyWith(productResponse: null);
     }
   }
 
   ProductsState _mapOnStockChange(OnStockChange event, ProductsState state) {
-    print('OnStockChange');
     List<AdminProduct> admin = [...state.adminStock];
     admin[event.index].stock.value = TextEditingValue(
         text: event.stock,
         selection: TextSelection.fromPosition(
             TextPosition(offset: event.stock.length)));
-    print(admin[event.index].stock);
     return state.copyWith(adminStock: admin);
   }
 
   ProductsState _mapOnAdminSize(OnAdminSize event, ProductsState state) {
     List<AdminProduct> admin = [...state.adminStock];
-    admin[event.index].size = event.size;
-
+    admin[0].sizeProduct[event.index].size = event.size;
+    print(admin[0].sizeProduct[event.index].size);
     return state.copyWith(adminStock: admin);
   }
 
@@ -157,6 +161,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
 
     if (state.stocktype == StockType.BY_COLOR) {
       stock = state.adminStock.map((e) => e.toJsonColor()).toList();
+      print(stock);
     }
     if (state.stocktype == StockType.BY_COLOR_SIZE) {
       stock = state.adminStock.map((e) => e.toJsonSizeColor()).toList();
@@ -176,7 +181,8 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
         state.priceType.index,
         state.normalPrice,
         state.offerPrice,
-        state.productImage);
+        state.productImage,
+        state.filesProduct);
     if (resp) {
       return state.copyWith(isProductCreated: IsProductCreated.SUCCESS);
     } else {
@@ -196,6 +202,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   Future<ProductsState> _mapOnAddProductImage(
       OnAddProductImage event, ProductsState state) async {
     imageList = [...state.productImage];
+    filesImage = [...state.filesProduct];
     final profilePicker = ImagePicker();
     final picketFile =
         await profilePicker.getImage(source: ImageSource.gallery);
@@ -203,7 +210,11 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       Map data = {"product": picketFile.path};
 
       imageList.add(data);
-      return state.copyWith(productImage: imageList);
+      print('imagelist added');
+      filesImage.add(File(picketFile.path));
+
+      print('filesImage added');
+      return state.copyWith(productImage: imageList, filesProduct: filesImage);
     } else {
       return state.copyWith(productImage: state.productImage);
     }
@@ -235,7 +246,8 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
             text: event.sizeStock,
             selection: TextSelection.fromPosition(
                 TextPosition(offset: event.sizeStock.length)));
-    print(admin[event.index].stock);
+    print(admin[event.index].sizeProduct[event.indexProduct].sizeStock..text);
+    print(admin[0].toJsonSizeColor());
     return state.copyWith(adminStock: admin);
   }
 
@@ -253,7 +265,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
         text: event.stock,
         selection: TextSelection.fromPosition(
             TextPosition(offset: event.stock.length)));
-    print(admin[event.index].stock);
+
     return state.copyWith(adminStock: admin);
   }
 
@@ -266,8 +278,6 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
 
   ProductsState _mapOnAddAdminStock(
       OnAddAdminStock event, ProductsState state) {
-    print('OnaddAdminStock');
-
     listProduct = [...state.adminStock];
     listProduct.add(event.adminProduct);
 
@@ -279,7 +289,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     // AdminProduct product;
     List<AdminProduct> admin = [...state.adminStock];
     admin[event.index].adminColorType = event.adminColorType;
-
+    print(admin[event.index].adminColorType);
     return state.copyWith(adminStock: admin);
     // admin[event.index].adminColorType = event.adminColorType;
     // return state.copyWith()

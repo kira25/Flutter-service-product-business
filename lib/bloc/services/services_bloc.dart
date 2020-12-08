@@ -13,6 +13,5 @@ class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
   Stream<ServicesState> mapEventToState(
     ServicesEvent event,
   ) async* {
-    // TODO: implement mapEventToState
   }
 }

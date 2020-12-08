@@ -53,6 +53,8 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
       yield state.copyWith(profileTitle: null);
     } else if (event is OnLoadShopData) {
       yield await _mapOnLoadShopInfo(event, state);
+    } else if (event is OnTabIndexChange) {
+      yield state.copyWith(tabindex: event.index);
     }
   }
 

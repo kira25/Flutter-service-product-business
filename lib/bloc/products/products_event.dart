@@ -92,7 +92,7 @@ class OnDeleteAdminStock extends ProductsEvent {
 }
 
 class OnAdminSize extends ProductsEvent {
-  final Size size;
+  final Sizes size;
   final int index;
 
   OnAdminSize(this.size, this.index);
@@ -109,7 +109,7 @@ class OnAddSizeProduct extends ProductsEvent {
 class OnAdminSizeProduct extends ProductsEvent {
   final int index;
   final int indexProduct;
-  final Size size;
+  final Sizes size;
 
   OnAdminSizeProduct(this.index, this.size, this.indexProduct);
 }
@@ -127,6 +127,19 @@ class OnDeleteAdminSizeProduct extends ProductsEvent {
   final int index;
 
   OnDeleteAdminSizeProduct(this.index, this.indexProduct);
+}
+
+class OnAddOnlySize extends ProductsEvent {
+  final SizeProduct sizeProduct;
+
+  OnAddOnlySize(this.sizeProduct);
+}
+
+class OnAdminBySizeStock extends ProductsEvent {
+  final String sizeStock;
+  final int index;
+
+  OnAdminBySizeStock(this.sizeStock, this.index);
 }
 
 //IMAGE PRODUCT
@@ -150,3 +163,11 @@ class OnDeleteProductImage extends ProductsEvent {
 class OnHandleCreateProduct extends ProductsEvent {}
 
 class OnCleanProductData extends ProductsEvent {}
+
+class OnLoadShopProducts extends ProductsEvent {}
+
+class OnShowProducts extends ProductsEvent {
+  final ProductCategory category;
+
+  OnShowProducts(this.category);
+}

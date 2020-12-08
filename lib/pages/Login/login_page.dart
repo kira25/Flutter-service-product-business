@@ -8,7 +8,7 @@ import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/route_transitions.dart';
 import 'package:service_products_business/pages/ForgotPassword/forgot_password_page.dart';
 import 'package:service_products_business/pages/Introduction/introduction_page.dart';
-import 'package:service_products_business/pages/Orders/orders_page.dart';
+import 'package:service_products_business/pages/Main/main_page.dart';
 import 'package:service_products_business/pages/Register/register_page.dart';
 import 'package:service_products_business/widgets/custom_input.dart';
 import 'package:service_products_business/widgets/logo.dart';
@@ -55,7 +55,7 @@ class LoginPage extends StatelessWidget {
                     CustomRouteTransition(
                         animation: AnimationType.fadeIn,
                         context: context,
-                        child: OrdersPage(),
+                        child: MainPage(),
                         replacement: true);
                   }
                 }, child: BlocBuilder<LoginBloc, LoginState>(

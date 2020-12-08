@@ -8,6 +8,7 @@ import 'package:service_products_business/helpers/route_transitions.dart';
 import 'package:service_products_business/pages/Login/login_page.dart';
 import 'package:service_products_business/pages/ShopInfo/ShopInfo.dart';
 
+// ignore: must_be_immutable
 class IntroductionPage extends StatelessWidget {
   PageController pageController = PageController();
 

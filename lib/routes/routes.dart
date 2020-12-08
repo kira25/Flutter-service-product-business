@@ -3,7 +3,7 @@ import 'package:service_products_business/pages/AddProducts/add_products_page.da
 import 'package:service_products_business/pages/Bank&Photo/bank_photo_page.dart';
 import 'package:service_products_business/pages/Category/category_page.dart';
 import 'package:service_products_business/pages/Introduction/introduction_page.dart';
-import 'package:service_products_business/pages/Orders/orders_page.dart';
+import 'package:service_products_business/pages/Main/main_page.dart';
 import 'package:service_products_business/pages/ResetPassword/reset_password_page.dart';
 import 'package:service_products_business/pages/ShopInfo/ShopInfo.dart';
 import 'package:service_products_business/pages/Splash/splash_page.dart';
@@ -21,7 +21,7 @@ final Map<String, Widget Function(BuildContext)> appRoutes = {
   INTRODUCTION_PAGE: (_) => IntroductionPage(),
   SHOP_INFO_PAGE: (_) => ShopInfoPage(),
   BANK_PHOTO_PAGE: (_) => BankPhotoPage(),
-  ORDER_PAGE: (_) => OrdersPage(),
+  ORDER_PAGE: (_) => MainPage(),
   ADD_PRODUCTS_PAGE: (_) => AddProducts(),
   CATEGORY_PAGE: (_) => CategoryPage(),
   SUBCATEGORY_PAGE: (_) => SubcategoryPage(),

@@ -2,14 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:responsive_screen/responsive_screen.dart';
 import 'package:service_products_business/bloc/products/products_bloc.dart';
 import 'package:service_products_business/helpers/colors.dart';
-import 'package:service_products_business/helpers/route_transitions.dart';
 import 'package:service_products_business/helpers/show_alert.dart';
-import 'package:service_products_business/pages/Orders/orders_page.dart';
+import 'package:service_products_business/pages/Main/main_page.dart';
 import 'package:service_products_business/widgets/custom_fab.dart';
 
 class ProductImagePage extends StatelessWidget {
@@ -33,7 +31,7 @@ class ProductImagePage extends StatelessWidget {
             showAlert(context,
                 title: 'Producto creado con exito',
                 subtitle: 'Aceptar',
-                child: OrdersPage());
+                child: MainPage());
             BlocProvider.of<ProductsBloc>(context).add(OnCleanProductData());
           } else if (state.isProductCreated == IsProductCreated.FAIL) {
             showDialog(

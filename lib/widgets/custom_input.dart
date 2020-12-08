@@ -13,9 +13,13 @@ class CustomInput extends StatelessWidget {
   final double hp;
   final int hintMaxLines;
   final int maxlines;
+  final TextInputAction textInputAction;
+  final FocusNode focusNode;
+  final Function onFocus;
 
   CustomInput(
-      {this.icon,
+      {this.onFocus,
+      this.icon,
       @required this.placeholder,
       @required this.textEditingController,
       this.keyboardType = TextInputType.text,
@@ -25,7 +29,9 @@ class CustomInput extends StatelessWidget {
       this.border,
       this.hp,
       this.hintMaxLines,
-      this.maxlines = 1});
+      this.maxlines = 1,
+      this.textInputAction,
+      this.focusNode});
 
   @override
   Widget build(BuildContext context) {
@@ -43,12 +49,15 @@ class CustomInput extends StatelessWidget {
           color: Colors.grey[200],
           borderRadius: BorderRadius.circular(20)),
       child: TextField(
-       
+        
+        onEditingComplete: onFocus,
+        focusNode: focusNode,
+        autofocus: true,
+        textInputAction: textInputAction,
         enableSuggestions: true,
         maxLines: maxlines,
         controller: textEditingController,
         obscureText: isPassword,
-        autocorrect: false,
         onChanged: function,
         keyboardType: keyboardType,
         decoration: InputDecoration(

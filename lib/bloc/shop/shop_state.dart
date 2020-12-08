@@ -2,7 +2,8 @@ part of 'shop_bloc.dart';
 
 class ShopState extends Equatable {
   ShopState(
-      {this.description = const Description.pure(),
+      {this.tabindex = 0,
+      this.description = const Description.pure(),
       this.state = const State.pure(),
       this.address = const Address.pure(),
       this.whatsapp = const Whatsapp.pure(),
@@ -17,6 +18,7 @@ class ShopState extends Equatable {
       this.profileTitle,
       this.shopResponse});
 
+  final int tabindex;
   final Description description;
   final State state;
   final String deliveryTime;
@@ -33,7 +35,9 @@ class ShopState extends Equatable {
   final ShopResponse shopResponse;
 
   ShopState copyWith(
-      {Description description,
+      {
+        int tabindex,
+        Description description,
       State state,
       Address address,
       Whatsapp whatsapp,
@@ -48,6 +52,7 @@ class ShopState extends Equatable {
       File profileTitle,
       ShopResponse shopResponse}) {
     return ShopState(
+      tabindex: tabindex ?? this.tabindex,
         description: description ?? this.description,
         state: state ?? this.state,
         address: address ?? this.address,
@@ -78,6 +83,7 @@ class ShopState extends Equatable {
         deliveryTime,
         profilePhoto,
         profileTitle,
-        shopResponse
+        shopResponse,
+        tabindex
       ];
 }

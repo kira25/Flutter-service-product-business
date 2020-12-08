@@ -6,7 +6,8 @@ enum ProductCategory {
   WOMEN,
   RESTAURANT,
   HEALTH,
-  TECHNOLOGY
+  TECHNOLOGY,
+  UNDEFINED
 }
 enum ProductSubCategory {
   BATHROOM,
@@ -15,7 +16,8 @@ enum ProductSubCategory {
   ELECTRONIC_HOME,
   WOMEN,
   FURNITURE,
-  PLANT
+  PLANT,
+  UNDEFINED
 }
 
 enum AdminStockType {
@@ -39,4 +41,4 @@ enum PriceType {
 
 enum AdminColorType { YELLOW, BLUE, GREY, BLACK, RED, PINK }
 
-enum Size { S, M, L, XL, XXL }
+enum Sizes { S, M, L, XL, XXL }

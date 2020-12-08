@@ -5,31 +5,26 @@ class AdminProduct {
   AdminColorType adminColorType;
   TextEditingController stock;
   List<SizeProduct> sizeProduct;
-  Size size;
 
   AdminProduct(
-      {this.size = Size.S,
-      this.adminColorType,
+      {this.adminColorType,
       TextEditingController stock,
       List<SizeProduct> sizeProduct})
       : this.stock = (stock == null) ? TextEditingController() : stock,
         this.sizeProduct =
             (sizeProduct == null) ? [SizeProduct()] : sizeProduct;
 
-  Map<String, dynamic> toJsonUnique() => {
-        "quantity": int.parse(stock.text) ?? "",
-      };
+  Map<String, dynamic> toJsonUnique() =>
+      {"quantity": int.parse(stock.text) ?? "", "sizeProduct": []};
 
   Map<String, dynamic> toJsonSize() => {
-        "sizeProduct": {
-          "size": size.index,
-          "sizeQuantity": int.parse(stock.text) ?? "",
-        },
+        "sizeProduct": List<dynamic>.from(sizeProduct.map((x) => x.toJson())),
       };
 
   Map<String, dynamic> toJsonColor() => {
         "color": adminColorType.index,
         "quantity": int.parse(stock.text) ?? "",
+        "sizeProduct": []
       };
 
   Map<String, dynamic> toJsonSizeColor() => {
@@ -39,7 +34,7 @@ class AdminProduct {
 }
 
 class SizeProduct {
-  Size size;
+  Sizes size;
   TextEditingController sizeStock;
 
   SizeProduct({this.size, TextEditingController sizeStock})

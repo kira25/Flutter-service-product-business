@@ -89,6 +89,7 @@ class ShopService {
         options: Options(
             headers: {HttpHeaders.authorizationHeader: 'Bearer $token'}));
     if (resp.data['ok'] == true) {
+      print(resp.data);
       final shop = ShopResponse.fromJson(resp.data);
       return [true, shop];
     } else {

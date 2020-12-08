@@ -34,9 +34,11 @@ class AuthService {
       print(data);
 
       if (resp.data['ok'] == true && resp.data['user']['isShopInfo'] == true) {
+        await _preferencesRepository.setData('token', data.token);
         return [true, true];
       } else if (resp.data['ok'] == true &&
           resp.data['user']['isShopInfo'] == false) {
+        await _preferencesRepository.setData('token', data.token);
         return [true, false];
       } else {
         _preferencesRepository.clear();
@@ -87,8 +89,8 @@ class AuthService {
     final resp = await _dio.post(_loginPath, data: data);
     if (resp.data['ok'] == true && resp.data['user']['isShopInfo'] == false) {
       final user = UserResponse.fromJson(resp.data);
-      _preferencesRepository.saveUser('user', user.user);
-      _preferencesRepository.setData('token', user.token);
+      await _preferencesRepository.saveUser('user', user.user);
+      await _preferencesRepository.setData('token', user.token);
       print(data);
       print(resp.data);
       return [true, false];

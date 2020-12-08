@@ -30,8 +30,9 @@ class SubcategoryPage extends StatelessWidget {
       ),
       body: SafeArea(
           child: Container(
+        height: hp(90),
         margin: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-        child: Column(
+        child: ListView(
           children: [
             CategoryOptions(
                 wp: wp,
@@ -39,7 +40,7 @@ class SubcategoryPage extends StatelessWidget {
                 function: () {
                   BlocProvider.of<ProductsBloc>(context)
                       .add(OnSelectSubcategory(ProductSubCategory.BATHROOM));
-                  CustomRouteTransition(context: context, child: AddProducts());
+                  Navigator.pop(context);
                 }),
             CategoryOptions(
                 wp: wp,
@@ -47,7 +48,7 @@ class SubcategoryPage extends StatelessWidget {
                 function: () {
                   BlocProvider.of<ProductsBloc>(context)
                       .add(OnSelectSubcategory(ProductSubCategory.KITCHEN));
-                  CustomRouteTransition(context: context, child: AddProducts());
+                  Navigator.pop(context);
                 }),
             CategoryOptions(
                 wp: wp,
@@ -55,7 +56,7 @@ class SubcategoryPage extends StatelessWidget {
                 function: () {
                   BlocProvider.of<ProductsBloc>(context)
                       .add(OnSelectSubcategory(ProductSubCategory.DECORATION));
-                  CustomRouteTransition(context: context, child: AddProducts());
+                  Navigator.pop(context);
                 }),
             CategoryOptions(
                 wp: wp,
@@ -63,7 +64,7 @@ class SubcategoryPage extends StatelessWidget {
                 function: () {
                   BlocProvider.of<ProductsBloc>(context).add(
                       OnSelectSubcategory(ProductSubCategory.ELECTRONIC_HOME));
-                  CustomRouteTransition(context: context, child: AddProducts());
+                  Navigator.pop(context);
                 }),
             CategoryOptions(
                 wp: wp,
@@ -71,7 +72,7 @@ class SubcategoryPage extends StatelessWidget {
                 function: () {
                   BlocProvider.of<ProductsBloc>(context)
                       .add(OnSelectSubcategory(ProductSubCategory.WOMEN));
-                  CustomRouteTransition(context: context, child: AddProducts());
+                  Navigator.pop(context);
                 }),
             CategoryOptions(
                 wp: wp,
@@ -79,7 +80,7 @@ class SubcategoryPage extends StatelessWidget {
                 function: () {
                   BlocProvider.of<ProductsBloc>(context)
                       .add(OnSelectSubcategory(ProductSubCategory.FURNITURE));
-                  CustomRouteTransition(context: context, child: AddProducts());
+                  Navigator.pop(context);
                 }),
             CategoryOptions(
                 border: false,
@@ -88,7 +89,7 @@ class SubcategoryPage extends StatelessWidget {
                 function: () {
                   BlocProvider.of<ProductsBloc>(context)
                       .add(OnSelectSubcategory(ProductSubCategory.PLANT));
-                  CustomRouteTransition(context: context, child: AddProducts());
+                  Navigator.pop(context);
                 }),
           ],
         ),

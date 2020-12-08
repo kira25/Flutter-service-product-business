@@ -5,21 +5,22 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:responsive_screen/responsive_screen.dart';
 import 'package:service_products_business/bloc/auth/auth_bloc.dart';
 import 'package:service_products_business/bloc/orders_products/orders_products_bloc.dart';
+import 'package:service_products_business/bloc/products/products_bloc.dart';
 import 'package:service_products_business/bloc/shop/shop_bloc.dart';
 import 'package:service_products_business/helpers/colors.dart';
+import 'package:service_products_business/helpers/enums.dart';
+import 'package:service_products_business/helpers/products.dart';
 import 'package:service_products_business/helpers/route_transitions.dart';
-import 'package:service_products_business/models/shop_response.dart';
+import 'package:service_products_business/models/product_response.dart';
 import 'package:service_products_business/pages/AddProducts/add_products_page.dart';
 import 'package:service_products_business/pages/Login/login_page.dart';
-import 'package:service_products_business/widgets/logo.dart';
 
-class OrdersPage extends StatefulWidget {
+class MainPage extends StatefulWidget {
   @override
-  _OrdersPageState createState() => _OrdersPageState();
+  _MainPageState createState() => _MainPageState();
 }
 
-class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
-  int tabIndex = 0;
+class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   TabController tabController;
 
   // loadData() {
@@ -39,59 +40,65 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final Function wp = Screen(context).wp;
     final Function hp = Screen(context).hp;
-    return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-          onTap: (value) {
-            setState(() {
-              tabIndex = value;
-            });
-          },
-          elevation: 4,
-          showUnselectedLabels: true,
-          unselectedLabelStyle:
-              GoogleFonts.lato(fontWeight: FontWeight.bold, fontSize: 12),
-          selectedLabelStyle:
-              GoogleFonts.lato(fontWeight: FontWeight.bold, fontSize: 12),
-          selectedItemColor: Colors.blue,
-          unselectedItemColor: Colors.grey[400],
-          backgroundColor: Theme.of(context).primaryColor,
-          currentIndex: tabIndex,
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(FontAwesomeIcons.listUl),
-              label: 'Ordenes',
+    return BlocBuilder<ShopBloc, ShopState>(
+      builder: (BuildContext context, state) {
+        return BlocProvider<ShopBloc>(
+          create: (context) => ShopBloc()..add(OnLoadShopData()),
+          child: Scaffold(
+            bottomNavigationBar: BottomNavigationBar(
+                onTap: (value) {
+                  BlocProvider.of<ShopBloc>(context)
+                      .add(OnTabIndexChange(value));
+                  // if (BlocProvider.of<ShopBloc>(context).state.tabindex == 1) {
+                  //   BlocProvider.of<ProductsBloc>(context)
+                  //       .add(OnLoadShopProducts());
+                  // }
+                },
+                elevation: 4,
+                showUnselectedLabels: true,
+                unselectedLabelStyle:
+                    GoogleFonts.lato(fontWeight: FontWeight.bold, fontSize: 12),
+                selectedLabelStyle:
+                    GoogleFonts.lato(fontWeight: FontWeight.bold, fontSize: 12),
+                selectedItemColor: Colors.blue,
+                unselectedItemColor: Colors.grey[400],
+                backgroundColor: Theme.of(context).primaryColor,
+                currentIndex: BlocProvider.of<ShopBloc>(context).state.tabindex,
+                items: [
+                  BottomNavigationBarItem(
+                    icon: Icon(FontAwesomeIcons.listUl),
+                    label: 'Ordenes',
+                  ),
+                  BottomNavigationBarItem(
+                      icon: Icon(FontAwesomeIcons.cube), label: 'Productos'),
+                  BottomNavigationBarItem(
+                      icon: Icon(FontAwesomeIcons.layerGroup),
+                      label: 'Servicios'),
+                  BottomNavigationBarItem(
+                      icon: Icon(FontAwesomeIcons.user), label: 'Mi cuenta'),
+                ]),
+            body: BlocListener<AuthBloc, AuthState>(
+              listener: (context, state) {
+                if (!state.authenticated) {
+                  CustomRouteTransition(context: context, child: LoginPage());
+                }
+              },
+              child: IndexedStack(
+                index: BlocProvider.of<ShopBloc>(context).state.tabindex,
+                children: [
+                  _orders(hp, wp),
+                  //PRODUCTS
+                  _products(hp, wp),
+                  //SERVICES
+                  _services(hp, wp),
+                  //USER
+                  _user(hp, wp),
+                ],
+              ),
             ),
-            BottomNavigationBarItem(
-                icon: Icon(FontAwesomeIcons.cube), label: 'Productos'),
-            BottomNavigationBarItem(
-                icon: Icon(FontAwesomeIcons.layerGroup), label: 'Servicios'),
-            BottomNavigationBarItem(
-                icon: Icon(FontAwesomeIcons.user), label: 'Mi cuenta'),
-          ]),
-      body: BlocProvider<ShopBloc>(
-        
-        create: (context) => ShopBloc()..add(OnLoadShopData()),
-        child: BlocListener<AuthBloc, AuthState>(
-          listener: (context, state) {
-            // TODO: implement listener
-            if (!state.authenticated) {
-              CustomRouteTransition(context: context, child: LoginPage());
-            }
-          },
-          child: IndexedStack(
-            index: tabIndex,
-            children: [
-              _orders(hp, wp),
-              //PRODUCTS
-              _products(hp, wp),
-              //SERVICES
-              _services(hp, wp),
-              //USER
-              _user(hp, wp),
-            ],
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
@@ -439,55 +446,332 @@ class _OrdersPageState extends State<OrdersPage> with TickerProviderStateMixin {
     );
   }
 
-  Scaffold _products(Function hp, Function wp) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-          heroTag: 'btn_products',
-          child: Icon(
-            Icons.add,
-            size: 35,
-          ),
-          onPressed: () {
-            CustomRouteTransition(context: context, child: AddProducts());
-          }),
-      appBar: AppBar(
-          elevation: 4,
-          backgroundColor: kprimarycolorlight,
-          title: Text(
-            'Productos',
-            style: GoogleFonts.lato(
-                fontWeight: FontWeight.bold, color: Colors.black),
-          )),
-      body: SafeArea(
-          child: Container(
-        width: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(FontAwesomeIcons.cube, size: 45, color: Colors.purple),
-                  SizedBox(
-                    height: hp(3),
-                  ),
-                  Text(
-                    'No tienes productos',
-                    style: GoogleFonts.lato(
-                        fontWeight: FontWeight.bold, fontSize: wp(6)),
-                  ),
-                  SizedBox(
-                    height: hp(3),
-                  ),
-                  Text('Añade un producto para empezar a vender',
-                      style: GoogleFonts.lato(fontSize: wp(4))),
-                ],
+  Widget _products(Function hp, Function wp) {
+    return BlocProvider<ProductsBloc>(
+      lazy: false,
+      create: (context) => ProductsBloc()..add(OnLoadShopProducts()),
+      child: BlocBuilder<ProductsBloc, ProductsState>(
+        builder: (context, state) {
+          return Scaffold(
+            floatingActionButton: FloatingActionButton(
+                heroTag: 'btn_products',
+                child: Icon(
+                  Icons.add,
+                  size: 35,
+                ),
+                onPressed: () {
+                  CustomRouteTransition(context: context, child: AddProducts());
+                }),
+            appBar: AppBar(
+                elevation: 4,
+                backgroundColor: kprimarycolorlight,
+                bottom: PreferredSize(
+                    preferredSize: Size.fromHeight(hp(8)),
+                    child: Container(
+                      height: hp(7),
+                      child: _productOptions(wp, hp, state),
+                    )),
+                title: Text(
+                  'Productos',
+                  style: GoogleFonts.lato(
+                      fontWeight: FontWeight.bold, color: Colors.black),
+                )),
+            body: SafeArea(
+                child: Container(
+              width: double.infinity,
+              child: BlocBuilder<ProductsBloc, ProductsState>(
+                builder: (context, state) {
+                  //PRODUCTS CATEGORY
+                  if (state.showProducts == ProductCategory.HOME) {
+                    return ItemsCategoryProduct(
+                        state: state,
+                        productCategory: ProductCategory.HOME,
+                        hp: hp,
+                        wp: wp);
+                  }
+                  if (state.showProducts == ProductCategory.MAN) {
+                    return ItemsCategoryProduct(
+                        state: state,
+                        productCategory: ProductCategory.MAN,
+                        hp: hp,
+                        wp: wp);
+                  }
+                  if (state.showProducts == ProductCategory.KID) {
+                    return ItemsCategoryProduct(
+                        state: state,
+                        productCategory: ProductCategory.KID,
+                        hp: hp,
+                        wp: wp);
+                  }
+                  if (state.showProducts == ProductCategory.PET) {
+                    return ItemsCategoryProduct(
+                        state: state,
+                        productCategory: ProductCategory.PET,
+                        hp: hp,
+                        wp: wp);
+                  }
+                  if (state.showProducts == ProductCategory.WOMEN) {
+                    return ItemsCategoryProduct(
+                        state: state,
+                        productCategory: ProductCategory.WOMEN,
+                        hp: hp,
+                        wp: wp);
+                  }
+                  if (state.showProducts == ProductCategory.RESTAURANT) {
+                    return ItemsCategoryProduct(
+                        state: state,
+                        productCategory: ProductCategory.RESTAURANT,
+                        hp: hp,
+                        wp: wp);
+                  }
+                  if (state.showProducts == ProductCategory.HEALTH) {
+                    return ItemsCategoryProduct(
+                        state: state,
+                        productCategory: ProductCategory.HEALTH,
+                        hp: hp,
+                        wp: wp);
+                  }
+                  if (state.showProducts == ProductCategory.TECHNOLOGY) {
+                    return ItemsCategoryProduct(
+                        state: state,
+                        productCategory: ProductCategory.TECHNOLOGY,
+                        hp: hp,
+                        wp: wp);
+                  }
+                  if (state.productResponse == null) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(FontAwesomeIcons.cube,
+                                  size: 45, color: Colors.purple),
+                              SizedBox(
+                                height: hp(3),
+                              ),
+                              Text(
+                                'No tienes productos',
+                                style: GoogleFonts.lato(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: wp(6)),
+                              ),
+                              SizedBox(
+                                height: hp(3),
+                              ),
+                              Text('Añade un producto para empezar a vender',
+                                  style: GoogleFonts.lato(fontSize: wp(4))),
+                            ],
+                          ),
+                        )
+                      ],
+                    );
+                  }
+                  return Container();
+                },
               ),
-            )
-          ],
-        ),
-      )),
+            )),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _productOptions(Function wp, Function hp, ProductsState state) {
+    List list = [
+      'Casa',
+      'Hombre',
+      'Niños',
+      'Mascotas',
+      'Mujer',
+      'Restaurante',
+      'Salud',
+      'Tecnologia'
+    ];
+    return ListView.separated(
+      itemCount: list.length,
+      padding: EdgeInsets.only(left: wp(6), bottom: hp(2)),
+      scrollDirection: Axis.horizontal,
+      itemBuilder: (context, index) {
+        return MaterialButton(
+          key: Key(''),
+          onPressed: () {
+            switch (index) {
+              case 0:
+                BlocProvider.of<ProductsBloc>(context)
+                    .add(OnShowProducts(ProductCategory.HOME));
+
+                break;
+              case 1:
+                BlocProvider.of<ProductsBloc>(context)
+                    .add(OnShowProducts(ProductCategory.MAN));
+
+                break;
+              case 2:
+                BlocProvider.of<ProductsBloc>(context)
+                    .add(OnShowProducts(ProductCategory.KID));
+
+                break;
+                case 3:
+                BlocProvider.of<ProductsBloc>(context)
+                    .add(OnShowProducts(ProductCategory.PET));
+
+                break;
+                case 4:
+                BlocProvider.of<ProductsBloc>(context)
+                    .add(OnShowProducts(ProductCategory.WOMEN));
+
+                break;
+                case 5:
+                BlocProvider.of<ProductsBloc>(context)
+                    .add(OnShowProducts(ProductCategory.RESTAURANT));
+
+                break;
+                case 6:
+                BlocProvider.of<ProductsBloc>(context)
+                    .add(OnShowProducts(ProductCategory.HEALTH));
+
+                break;
+                case 7:
+                BlocProvider.of<ProductsBloc>(context)
+                    .add(OnShowProducts(ProductCategory.TECHNOLOGY));
+
+                break;
+              default:
+            }
+          },
+          color: Colors.blue[200],
+          child: Text(list[index],
+              style: GoogleFonts.lato(
+                fontSize: wp(4),
+              )),
+          shape: StadiumBorder(),
+        );
+      },
+      separatorBuilder: (BuildContext context, int index) => Divider(
+        indent: 10,
+      ),
+    );
+  }
+}
+
+class ItemsCategoryProduct extends StatelessWidget {
+  final Function hp;
+  final Function wp;
+  final ProductsState state;
+  final ProductCategory productCategory;
+  const ItemsCategoryProduct({
+    Key key,
+    this.hp,
+    this.wp,
+    this.state,
+    this.productCategory,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    List<Product> result = state.productResponse.product
+        .where((element) =>
+            element.productCategory.category == productCategory.index)
+        .toList();
+    return Container(
+      child: ListView.separated(
+          itemBuilder: (context, index) {
+            return Container(
+              height: hp(25),
+              child: Card(
+                margin: EdgeInsets.all(10),
+                child: Row(
+                  children: [
+                    //IMAGE PRODUCT
+                    Container(
+                      margin: EdgeInsets.symmetric(
+                          horizontal: wp(4), vertical: hp(1)),
+                      width: wp(30),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          result[index].imageProduct.isEmpty
+                              ? Container()
+                              : Image.network(
+                                  result[index].imageProduct[0].product,
+                                  height: hp(15),
+                                ),
+                        ],
+                      ),
+                    ),
+                    //PRODUCT DATA
+                    Container(
+                      width: wp(55),
+                      padding: EdgeInsets.symmetric(vertical: hp(1)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text(
+                            result[index].name,
+                            style: GoogleFonts.lato(
+                                fontWeight: FontWeight.bold, fontSize: wp(4.5)),
+                          ),
+                          result[index].price.offertPrice != null
+                              ? Text(
+                                  'Precio Oferta : S/ ${result[index].price.offertPrice}',
+                                  style: GoogleFonts.lato(fontSize: wp(3.5)),
+                                )
+                              : Text(
+                                  'Precio Normal : S/ ${result[index].price.normalPrice}',
+                                  style: GoogleFonts.lato(fontSize: wp(3.5)),
+                                ),
+                          RichText(
+                            text: TextSpan(
+                                text: 'Stock ',
+                                style: GoogleFonts.lato(
+                                    textStyle:
+                                        TextStyle(color: kintroNotSelected),
+                                    fontSize: wp(3.5)),
+                                children: [
+                                  result[index].amountStock != 0
+                                      ? TextSpan(
+                                          text: 'Disponible',
+                                          style: GoogleFonts.lato(
+                                              textStyle: TextStyle(
+                                                  color: kstockAvailable)))
+                                      : TextSpan(
+                                          text:
+                                              'Algunas tallas o colores sin stock',
+                                          style: GoogleFonts.lato(
+                                              textStyle: TextStyle(
+                                                  color: kwrongAnswer)))
+                                ]),
+                          ),
+                          Container(
+                            decoration: BoxDecoration(
+                                color: kintroselected,
+                                borderRadius: BorderRadius.circular(20)),
+                            height: hp(3),
+                            width: wp(25),
+                            child: Center(
+                              child: Text(
+                                handleProductCategoryFromResponse(
+                                    result[index].productCategory.subcategory),
+                                style: GoogleFonts.lato(
+                                    color: kprimarycolorlight, fontSize: wp(4)),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+          separatorBuilder: (context, index) => Divider(
+                height: 10,
+              ),
+          itemCount: result.length),
     );
   }
 }

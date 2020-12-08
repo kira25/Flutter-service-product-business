@@ -3,8 +3,6 @@ import 'dart:io';
 
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:service_products_business/models/AdminProduct/admin_product.dart';
-import 'package:service_products_business/models/CreateProduct/create_product.dart';
 import 'package:sqflite/sqflite.dart';
 
 const DATABASE = 'Product';

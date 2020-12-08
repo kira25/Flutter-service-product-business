@@ -4,11 +4,14 @@ enum IsProductCreated { UNDEFINED, SUCCESS, FAIL }
 
 class ProductsState {
   ProductsState(
-      {this.isProductCreated = IsProductCreated.UNDEFINED,
+      {this.filesProduct = const [],
+      this.showProducts,
+      this.productResponse,
+      this.isProductCreated = IsProductCreated.UNDEFINED,
       List<AdminProduct> adminStock,
       this.adminColorType,
       this.adminStockType,
-      this.priceType,
+      this.priceType = PriceType.NORMAL,
       this.normalPrice,
       this.offerPrice,
       this.productName,
@@ -23,11 +26,12 @@ class ProductsState {
                     adminColorType: AdminColorType.YELLOW,
                     sizeProduct: [
                       SizeProduct(
-                          size: Size.S,
+                          size: Sizes.S,
                           sizeStock: TextEditingController(text: ''))
                     ])
               ]
             : adminStock;
+  
 
   final String productName;
   final String description;
@@ -42,9 +46,15 @@ class ProductsState {
   final String offerPrice;
   final List<AdminProduct> adminStock;
   final AdminColorType adminColorType;
+  final ProductCategory showProducts;
+  final ProductResponse productResponse;
+  final List<File> filesProduct;
 
   ProductsState copyWith(
-      {IsProductCreated isProductCreated,
+      {ProductCategory showProducts,
+      ProductResponse productResponse,
+      List<File> filesProduct,
+      IsProductCreated isProductCreated,
       List<AdminColorType> adminColorType,
       String productName,
       String description,
@@ -58,6 +68,9 @@ class ProductsState {
       String offerPrice,
       List<AdminProduct> adminStock}) {
     return ProductsState(
+        filesProduct: filesProduct ?? this.filesProduct,
+        productResponse: productResponse ?? this.productResponse,
+        showProducts: showProducts ?? this.showProducts,
         adminStockType: adminStockType ?? this.adminStockType,
         productImage: productImage ?? this.productImage,
         category: category ?? this.category,
@@ -85,7 +98,6 @@ class ProductsState {
         productName,
         normalPrice,
         offerPrice,
-        adminStock,
         adminColorType,
         adminStock,
         isProductCreated

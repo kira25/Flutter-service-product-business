@@ -6,10 +6,11 @@ import 'package:responsive_screen/responsive_screen.dart';
 import 'package:service_products_business/bloc/shop/shop_bloc.dart';
 import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/show_alert.dart';
-import 'package:service_products_business/pages/Orders/orders_page.dart';
+import 'package:service_products_business/pages/Main/main_page.dart';
 import 'package:service_products_business/widgets/custom_input.dart';
 import 'package:formz/formz.dart';
 
+// ignore: must_be_immutable
 class BankPhotoPage extends StatelessWidget {
   TextEditingController bankAccount = TextEditingController();
   TextEditingController interbankAccount = TextEditingController();
@@ -61,7 +62,7 @@ class BankPhotoPage extends StatelessWidget {
         listener: (_, state) {
           if (state.shopStatus.isSubmissionSuccess) {
             showAlert(context,
-                child: OrdersPage(), subtitle: 'Tienda creada con exito');
+                child: MainPage(), subtitle: 'Tienda creada con exito');
             if (state.shopStatus.isSubmissionFailure) {
               showDialog(
                   context: _,

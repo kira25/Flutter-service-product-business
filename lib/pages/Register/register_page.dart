@@ -390,7 +390,6 @@ class RegisterPage extends StatelessWidget {
 
   Widget _sendActionButton(BuildContext context) {
     final Function wp = Screen(context).wp;
-    final Function hp = Screen(context).wp;
     return BlocBuilder<RegisterBloc, RegisterState>(
       builder: (context, state) {
         return state.status.isSubmissionInProgress

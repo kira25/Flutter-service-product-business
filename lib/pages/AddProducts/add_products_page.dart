@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:responsive_screen/responsive_screen.dart';
 import 'package:service_products_business/bloc/products/products_bloc.dart';
@@ -11,20 +9,55 @@ import 'package:service_products_business/helpers/enums.dart';
 import 'package:service_products_business/helpers/products.dart';
 import 'package:service_products_business/helpers/route_transitions.dart';
 import 'package:service_products_business/pages/Category/category_page.dart';
-import 'package:service_products_business/pages/Orders/orders_page.dart';
+import 'package:service_products_business/pages/Main/main_page.dart';
 import 'package:service_products_business/pages/ProductImage/product_image_page.dart';
 import 'package:service_products_business/pages/Stock/stock_page.dart';
 import 'package:service_products_business/widgets/custom_fab.dart';
 import 'package:service_products_business/widgets/custom_input.dart';
 import 'package:service_products_business/widgets/product_custom_input.dart';
 
-class AddProducts extends StatelessWidget {
+// ignore: must_be_immutable
+class AddProducts extends StatefulWidget {
+  @override
+  _AddProductsState createState() => _AddProductsState();
+}
+
+class _AddProductsState extends State<AddProducts> {
   TextEditingController name = TextEditingController();
+
   TextEditingController info = TextEditingController();
 
   TextEditingController normalPrice = TextEditingController();
+
   TextEditingController offertPrice = TextEditingController();
+
   TextEditingController uniqueStock = TextEditingController();
+
+  FocusNode fproductname;
+  FocusNode fdescription;
+  FocusNode fquantity;
+  FocusNode fnormalprice;
+  FocusNode fofferprice;
+
+  @override
+  void initState() {
+    super.initState();
+    fproductname = FocusNode();
+    fdescription = FocusNode();
+    fquantity = FocusNode();
+    fnormalprice = FocusNode();
+    fofferprice = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    fproductname.dispose();
+    fdescription.dispose();
+    fquantity.dispose();
+    fnormalprice.dispose();
+    fofferprice.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +109,12 @@ class AddProducts extends StatelessWidget {
           ),
           //NAME
           CustomInput(
+              focusNode: fproductname,
+              textInputAction: TextInputAction.next,
+              onFocus: () {
+                fproductname.unfocus();
+                FocusScope.of(context).requestFocus(fdescription);
+              },
               keyboardType: TextInputType.text,
               function: (value) => BlocProvider.of<ProductsBloc>(context)
                   .add(OnNameChanged(value)),
@@ -84,12 +123,18 @@ class AddProducts extends StatelessWidget {
               textEditingController: name),
           //DESCRIPTION
           CustomInput(
+            focusNode: fdescription,
+            textInputAction: TextInputAction.next,
+            onFocus: () {
+              fdescription.unfocus();
+              FocusScope.of(context).requestFocus(fquantity);
+            },
             function: (value) => BlocProvider.of<ProductsBloc>(context)
                 .add(OnDescriptionChange(value)),
             placeholder: 'Informacion',
             keyboardType: TextInputType.multiline,
             textEditingController: info,
-            maxlines: null,
+            maxlines: 3,
             hp: hp(25),
             hintMaxLines: 4,
           ),
@@ -108,14 +153,11 @@ class AddProducts extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  state.category != null && state.subCategory != null
-                      ? Text(
-                          '${handleProductCategory(state.category)}- ${handleProductSubcategory(state.subCategory)}')
-                      : Text(
-                          'Categoría - Subcategoría',
-                          style: GoogleFonts.oswald(
-                              color: Colors.black, fontSize: wp(4.5)),
-                        ),
+                  Text(
+                    '${handleProductCategory(state.category)}- ${handleProductSubcategory(state.subCategory)}',
+                    style: GoogleFonts.oswald(
+                        color: Colors.black, fontSize: wp(4.5)),
+                  ),
                   Icon(
                     Icons.arrow_forward_ios,
                     size: 23,
@@ -130,6 +172,9 @@ class AddProducts extends StatelessWidget {
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                   fontSize: wp(4.5))),
+          SizedBox(
+            height: hp(3),
+          ),
           //STOCK TYPE
           ProductCustomInput(
             hp: hp(7),
@@ -143,6 +188,12 @@ class AddProducts extends StatelessWidget {
           //ADMIN STOCK TYPE
           state.stocktype == StockType.UNIQUE
               ? CustomInput(
+                  focusNode: fquantity,
+                  textInputAction: TextInputAction.next,
+                  onFocus: () {
+                    fquantity.unfocus();
+                    FocusScope.of(context).requestFocus(fnormalprice);
+                  },
                   placeholder: 'Cantidad',
                   textEditingController: uniqueStock,
                   function: (value) => BlocProvider.of<ProductsBloc>(context)
@@ -192,6 +243,9 @@ class AddProducts extends StatelessWidget {
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                   fontSize: wp(4.5))),
+          SizedBox(
+            height: hp(3),
+          ),
           //PRICE TYPE
           ProductCustomInput(
             wp: wp,
@@ -204,6 +258,16 @@ class AddProducts extends StatelessWidget {
           ),
           //NORMAL PRICE
           CustomInput(
+                              keyboardType: TextInputType.number,
+
+              focusNode: fnormalprice,
+              textInputAction: state.priceType == PriceType.OFFERT
+                  ? TextInputAction.next
+                  : TextInputAction.done,
+              onFocus: () {
+                fnormalprice.unfocus();
+                FocusScope.of(context).requestFocus(fofferprice);
+              },
               hp: hp(7),
               function: (value) => BlocProvider.of<ProductsBloc>(context)
                   .add(OnNormalPriceChange(value)),
@@ -211,6 +275,13 @@ class AddProducts extends StatelessWidget {
               textEditingController: normalPrice),
           state.priceType == PriceType.OFFERT
               ? CustomInput(
+                                  keyboardType: TextInputType.number,
+
+                  focusNode: fofferprice,
+                  textInputAction: TextInputAction.done,
+                  onFocus: () {
+                    fofferprice.unfocus();
+                  },
                   hp: hp(7),
                   function: (value) => BlocProvider.of<ProductsBloc>(context)
                       .add(OnOfferPriceChange(value)),
@@ -238,7 +309,7 @@ class AddProducts extends StatelessWidget {
                     onPressed: () => CustomRouteTransition(
                         replacement: true,
                         context: context,
-                        child: OrdersPage())),
+                        child: MainPage())),
                 Text(
                   'Nuevo producto',
                   style: GoogleFonts.lato(

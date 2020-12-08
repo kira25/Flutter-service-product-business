@@ -1,52 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:service_products_business/helpers/enums.dart';
 
-Size handleAdminProductSizeToValue(String text) {
+Sizes handleAdminProductSizeToValue(String text) {
   switch (text) {
     case 'S':
-      return Size.S;
+      return Sizes.S;
 
       break;
     case 'M':
-      return Size.M;
+      return Sizes.M;
 
       break;
     case 'L':
-      return Size.L;
+      return Sizes.L;
 
       break;
     case 'XL':
-      return Size.XL;
+      return Sizes.XL;
 
       break;
     case 'XXL':
-      return Size.XXL;
+      return Sizes.XXL;
 
       break;
     default:
-      return Size.S;
+      return Sizes.S;
   }
 }
 
-String handleAdminProductSize(Size size) {
+String handleAdminProductSize(Sizes size) {
   switch (size) {
-    case Size.S:
+    case Sizes.S:
       return 'S';
 
       break;
-    case Size.M:
+    case Sizes.M:
       return 'M';
 
       break;
-    case Size.L:
+    case Sizes.L:
       return 'L';
 
       break;
-    case Size.XL:
+    case Sizes.XL:
       return 'XL';
 
       break;
-    case Size.XXL:
+    case Sizes.XXL:
       return 'XXL';
 
       break;
@@ -101,6 +101,45 @@ String handleAdminStockType(AdminStockType adminStockType) {
   }
 }
 
+String handleProductCategoryFromResponse(int productCategory) {
+  switch (productCategory) {
+    case 0:
+      return 'Hogar';
+
+      break;
+    case 1:
+      return 'Hombre';
+
+      break;
+    case 2:
+      return 'Infantil';
+
+      break;
+    case 3:
+      return 'Mascotas';
+
+      break;
+    case 4:
+      return 'Mujer';
+
+      break;
+    case 5:
+      return 'Restaurantes';
+
+      break;
+    case 6:
+      return 'Salud';
+
+      break;
+    case 7:
+      return 'Tecnologia';
+
+      break;
+    default:
+      return 'Categoria';
+  }
+}
+
 String handleProductCategory(ProductCategory productCategory) {
   switch (productCategory) {
     case ProductCategory.HEALTH:
@@ -136,7 +175,7 @@ String handleProductCategory(ProductCategory productCategory) {
 
       break;
     default:
-      return '';
+      return 'Categoria';
   }
 }
 
@@ -172,7 +211,7 @@ String handleProductSubcategory(ProductSubCategory productSubCategory) {
       break;
 
     default:
-      return '';
+      return 'Subcategoria';
   }
 }
 

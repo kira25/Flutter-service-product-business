@@ -8,9 +8,7 @@ import 'package:service_products_business/helpers/botton_sheet.dart';
 import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/enums.dart';
 import 'package:service_products_business/helpers/products.dart';
-import 'package:service_products_business/helpers/route_transitions.dart';
 import 'package:service_products_business/models/AdminProduct/admin_product.dart';
-import 'package:service_products_business/pages/AddProducts/add_products_page.dart';
 import 'package:service_products_business/widgets/custom_input.dart';
 import 'package:service_products_business/widgets/product_custom_input.dart';
 
@@ -38,7 +36,6 @@ class _StockPageState extends State<StockPage> {
   @override
   Widget build(BuildContext context) {
     // ignore: close_sinks
-    ProductsBloc productsBloc = BlocProvider.of<ProductsBloc>(context);
     final Function wp = Screen(context).wp;
     final Function hp = Screen(context).hp;
 
@@ -49,8 +46,7 @@ class _StockPageState extends State<StockPage> {
               Icons.close,
               color: kdarkcolor,
             ),
-            onPressed: () =>
-                CustomRouteTransition(context: context, child: AddProducts())),
+            onPressed: () => Navigator.pop(context)),
         backgroundColor: kprimarycolorlight,
         elevation: 4,
         title: Text(
@@ -63,11 +59,9 @@ class _StockPageState extends State<StockPage> {
       ),
       body: SingleChildScrollView(
         child: BlocBuilder<ProductsBloc, ProductsState>(
-          // buildWhen: (previous, current) =>
-          //     previous.adminStock != current.adminStock,
+          buildWhen: (previous, current) =>
+              previous.adminStock != current.adminStock,
           builder: (context, state) {
-           print(state.category);
-           print(state.subCategory);
             return SafeArea(
               child: _stock(wp, hp, state, context),
             );
@@ -81,8 +75,9 @@ class _StockPageState extends State<StockPage> {
       Function wp, Function hp, ProductsState state, BuildContext context) {
     return Container(
       width: double.infinity,
+      height: hp(90),
       margin: EdgeInsets.symmetric(horizontal: wp(5), vertical: hp(3)),
-      child: Column(
+      child: ListView(
         children: [
           //LIST OF ADMIN STOCKS
           Container(
@@ -139,55 +134,96 @@ class _StockPageState extends State<StockPage> {
                       SizedBox(
                         height: hp(3),
                       ),
+                      //STOCK BY SIZE
                       state.stocktype == StockType.BY_SIZE
                           ? Container(
+                              height: hp(90),
                               width: double.infinity,
-                              margin: EdgeInsets.only(bottom: 20),
-                              padding: EdgeInsets.only(
-                                  top: 5, bottom: 5, left: 25, right: 20),
-                              decoration: BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.05),
+                              child: ListView.builder(
+                                itemCount:
+                                    state.adminStock[0].sizeProduct.length,
+                                itemBuilder: (context, index) => Column(
+                                  children: [
+                                    Container(
+                                      height: hp(7),
+                                      width: double.infinity,
+                                      padding: EdgeInsets.only(
+                                          top: 5,
+                                          bottom: 5,
+                                          left: 25,
+                                          right: 20),
+                                      decoration: BoxDecoration(
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black
+                                                  .withOpacity(0.05),
+                                            ),
+                                          ],
+                                          color: Colors.grey[200],
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      child: DropdownButtonHideUnderline(
+                                          child: DropdownButton(
+                                              value: state.adminStock[0]
+                                                          .sizeProduct[index] !=
+                                                      null
+                                                  ? handleAdminProductSize(state
+                                                      .adminStock[0]
+                                                      .sizeProduct[index]
+                                                      .size)
+                                                  : 'S',
+                                              items: [
+                                                DropdownMenuItem(
+                                                  child: Text('S'),
+                                                  value: 'S',
+                                                ),
+                                                DropdownMenuItem(
+                                                  child: Text('M'),
+                                                  value: 'M',
+                                                ),
+                                                DropdownMenuItem(
+                                                  child: Text('L'),
+                                                  value: 'L',
+                                                ),
+                                                DropdownMenuItem(
+                                                  child: Text('XL'),
+                                                  value: 'XL',
+                                                ),
+                                                DropdownMenuItem(
+                                                  child: Text('XXL'),
+                                                  value: 'XXL',
+                                                ),
+                                              ],
+                                              onChanged: (value) => BlocProvider
+                                                      .of<ProductsBloc>(context)
+                                                  .add(OnAdminSize(
+                                                      handleAdminProductSizeToValue(
+                                                          value),
+                                                      index)))),
                                     ),
-                                  ],
-                                  color: Colors.grey[200],
-                                  borderRadius: BorderRadius.circular(20)),
-                              child: DropdownButtonHideUnderline(
-                                  child: DropdownButton(
-                                      value:
-                                          state.adminStock[index].size != null
-                                              ? handleAdminProductSize(
-                                                  state.adminStock[index].size)
-                                              : 'S',
-                                      items: [
-                                        DropdownMenuItem(
-                                          child: Text('S'),
-                                          value: 'S',
-                                        ),
-                                        DropdownMenuItem(
-                                          child: Text('M'),
-                                          value: 'M',
-                                        ),
-                                        DropdownMenuItem(
-                                          child: Text('L'),
-                                          value: 'L',
-                                        ),
-                                        DropdownMenuItem(
-                                          child: Text('XL'),
-                                          value: 'XL',
-                                        ),
-                                        DropdownMenuItem(
-                                          child: Text('XXL'),
-                                          value: 'XXL',
-                                        ),
-                                      ],
-                                      onChanged: (value) =>
+                                    SizedBox(
+                                      height: hp(2),
+                                    ),
+                                    //ADMIN BY SIZE : STOCK
+                                    CustomInput(
+                                      hp: hp(7),
+                                      placeholder: 'Stock por talla',
+                                      keyboardType: TextInputType.phone,
+                                      textEditingController: state.adminStock[0]
+                                          .sizeProduct[index].sizeStock,
+                                      function: (value) =>
                                           BlocProvider.of<ProductsBloc>(context)
-                                              .add(OnAdminSize(
-                                                  handleAdminProductSizeToValue(
-                                                      value),
-                                                  index)))),
+                                              .add(OnAdminBySizeStock(
+                                                  state
+                                                      .adminStock[0]
+                                                      .sizeProduct[index]
+                                                      .sizeStock
+                                                      .text,
+                                                  index)),
+                                    )
+                                  ],
+                                ),
+                              ),
                             )
                           : ProductCustomInput(
                               wp: wp,
@@ -245,7 +281,7 @@ class _StockPageState extends State<StockPage> {
                                                 .add(OnAddSizeProduct(
                                                     index: index,
                                                     sizeProduct: SizeProduct(
-                                                        size: Size.S)))),
+                                                        size: Sizes.S)))),
                                     Text(
                                       'Añadir talla',
                                       style: GoogleFonts.lato(
@@ -256,18 +292,21 @@ class _StockPageState extends State<StockPage> {
                                 )
                               ],
                             )
-                          : CustomInput(
-                              hp: hp(7),
-                              placeholder: 'Stock',
-                              keyboardType: TextInputType.phone,
-                              textEditingController:
-                                  state.adminStock[index].stock,
-                              function: (value) =>
-                                  BlocProvider.of<ProductsBloc>(context).add(
-                                      OnAdminStock(
-                                          state.adminStock[index].stock.text,
-                                          index)),
-                            ),
+                          : state.stocktype == StockType.BY_SIZE
+                              ? Container()
+                              : CustomInput(
+                                  hp: hp(7),
+                                  placeholder: 'Stock por color',
+                                  keyboardType: TextInputType.phone,
+                                  textEditingController:
+                                      state.adminStock[index].stock,
+                                  function: (value) =>
+                                      BlocProvider.of<ProductsBloc>(context)
+                                          .add(OnAdminStock(
+                                              state
+                                                  .adminStock[index].stock.text,
+                                              index)),
+                                ),
                     ],
                   );
                 },
@@ -278,16 +317,13 @@ class _StockPageState extends State<StockPage> {
             splashColor: Colors.transparent,
             highlightColor: Colors.transparent,
             onPressed: () {
-              BlocProvider.of<ProductsBloc>(context).add(OnAddAdminStock(
-                  adminProduct:
-                      AdminProduct(sizeProduct: [SizeProduct(size: Size.S)])));
-            }
-            //TODO: change to manage with Bloc
-            // setState(() {
-            //   names.add('Color ${names.length}');
-            //   _controller.add(TextEditingController());
-            // });
-            ,
+              state.stocktype == StockType.BY_SIZE
+                  ? BlocProvider.of<ProductsBloc>(context)
+                      .add(OnAddOnlySize(SizeProduct(size: Sizes.S)))
+                  : BlocProvider.of<ProductsBloc>(context).add(OnAddAdminStock(
+                      adminProduct: AdminProduct(
+                          sizeProduct: [SizeProduct(size: Sizes.S)])));
+            },
             elevation: 3,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -296,19 +332,13 @@ class _StockPageState extends State<StockPage> {
                   Icons.add_box_rounded,
                   color: Colors.blue,
                 ),
-                Text(' Añadir nuevo color')
+                Text(state.stocktype == StockType.BY_SIZE
+                    ? 'Añadir nueva talla'
+                    : ' Añadir nuevo color')
               ],
             ),
           ),
-          RaisedButton(onPressed: () {
-            // List list = state.adminStock.map((e) => e.toJsonSizeProduct()).toList();
-            // print(state.adminStock[0].sizeProduct[0].size);
-            // print(state.adminStock[0].sizeProduct[0].sizeStock.text);
-            // print(state.adminStock[0].toJson());
-            // print(state.adminStock[0].toJsonSize());
-            // print(state.adminStock[0].toJsonSizeProduct());
-            // print(list);
-          }),
+        
         ],
       ),
     );
