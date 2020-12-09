@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:responsive_screen/responsive_screen.dart';
+import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/route_transitions.dart';
 
 showAlert(BuildContext context, {String title, String subtitle, Widget child}) {
   final Function wp = Screen(context).wp;
+  final Function hp = Screen(context).hp;
   if (Platform.isIOS) {
     return showCupertinoDialog(
       context: context,
@@ -23,10 +25,8 @@ showAlert(BuildContext context, {String title, String subtitle, Widget child}) {
   }
   //ANDROID
   showDialog(
-    
     context: context,
     builder: (context) => AlertDialog(
-
       contentPadding: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(
@@ -34,45 +34,52 @@ showAlert(BuildContext context, {String title, String subtitle, Widget child}) {
         ),
       ),
       title: Padding(
-        padding: EdgeInsets.symmetric(vertical: 10.0),
-        child: Icon(
-          Icons.check_circle_outline,
-          size: wp(18),
-          color: Color(0xFF3FE391),
+        padding: EdgeInsets.symmetric(vertical: hp(1.5)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.check_circle_outline,
+              size: wp(18),
+              color: kdialogicon,
+            ),
+          ],
         ),
       ),
       content: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(
-            subtitle,
+            title,
             textAlign: TextAlign.center,
-            style: GoogleFonts.lato(fontWeight: FontWeight.bold),
+            style: GoogleFonts.lato(
+                fontWeight: FontWeight.bold, fontSize: wp(4.5)),
           ),
           Container(
             margin: EdgeInsets.only(top: 20),
-            color: Colors.grey,
+            color: kintroNotSelected,
             width: double.infinity,
             height: 1,
           )
         ],
       ),
+      actionsPadding: EdgeInsets.symmetric(horizontal: wp(26)),
       actions: [
         MaterialButton(
             child: Text(
-              'Entendido',
-              style: GoogleFonts.lato(fontSize: wp(4.5)),
+              subtitle != null ? subtitle : 'Entendido',
+              style: GoogleFonts.lato(fontSize: wp(4)),
             ),
             elevation: 5,
-            textColor: Colors.blue,
-            onPressed: () => CustomRouteTransition(
-                context: context,
-                child: child,
-                animation: AnimationType.fadeIn,
-                replacement: true)),
-        SizedBox(
-          width: wp(18),
-        )
+            textColor: kintroselected,
+            onPressed: () => child == null
+                ? Navigator.pop(context)
+                : CustomRouteTransition(
+                    context: context,
+                    child: child,
+                    animation: AnimationType.fadeIn,
+                    replacement: true)),
       ],
     ),
   );

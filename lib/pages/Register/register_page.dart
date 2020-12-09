@@ -383,10 +383,7 @@ class RegisterPage extends StatelessWidget {
     );
   }
 
-  // showAlert(context,
-  //     child: LoginPage(),
-  //     subtitle:
-  //         'Revisaremos tu solicitud de registro\n y te contactaremos. Gracias');
+
 
   Widget _sendActionButton(BuildContext context) {
     final Function wp = Screen(context).wp;

@@ -8,33 +8,23 @@ import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/enums.dart';
 import 'package:service_products_business/helpers/products.dart';
 import 'package:service_products_business/helpers/route_transitions.dart';
-import 'package:service_products_business/pages/Category/category_page.dart';
 import 'package:service_products_business/pages/Main/main_page.dart';
-import 'package:service_products_business/pages/ProductImage/product_image_page.dart';
 import 'package:service_products_business/pages/Stock/stock_page.dart';
 import 'package:service_products_business/widgets/custom_fab.dart';
 import 'package:service_products_business/widgets/custom_input.dart';
 import 'package:service_products_business/widgets/product_custom_input.dart';
 
-// ignore: must_be_immutable
-class AddProducts extends StatefulWidget {
+class EditProduct extends StatefulWidget {
   @override
-  _AddProductsState createState() => _AddProductsState();
+  _EditProductState createState() => _EditProductState();
 }
 
-class _AddProductsState extends State<AddProducts> {
-  TextEditingController name = TextEditingController();
-
-  TextEditingController info = TextEditingController();
+class _EditProductState extends State<EditProduct> {
+  TextEditingController uniqueStock = TextEditingController();
 
   TextEditingController normalPrice = TextEditingController();
 
   TextEditingController offertPrice = TextEditingController();
-
-  TextEditingController uniqueStock = TextEditingController();
-
-  FocusNode fproductname;
-  FocusNode fdescription;
   FocusNode fquantity;
   FocusNode fnormalprice;
   FocusNode fofferprice;
@@ -42,8 +32,6 @@ class _AddProductsState extends State<AddProducts> {
   @override
   void initState() {
     super.initState();
-    fproductname = FocusNode();
-    fdescription = FocusNode();
     fquantity = FocusNode();
     fnormalprice = FocusNode();
     fofferprice = FocusNode();
@@ -52,8 +40,6 @@ class _AddProductsState extends State<AddProducts> {
   @override
   void dispose() {
     super.dispose();
-    fproductname.dispose();
-    fdescription.dispose();
     fquantity.dispose();
     fnormalprice.dispose();
     fofferprice.dispose();
@@ -63,13 +49,12 @@ class _AddProductsState extends State<AddProducts> {
   Widget build(BuildContext context) {
     final Function wp = Screen(context).wp;
     final Function hp = Screen(context).hp;
-
     return Scaffold(
       floatingActionButton: CustomFloatingActionButton(
         wp: wp,
         onPressed: () =>
-            CustomRouteTransition(context: context, child: ProductImagePage()),
-        text: 'Siguiente',
+            CustomRouteTransition(context: context, child: MainPage()),
+        text: 'Completar',
       ),
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
@@ -77,13 +62,11 @@ class _AddProductsState extends State<AddProducts> {
             child: Container(
           child: Column(
             children: [
-              _header(context),
-              //PRODUCT INFORMATION
+              _header(context, hp, wp),
               BlocBuilder<ProductsBloc, ProductsState>(
-                builder: (context, state) {
-                  return _form(hp, wp, context, state);
-                },
-              ),
+                  builder: (context, state) {
+                return _form(context, hp, wp, state);
+              })
             ],
           ),
         )),
@@ -91,82 +74,13 @@ class _AddProductsState extends State<AddProducts> {
     );
   }
 
-  Container _form(
-      Function hp, Function wp, BuildContext context, ProductsState state) {
+  Widget _form(
+      BuildContext context, Function hp, Function wp, ProductsState state) {
     return Container(
       height: hp(76),
       margin: EdgeInsets.only(left: 30, right: 30, top: 20),
-      child: ListView(
-        physics: BouncingScrollPhysics(),
+      child: Column(
         children: [
-          Text('Información de producto',
-              style: GoogleFonts.lato(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: wp(4.5))),
-          SizedBox(
-            height: hp(3),
-          ),
-          //NAME
-          CustomInput(
-              focusNode: fproductname,
-              textInputAction: TextInputAction.next,
-              onFocus: () {
-                fproductname.unfocus();
-                FocusScope.of(context).requestFocus(fdescription);
-              },
-              keyboardType: TextInputType.text,
-              function: (value) => BlocProvider.of<ProductsBloc>(context)
-                  .add(OnNameChanged(value)),
-              hp: hp(7),
-              placeholder: 'Nombre',
-              textEditingController: name),
-          //DESCRIPTION
-          CustomInput(
-            focusNode: fdescription,
-            textInputAction: TextInputAction.next,
-            onFocus: () {
-              fdescription.unfocus();
-              FocusScope.of(context).requestFocus(fquantity);
-            },
-            function: (value) => BlocProvider.of<ProductsBloc>(context)
-                .add(OnDescriptionChange(value)),
-            placeholder: 'Informacion',
-            keyboardType: TextInputType.multiline,
-            textEditingController: info,
-            maxlines: 3,
-            hp: hp(25),
-            hintMaxLines: 4,
-          ),
-          //CATEGORY
-          GestureDetector(
-            onTap: () =>
-                CustomRouteTransition(context: context, child: CategoryPage()),
-            child: Container(
-              height: hp(7),
-              margin: EdgeInsets.only(bottom: 20),
-              padding: EdgeInsets.only(top: 5, bottom: 5, left: 15, right: 15),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30.0),
-                color: Colors.grey[200],
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '${handleProductCategory(state.category)}- ${handleProductSubcategory(state.subCategory)}',
-                    style: GoogleFonts.oswald(
-                        color: Colors.black, fontSize: wp(4.5)),
-                  ),
-                  Icon(
-                    Icons.arrow_forward_ios,
-                    size: 23,
-                  ),
-                ],
-              ),
-            ),
-          ),
-
           Text('Stock',
               style: GoogleFonts.lato(
                   color: Colors.black,
@@ -291,7 +205,7 @@ class _AddProductsState extends State<AddProducts> {
     );
   }
 
-  Widget _header(BuildContext context) {
+  Widget _header(BuildContext context, Function hp, Function wp) {
     return Material(
       elevation: 5,
       child: Container(
@@ -309,32 +223,12 @@ class _AddProductsState extends State<AddProducts> {
                         context: context,
                         child: MainPage())),
                 Text(
-                  'Nuevo producto',
+                  'Editar Producto',
                   style: GoogleFonts.lato(
-                      fontWeight: FontWeight.bold, fontSize: 15),
+                      fontWeight: FontWeight.bold, fontSize: wp(4.5)),
                 ),
               ],
             ),
-            Container(
-              height: 30,
-              width: 60,
-              child: Center(
-                  child: Text(
-                '1/2',
-                style: GoogleFonts.lato(color: kprimarycolorlight),
-              )),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [
-                    primaryColor,
-                    secondaryColor,
-                  ],
-                ),
-              ),
-            )
           ],
         ),
       ),

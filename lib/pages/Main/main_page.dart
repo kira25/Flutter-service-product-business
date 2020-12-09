@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:responsive_screen/responsive_screen.dart';
 import 'package:service_products_business/bloc/auth/auth_bloc.dart';
 import 'package:service_products_business/bloc/orders_products/orders_products_bloc.dart';
@@ -11,8 +13,10 @@ import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/enums.dart';
 import 'package:service_products_business/helpers/products.dart';
 import 'package:service_products_business/helpers/route_transitions.dart';
+import 'package:service_products_business/helpers/show_alert.dart';
 import 'package:service_products_business/models/product_response.dart';
 import 'package:service_products_business/pages/AddProducts/add_products_page.dart';
+import 'package:service_products_business/pages/EditProduct/EditProduct.dart';
 import 'package:service_products_business/pages/Login/login_page.dart';
 
 class MainPage extends StatefulWidget {
@@ -22,12 +26,8 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   TabController tabController;
-
-  // loadData() {
-  //   setState(() {
-  //     BlocProvider.of<ShopBloc>(context)..add(OnLoadShopData());
-  //   });
-  // }
+  RefreshController refreshController =
+      RefreshController(initialRefresh: false);
 
   @override
   void initState() {
@@ -450,130 +450,148 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     return BlocProvider<ProductsBloc>(
       lazy: false,
       create: (context) => ProductsBloc()..add(OnLoadShopProducts()),
-      child: BlocBuilder<ProductsBloc, ProductsState>(
-        builder: (context, state) {
-          return Scaffold(
-            floatingActionButton: FloatingActionButton(
-                heroTag: 'btn_products',
-                child: Icon(
-                  Icons.add,
-                  size: 35,
-                ),
-                onPressed: () {
-                  CustomRouteTransition(context: context, child: AddProducts());
-                }),
-            appBar: AppBar(
-                elevation: 4,
-                backgroundColor: kprimarycolorlight,
-                bottom: PreferredSize(
-                    preferredSize: Size.fromHeight(hp(8)),
-                    child: Container(
-                      height: hp(7),
-                      child: _productOptions(wp, hp, state),
-                    )),
-                title: Text(
-                  'Productos',
-                  style: GoogleFonts.lato(
-                      fontWeight: FontWeight.bold, color: Colors.black),
-                )),
-            body: SafeArea(
-                child: Container(
-              width: double.infinity,
-              child: BlocBuilder<ProductsBloc, ProductsState>(
-                builder: (context, state) {
-                  //PRODUCTS CATEGORY
-                  if (state.showProducts == ProductCategory.HOME) {
-                    return ItemsCategoryProduct(
-                        state: state,
-                        productCategory: ProductCategory.HOME,
-                        hp: hp,
-                        wp: wp);
-                  }
-                  if (state.showProducts == ProductCategory.MAN) {
-                    return ItemsCategoryProduct(
-                        state: state,
-                        productCategory: ProductCategory.MAN,
-                        hp: hp,
-                        wp: wp);
-                  }
-                  if (state.showProducts == ProductCategory.KID) {
-                    return ItemsCategoryProduct(
-                        state: state,
-                        productCategory: ProductCategory.KID,
-                        hp: hp,
-                        wp: wp);
-                  }
-                  if (state.showProducts == ProductCategory.PET) {
-                    return ItemsCategoryProduct(
-                        state: state,
-                        productCategory: ProductCategory.PET,
-                        hp: hp,
-                        wp: wp);
-                  }
-                  if (state.showProducts == ProductCategory.WOMEN) {
-                    return ItemsCategoryProduct(
-                        state: state,
-                        productCategory: ProductCategory.WOMEN,
-                        hp: hp,
-                        wp: wp);
-                  }
-                  if (state.showProducts == ProductCategory.RESTAURANT) {
-                    return ItemsCategoryProduct(
-                        state: state,
-                        productCategory: ProductCategory.RESTAURANT,
-                        hp: hp,
-                        wp: wp);
-                  }
-                  if (state.showProducts == ProductCategory.HEALTH) {
-                    return ItemsCategoryProduct(
-                        state: state,
-                        productCategory: ProductCategory.HEALTH,
-                        hp: hp,
-                        wp: wp);
-                  }
-                  if (state.showProducts == ProductCategory.TECHNOLOGY) {
-                    return ItemsCategoryProduct(
-                        state: state,
-                        productCategory: ProductCategory.TECHNOLOGY,
-                        hp: hp,
-                        wp: wp);
-                  }
-                  if (state.productResponse == null) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(FontAwesomeIcons.cube,
-                                  size: 45, color: Colors.purple),
-                              SizedBox(
-                                height: hp(3),
-                              ),
-                              Text(
-                                'No tienes productos',
-                                style: GoogleFonts.lato(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: wp(6)),
-                              ),
-                              SizedBox(
-                                height: hp(3),
-                              ),
-                              Text('Añade un producto para empezar a vender',
-                                  style: GoogleFonts.lato(fontSize: wp(4))),
-                            ],
-                          ),
-                        )
-                      ],
-                    );
-                  }
-                  return Container();
-                },
-              ),
-            )),
-          );
+      child: BlocListener<ProductsBloc, ProductsState>(
+        listener: (context, state) {
+          //ON RESPONSE FROM DELETE OR DELETE PRODUCTS
+          if (state.isProductDeleted == IsProductDeleted.SUCCESS) {
+            showAlert(context,
+                title: 'Producto eliminado', subtitle: 'Aceptar');
+          }
         },
+        child: BlocBuilder<ProductsBloc, ProductsState>(
+          builder: (context, state) {
+            return Scaffold(
+              floatingActionButton: FloatingActionButton(
+                  heroTag: 'btn_products',
+                  child: Icon(
+                    Icons.add,
+                    size: 35,
+                  ),
+                  onPressed: () {
+                    CustomRouteTransition(
+                        context: context, child: AddProducts());
+                  }),
+              appBar: AppBar(
+                  elevation: 4,
+                  backgroundColor: kprimarycolorlight,
+                  bottom: PreferredSize(
+                      preferredSize: Size.fromHeight(hp(8)),
+                      child: Container(
+                        height: hp(7),
+                        child: _productOptions(wp, hp, state),
+                      )),
+                  title: Text(
+                    'Productos',
+                    style: GoogleFonts.lato(
+                        fontWeight: FontWeight.bold, color: Colors.black),
+                  )),
+              body: SafeArea(
+                  child: Container(
+                width: double.infinity,
+                child: BlocBuilder<ProductsBloc, ProductsState>(
+                  builder: (context, state) {
+                    //PRODUCTS CATEGORY
+                    if (state.showProducts == ProductCategory.HOME) {
+                      return ItemsCategoryProduct(
+                          refreshController: refreshController,
+                          state: state,
+                          productCategory: ProductCategory.HOME,
+                          hp: hp,
+                          wp: wp);
+                    }
+                    if (state.showProducts == ProductCategory.MAN) {
+                      return ItemsCategoryProduct(
+                          refreshController: refreshController,
+                          state: state,
+                          productCategory: ProductCategory.MAN,
+                          hp: hp,
+                          wp: wp);
+                    }
+                    if (state.showProducts == ProductCategory.KID) {
+                      return ItemsCategoryProduct(
+                          refreshController: refreshController,
+                          state: state,
+                          productCategory: ProductCategory.KID,
+                          hp: hp,
+                          wp: wp);
+                    }
+                    if (state.showProducts == ProductCategory.PET) {
+                      return ItemsCategoryProduct(
+                          refreshController: refreshController,
+                          state: state,
+                          productCategory: ProductCategory.PET,
+                          hp: hp,
+                          wp: wp);
+                    }
+                    if (state.showProducts == ProductCategory.WOMEN) {
+                      return ItemsCategoryProduct(
+                          refreshController: refreshController,
+                          state: state,
+                          productCategory: ProductCategory.WOMEN,
+                          hp: hp,
+                          wp: wp);
+                    }
+                    if (state.showProducts == ProductCategory.RESTAURANT) {
+                      return ItemsCategoryProduct(
+                          refreshController: refreshController,
+                          state: state,
+                          productCategory: ProductCategory.RESTAURANT,
+                          hp: hp,
+                          wp: wp);
+                    }
+                    if (state.showProducts == ProductCategory.HEALTH) {
+                      return ItemsCategoryProduct(
+                          refreshController: refreshController,
+                          state: state,
+                          productCategory: ProductCategory.HEALTH,
+                          hp: hp,
+                          wp: wp);
+                    }
+                    if (state.showProducts == ProductCategory.TECHNOLOGY) {
+                      return ItemsCategoryProduct(
+                          refreshController: refreshController,
+                          state: state,
+                          productCategory: ProductCategory.TECHNOLOGY,
+                          hp: hp,
+                          wp: wp);
+                    }
+                    if (state.productResponse == null) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(FontAwesomeIcons.cube,
+                                    size: 45, color: Colors.purple),
+                                SizedBox(
+                                  height: hp(3),
+                                ),
+                                Text(
+                                  'No tienes productos',
+                                  style: GoogleFonts.lato(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: wp(6)),
+                                ),
+                                SizedBox(
+                                  height: hp(3),
+                                ),
+                                Text('Añade un producto para empezar a vender',
+                                    style: GoogleFonts.lato(fontSize: wp(4))),
+                              ],
+                            ),
+                          )
+                        ],
+                      );
+                    }
+                    return Container();
+                  },
+                ),
+              )),
+            );
+          },
+        ),
       ),
     );
   }
@@ -595,7 +613,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       scrollDirection: Axis.horizontal,
       itemBuilder: (context, index) {
         return MaterialButton(
-          key: Key(''),
+          key: Key('Category'),
           onPressed: () {
             switch (index) {
               case 0:
@@ -613,27 +631,27 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     .add(OnShowProducts(ProductCategory.KID));
 
                 break;
-                case 3:
+              case 3:
                 BlocProvider.of<ProductsBloc>(context)
                     .add(OnShowProducts(ProductCategory.PET));
 
                 break;
-                case 4:
+              case 4:
                 BlocProvider.of<ProductsBloc>(context)
                     .add(OnShowProducts(ProductCategory.WOMEN));
 
                 break;
-                case 5:
+              case 5:
                 BlocProvider.of<ProductsBloc>(context)
                     .add(OnShowProducts(ProductCategory.RESTAURANT));
 
                 break;
-                case 6:
+              case 6:
                 BlocProvider.of<ProductsBloc>(context)
                     .add(OnShowProducts(ProductCategory.HEALTH));
 
                 break;
-                case 7:
+              case 7:
                 BlocProvider.of<ProductsBloc>(context)
                     .add(OnShowProducts(ProductCategory.TECHNOLOGY));
 
@@ -641,7 +659,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
               default:
             }
           },
-          color: Colors.blue[200],
+          color: state.showProducts.index == index
+              ? kproductoptions
+              : kintroNotSelected,
           child: Text(list[index],
               style: GoogleFonts.lato(
                 fontSize: wp(4),
@@ -661,7 +681,10 @@ class ItemsCategoryProduct extends StatelessWidget {
   final Function wp;
   final ProductsState state;
   final ProductCategory productCategory;
+  final RefreshController refreshController;
+
   const ItemsCategoryProduct({
+    this.refreshController,
     Key key,
     this.hp,
     this.wp,
@@ -676,102 +699,161 @@ class ItemsCategoryProduct extends StatelessWidget {
             element.productCategory.category == productCategory.index)
         .toList();
     return Container(
-      child: ListView.separated(
-          itemBuilder: (context, index) {
-            return Container(
-              height: hp(25),
-              child: Card(
-                margin: EdgeInsets.all(10),
-                child: Row(
-                  children: [
-                    //IMAGE PRODUCT
-                    Container(
-                      margin: EdgeInsets.symmetric(
-                          horizontal: wp(4), vertical: hp(1)),
-                      width: wp(30),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          result[index].imageProduct.isEmpty
-                              ? Container()
-                              : Image.network(
-                                  result[index].imageProduct[0].product,
-                                  height: hp(15),
-                                ),
-                        ],
+      child: SmartRefresher(
+        controller: refreshController,
+        enablePullDown: true,
+        header: WaterDropHeader(
+          waterDropColor: Colors.blue[400],
+          complete: Icon(Icons.check, color: Colors.blue[400]),
+        ),
+        onRefresh: () {
+          BlocProvider.of<ProductsBloc>(context).add(OnLoadShopProducts());
+          refreshController.refreshCompleted();
+        },
+        child: ListView.separated(
+            itemBuilder: (context, index) {
+              return Container(
+                height: hp(25),
+                child: Card(
+                  elevation: 4,
+                  margin:
+                      EdgeInsets.symmetric(vertical: hp(3), horizontal: wp(3)),
+                  child: Slidable(
+                    actionPane: SlidableDrawerActionPane(),
+                    actionExtentRatio: 0.20,
+                    secondaryActions: [
+                      IconSlideAction(
+                        color: kintroselected,
+                        iconWidget: Icon(
+                          Icons.edit,
+                          size: wp(8),
+                          color: kprimarycolorlight,
+                        ),
+                        onTap: () {
+                          CustomRouteTransition(
+                              context: context,
+                              child: EditProduct(),
+                              animation: AnimationType.fadeIn);
+                          BlocProvider.of<ProductsBloc>(context).add(
+                              OnLoadProductDataToEdit(
+                               
+                                normalPrice: result[index].price.normalPrice.toString(),
+                                  offerPrice: result[index].price.offertPrice.toString(),
+                                  stockType: handleIntToStockType(
+                                      result[index].stockType),
+                                  priceType: handleIntToPriceType(
+                                      result[index].priceType)));
+                        },
                       ),
-                    ),
-                    //PRODUCT DATA
-                    Container(
-                      width: wp(55),
-                      padding: EdgeInsets.symmetric(vertical: hp(1)),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Text(
-                            result[index].name,
-                            style: GoogleFonts.lato(
-                                fontWeight: FontWeight.bold, fontSize: wp(4.5)),
+                      IconSlideAction(
+                        color: kwrongAnswer,
+                        iconWidget: Icon(
+                          FontAwesomeIcons.trash,
+                          size: wp(8),
+                          color: kprimarycolorlight,
+                        ),
+                        onTap: () => BlocProvider.of<ProductsBloc>(context)
+                            .add(OnDeleteProduct(result[index].id)),
+                      ),
+                    ],
+                    child: Row(
+                      children: [
+                        //IMAGE PRODUCT
+                        Container(
+                          margin: EdgeInsets.symmetric(
+                              horizontal: wp(4), vertical: hp(1)),
+                          width: wp(30),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              result[index].imageProduct.isEmpty
+                                  ? Container()
+                                  : Image.network(
+                                      result[index].imageProduct[0].product,
+                                      height: hp(15),
+                                    ),
+                            ],
                           ),
-                          result[index].price.offertPrice != null
-                              ? Text(
-                                  'Precio Oferta : S/ ${result[index].price.offertPrice}',
-                                  style: GoogleFonts.lato(fontSize: wp(3.5)),
-                                )
-                              : Text(
-                                  'Precio Normal : S/ ${result[index].price.normalPrice}',
-                                  style: GoogleFonts.lato(fontSize: wp(3.5)),
-                                ),
-                          RichText(
-                            text: TextSpan(
-                                text: 'Stock ',
+                        ),
+                        //PRODUCT DATA
+                        Container(
+                          width: wp(55),
+                          padding: EdgeInsets.symmetric(vertical: hp(1)),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Text(
+                                result[index].name,
                                 style: GoogleFonts.lato(
-                                    textStyle:
-                                        TextStyle(color: kintroNotSelected),
-                                    fontSize: wp(3.5)),
-                                children: [
-                                  result[index].amountStock != 0
-                                      ? TextSpan(
-                                          text: 'Disponible',
-                                          style: GoogleFonts.lato(
-                                              textStyle: TextStyle(
-                                                  color: kstockAvailable)))
-                                      : TextSpan(
-                                          text:
-                                              'Algunas tallas o colores sin stock',
-                                          style: GoogleFonts.lato(
-                                              textStyle: TextStyle(
-                                                  color: kwrongAnswer)))
-                                ]),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                                color: kintroselected,
-                                borderRadius: BorderRadius.circular(20)),
-                            height: hp(3),
-                            width: wp(25),
-                            child: Center(
-                              child: Text(
-                                handleProductCategoryFromResponse(
-                                    result[index].productCategory.subcategory),
-                                style: GoogleFonts.lato(
-                                    color: kprimarycolorlight, fontSize: wp(4)),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: wp(4.5)),
                               ),
-                            ),
-                          )
-                        ],
-                      ),
+                              result[index].price.offertPrice != null
+                                  ? Text(
+                                      'Precio Oferta : S/ ${result[index].price.offertPrice}',
+                                      style:
+                                          GoogleFonts.lato(fontSize: wp(3.5)),
+                                    )
+                                  : Text(
+                                      'Precio Normal : S/ ${result[index].price.normalPrice}',
+                                      style:
+                                          GoogleFonts.lato(fontSize: wp(3.5)),
+                                    ),
+                              RichText(
+                                text: TextSpan(
+                                    text: 'Stock ',
+                                    style: GoogleFonts.lato(
+                                        textStyle:
+                                            TextStyle(color: kintroNotSelected),
+                                        fontSize: wp(3.5)),
+                                    children: [
+                                      result[index].amountStock != 0
+                                          ? TextSpan(
+                                              text: 'Disponible',
+                                              style: GoogleFonts.lato(
+                                                  textStyle: TextStyle(
+                                                      color: kstockAvailable)))
+                                          : TextSpan(
+                                              text:
+                                                  'Algunas tallas o colores sin stock',
+                                              style: GoogleFonts.lato(
+                                                  textStyle: TextStyle(
+                                                      color: kwrongAnswer)))
+                                    ]),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                    color: kintroselected,
+                                    borderRadius: BorderRadius.circular(20)),
+                                height: hp(3),
+                                width: wp(25),
+                                child: Center(
+                                  child: Text(
+                                    handleProductCategoryFromResponse(
+                                        result[index]
+                                            .productCategory
+                                            .subcategory),
+                                    style: GoogleFonts.lato(
+                                        color: kprimarycolorlight,
+                                        fontSize: wp(4)),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
-            );
-          },
-          separatorBuilder: (context, index) => Divider(
-                height: 10,
-              ),
-          itemCount: result.length),
+              );
+            },
+            separatorBuilder: (context, index) => Divider(
+                  height: 10,
+                ),
+            itemCount: result.length),
+      ),
     );
   }
 }
@@ -780,6 +862,7 @@ class OrdersProducts extends StatelessWidget {
   final Function hp;
   final String title;
   final String subtitle;
+
   const OrdersProducts({
     this.hp,
     this.title,
@@ -817,6 +900,7 @@ class UserOptions extends StatelessWidget {
   final String subTitle;
   final IconData iconData;
   final Function onPressed;
+
   const UserOptions(
       {this.hp,
       this.wp,

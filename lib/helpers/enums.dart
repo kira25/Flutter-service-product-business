@@ -42,3 +42,5 @@ enum PriceType {
 enum AdminColorType { YELLOW, BLUE, GREY, BLACK, RED, PINK }
 
 enum Sizes { S, M, L, XL, XXL }
+
+

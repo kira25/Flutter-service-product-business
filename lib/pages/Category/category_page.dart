@@ -5,8 +5,6 @@ import 'package:responsive_screen/responsive_screen.dart';
 import 'package:service_products_business/bloc/products/products_bloc.dart';
 import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/enums.dart';
-import 'package:service_products_business/helpers/route_transitions.dart';
-import 'package:service_products_business/pages/Subcategory/subcategory_page.dart';
 import 'package:service_products_business/routes/routes.dart';
 import 'package:service_products_business/widgets/category_options.dart';
 

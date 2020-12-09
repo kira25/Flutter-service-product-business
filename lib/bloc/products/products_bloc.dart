@@ -10,6 +10,7 @@ import 'package:service_products_business/models/product_response.dart';
 import 'package:service_products_business/services/product/product_service.dart';
 
 part 'products_event.dart';
+
 part 'products_state.dart';
 
 class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
@@ -32,7 +33,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       print(state.category.index);
     } else if (event is OnSelectSubcategory) {
       yield _mapOnSelectSubcategory(event, state);
-       print(state.subCategory.index);
+      print(state.subCategory.index);
     } else if (event is OnNameChanged) {
       yield state.copyWith(productName: event.name);
     } else if (event is OnDescriptionChange) {
@@ -104,20 +105,55 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     } else if (event is OnShowProducts) {
       yield state.copyWith(showProducts: event.category);
     } else if (event is OnAddOnlySize) {
-      listProduct = [...state.adminStock];
-      listProduct[0].sizeProduct.add(event.sizeProduct);
-
-      yield state.copyWith(adminStock: listProduct);
+      yield _mapOnAddOnlySize(event, state);
     } else if (event is OnAdminBySizeStock) {
-      List<AdminProduct> admin = [...state.adminStock];
-      admin[0].sizeProduct[event.index].sizeStock.value = TextEditingValue(
-          text: event.sizeStock,
-          selection: TextSelection.fromPosition(
-              TextPosition(offset: event.sizeStock.length)));
-
-      print(admin[0].toJsonSize());
-      yield state.copyWith(adminStock: admin);
+      yield _mapOnAdminBySizeStock(event, state);
+    } else if (event is OnDeleteProduct) {
+      yield* _mapOnDeleteProduct(event, state);
+    } else if (event is OnLoadProductDataToEdit) {
+      yield _mapOnLoadProductDataToEdit(event,state);
     }
+  }
+
+  ProductsState _mapOnLoadProductDataToEdit(
+      OnLoadProductDataToEdit event, ProductsState state) {
+    return state.copyWith(
+        stocktype: event.stockType,
+        priceType: event.priceType,
+        normalPrice: event.normalPrice,
+        offerPrice: event.offerPrice,
+        adminStock: event.adminStock);
+  }
+
+  Stream<ProductsState> _mapOnDeleteProduct(
+      OnDeleteProduct event, ProductsState state) async* {
+    final resp = await _productService.deleteProduct(event.id);
+    if (resp) {
+      yield state.copyWith(isProductDeleted: IsProductDeleted.SUCCESS);
+      yield state.copyWith(isProductDeleted: IsProductDeleted.UNDEFINED);
+    } else {
+      yield state.copyWith(isProductDeleted: IsProductDeleted.FAIL);
+      yield state.copyWith(isProductDeleted: IsProductDeleted.UNDEFINED);
+    }
+  }
+
+  ProductsState _mapOnAddOnlySize(OnAddOnlySize event, ProductsState state) {
+    listProduct = [...state.adminStock];
+    listProduct[0].sizeProduct.add(event.sizeProduct);
+
+    return state.copyWith(adminStock: listProduct);
+  }
+
+  ProductsState _mapOnAdminBySizeStock(
+      OnAdminBySizeStock event, ProductsState state) {
+    List<AdminProduct> admin = [...state.adminStock];
+    admin[0].sizeProduct[event.index].sizeStock.value = TextEditingValue(
+        text: event.sizeStock,
+        selection: TextSelection.fromPosition(
+            TextPosition(offset: event.sizeStock.length)));
+
+    print(admin[0].toJsonSize());
+    return state.copyWith(adminStock: admin);
   }
 
   Future<ProductsState> _mapOnLoadShopProducts(

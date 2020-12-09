@@ -1,11 +1,14 @@
 part of 'products_bloc.dart';
 
 enum IsProductCreated { UNDEFINED, SUCCESS, FAIL }
+enum IsProductDeleted { UNDEFINED,SUCCESS, FAIL}
+
 
 class ProductsState {
   ProductsState(
-      {this.filesProduct = const [],
-      this.showProducts,
+      {this.isProductDeleted = IsProductDeleted.UNDEFINED
+        ,this.filesProduct = const [],
+      this.showProducts = ProductCategory.UNDEFINED,
       this.productResponse,
       this.isProductCreated = IsProductCreated.UNDEFINED,
       List<AdminProduct> adminStock,
@@ -32,7 +35,7 @@ class ProductsState {
               ]
             : adminStock;
   
-
+  final IsProductDeleted isProductDeleted;
   final String productName;
   final String description;
   final ProductCategory category;
@@ -51,7 +54,9 @@ class ProductsState {
   final List<File> filesProduct;
 
   ProductsState copyWith(
-      {ProductCategory showProducts,
+      {
+        IsProductDeleted isProductDeleted,
+        ProductCategory showProducts,
       ProductResponse productResponse,
       List<File> filesProduct,
       IsProductCreated isProductCreated,
@@ -68,6 +73,7 @@ class ProductsState {
       String offerPrice,
       List<AdminProduct> adminStock}) {
     return ProductsState(
+      isProductDeleted: isProductDeleted ?? this.isProductDeleted,
         filesProduct: filesProduct ?? this.filesProduct,
         productResponse: productResponse ?? this.productResponse,
         showProducts: showProducts ?? this.showProducts,

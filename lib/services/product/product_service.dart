@@ -21,6 +21,8 @@ class ProductService {
   final _createProduct = '${Environment.apiUrl}/products/create';
   final _getProductByUser = '${Environment.apiUrl}/products/user';
   final _addProductImages = '${Environment.apiUrl}/products/imageProduct/';
+  final _updateProduct = '${Environment.apiUrl}/products/update';
+  final _deleteProduct = '${Environment.apiUrl}/products/delete';
 
   Future createProduct(
       String name,
@@ -115,26 +117,19 @@ class ProductService {
     }
   }
 
-  Future addProductImages(
-    File imageProduct1,
-    File imageProduct2,
-    File imageProduct3,
-    File imageProduct4,
-    File imageProduct5,
-  ) async {
-    final token = await _preferencesRepository.getData('token');
-    FormData data = FormData.fromMap({
-      "imageProduct1": await MultipartFile.fromFile(imageProduct1.path) ?? "",
-      "imageProduct2": await MultipartFile.fromFile(imageProduct2.path) ?? "",
-      "imageProduct3": await MultipartFile.fromFile(imageProduct3.path) ?? "",
-      "imageProduct4": await MultipartFile.fromFile(imageProduct4.path) ?? "",
-      "imageProduct5": await MultipartFile.fromFile(imageProduct5.path) ?? ""
-    });
+  Future updateProduct(String id) async {
+    final resp =
+        await _dio.put(_updateProduct, queryParameters: {"productID": id});
+  }
 
-    final resp = await _dio.put('$_addProductImages/',
-        data: data,
-        options: Options(
-          headers: {HttpHeaders.authorizationHeader: 'Bearer $token'},
-        ));
+  Future deleteProduct(String id) async {
+    final resp =
+        await _dio.delete(_deleteProduct, queryParameters: {"productID": id});
+        if(resp.data['ok'] == true){
+          return true;
+        }else{
+          return false;
+        }
+    
   }
 }

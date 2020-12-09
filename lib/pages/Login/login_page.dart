@@ -14,9 +14,33 @@ import 'package:service_products_business/widgets/custom_input.dart';
 import 'package:service_products_business/widgets/logo.dart';
 import 'package:formz/formz.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailCtrl = TextEditingController();
+
   final TextEditingController passwCtrl = TextEditingController();
+
+  FocusNode femail;
+  FocusNode fpassword;
+
+  @override
+  void initState() {
+    super.initState();
+    femail = FocusNode();
+    fpassword = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    femail.dispose();
+    fpassword.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +96,13 @@ class LoginPage extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 CustomInput(
+                                    autofocus: false,
+                                    focusNode: femail,
+                                    onFocus: (){
+                                      femail.unfocus();
+                                      FocusScope.of(context).requestFocus(fpassword);
+                                    },
+                                    textInputAction: TextInputAction.next,
                                     function: (value) =>
                                         BlocProvider.of<LoginBloc>(context)
                                             .add(EmailChanged(value)),
@@ -93,6 +124,13 @@ class LoginPage extends StatelessWidget {
                                     keyboardType: TextInputType.emailAddress,
                                     textEditingController: emailCtrl),
                                 CustomInput(
+                                    autofocus: false,
+                                       focusNode: fpassword,
+                                    onFocus: (){
+                                      fpassword.unfocus();
+                                      
+                                    },
+                                    textInputAction: TextInputAction.done,
                                     function: (value) =>
                                         BlocProvider.of<LoginBloc>(context)
                                             .add(PasswordChanged(value)),

@@ -62,7 +62,7 @@ class BankPhotoPage extends StatelessWidget {
         listener: (_, state) {
           if (state.shopStatus.isSubmissionSuccess) {
             showAlert(context,
-                child: MainPage(), subtitle: 'Tienda creada con exito');
+                child: MainPage(), title: 'Tienda creada con exito',subtitle: 'Listo');
             if (state.shopStatus.isSubmissionFailure) {
               showDialog(
                   context: _,

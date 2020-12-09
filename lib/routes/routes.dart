@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:service_products_business/pages/AddProducts/add_products_page.dart';
 import 'package:service_products_business/pages/Bank&Photo/bank_photo_page.dart';
 import 'package:service_products_business/pages/Category/category_page.dart';
+import 'package:service_products_business/pages/EditProduct/EditProduct.dart';
 import 'package:service_products_business/pages/Introduction/introduction_page.dart';
 import 'package:service_products_business/pages/Main/main_page.dart';
 import 'package:service_products_business/pages/ResetPassword/reset_password_page.dart';
@@ -11,6 +12,7 @@ import 'package:service_products_business/pages/Login/login_page.dart';
 import 'package:service_products_business/pages/Register/register_page.dart';
 import 'package:service_products_business/pages/Subcategory/subcategory_page.dart';
 import 'package:service_products_business/pages/VerifyPasswordPin/verify_password_pin_page.dart';
+import 'package:service_products_business/pages/test.dart';
 
 final Map<String, Widget Function(BuildContext)> appRoutes = {
   SPLASH_PAGE: (_) => SplashPage(),
@@ -25,6 +27,8 @@ final Map<String, Widget Function(BuildContext)> appRoutes = {
   ADD_PRODUCTS_PAGE: (_) => AddProducts(),
   CATEGORY_PAGE: (_) => CategoryPage(),
   SUBCATEGORY_PAGE: (_) => SubcategoryPage(),
+  TEST: (_) => TestPage(),
+  EDIT_PAGE: (_) => EditProduct()
 };
 
 const SPLASH_PAGE = 'SPLASH_PAGE';
@@ -39,3 +43,5 @@ const ORDER_PAGE = 'ORDER_PAGE';
 const ADD_PRODUCTS_PAGE = 'ADD_PRODUCTS_PAGE';
 const CATEGORY_PAGE = 'CATEGORY_PAGE';
 const SUBCATEGORY_PAGE = 'SUBCATEGORY_PAGE';
+const TEST = 'TEST';
+const EDIT_PAGE = 'EDIT_PAGE';

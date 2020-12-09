@@ -16,6 +16,7 @@ class CustomInput extends StatelessWidget {
   final TextInputAction textInputAction;
   final FocusNode focusNode;
   final Function onFocus;
+  final bool autofocus;
 
   CustomInput(
       {this.onFocus,
@@ -31,7 +32,8 @@ class CustomInput extends StatelessWidget {
       this.hintMaxLines,
       this.maxlines = 1,
       this.textInputAction,
-      this.focusNode});
+      this.focusNode,
+      this.autofocus});
 
   @override
   Widget build(BuildContext context) {
@@ -49,10 +51,9 @@ class CustomInput extends StatelessWidget {
           color: Colors.grey[200],
           borderRadius: BorderRadius.circular(20)),
       child: TextField(
-        
         onEditingComplete: onFocus,
         focusNode: focusNode,
-        autofocus: true,
+        autofocus: autofocus != null ? autofocus : true,
         textInputAction: textInputAction,
         enableSuggestions: true,
         maxLines: maxlines,

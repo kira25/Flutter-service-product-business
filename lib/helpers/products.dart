@@ -1,5 +1,28 @@
-import 'package:flutter/material.dart';
 import 'package:service_products_business/helpers/enums.dart';
+
+StockType handleIntToStockType(int stock) {
+  switch (stock) {
+    case 0:
+      return StockType.UNIQUE;
+
+      break;
+    case 1:
+      return StockType.BY_COLOR;
+
+      break;
+    case 2:
+      return StockType.BY_SIZE;
+
+      break;
+    case 3:
+      return StockType.BY_COLOR_SIZE;
+
+      break;
+
+    default:
+      return StockType.UNIQUE;
+  }
+}
 
 Sizes handleAdminProductSizeToValue(String text) {
   switch (text) {
@@ -260,5 +283,21 @@ String handlePriceType(PriceType priceType) {
 
     default:
       return '';
+  }
+}
+
+PriceType handleIntToPriceType(int price) {
+  switch (price) {
+    case 0:
+      return PriceType.NORMAL;
+
+      break;
+    case 1:
+      return PriceType.OFFERT;
+
+      break;
+
+    default:
+      return PriceType.NORMAL;
   }
 }

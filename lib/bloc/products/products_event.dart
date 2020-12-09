@@ -171,3 +171,26 @@ class OnShowProducts extends ProductsEvent {
 
   OnShowProducts(this.category);
 }
+
+class OnDeleteProduct extends ProductsEvent {
+  final String id;
+
+  OnDeleteProduct(this.id);
+}
+
+class OnUpdateProduct extends ProductsEvent {
+  final String id;
+
+  OnUpdateProduct(this.id);
+}
+
+class OnLoadProductDataToEdit extends ProductsEvent {
+  final StockType stockType;
+  final List<AdminProduct> adminStock;
+  final PriceType priceType;
+  final String normalPrice;
+  final String offerPrice;
+
+  OnLoadProductDataToEdit({this.stockType, this.adminStock, this.priceType,
+    this.normalPrice, this.offerPrice});
+}

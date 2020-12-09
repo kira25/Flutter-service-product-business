@@ -60,7 +60,7 @@ class ForgotPasswordPage extends StatelessWidget {
               } else if (state.status.isSubmissionSuccess) {
                 showAlert(
                   context,
-                  subtitle: 'Correo enviado con exito',
+                  title: 'Correo enviado con exito',
                   child: VerifyPasswordPinPage(),
                 );
               }
