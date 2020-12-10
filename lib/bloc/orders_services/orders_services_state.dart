@@ -1,10 +1,29 @@
 part of 'orders_services_bloc.dart';
 
-abstract class OrdersServicesState extends Equatable {
-  const OrdersServicesState();
-  
+ class OrdersServicesState extends Equatable {
+  final bool showPending;
+  final bool showDone;
+  final bool showCancel;
+  const OrdersServicesState(
+      {this.showPending = true,
+      this.showDone = false,
+      this.showCancel = false});
+
+
+OrdersServicesState copyWith({
+    bool showPending,
+    bool showDone,
+    bool showCancel,
+   
+  }) {
+    return OrdersServicesState(
+        showPending: showPending ?? this.showPending,
+        showDone: showDone ?? this.showDone,
+        showCancel: showCancel ?? this.showCancel,
+        );
+  }
+
   @override
-  List<Object> get props => [];
+  List<Object> get props => [showCancel,showDone,showPending];
 }
 
-class OrdersServicesInitial extends OrdersServicesState {}

@@ -68,7 +68,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     } else if (event is OnDeleteProductImage) {
       yield _mapOnDeleteProductImage(event, state);
     } else if (event is OnHandleCreateProduct) {
-      yield await _mapHandleCreateProduct(event, state);
+      yield*  _mapHandleCreateProduct(event, state);
     } else if (event is OnAddSizeProduct) {
       yield _mapOnAddSizeProduct(event, state);
     } else if (event is OnDeleteAdminSizeProduct) {
@@ -112,17 +112,61 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       yield* _mapOnDeleteProduct(event, state);
     } else if (event is OnLoadProductDataToEdit) {
       yield _mapOnLoadProductDataToEdit(event,state);
+      print(state.adminStock[0]);
+    }else if ( event is OnLoadProducDataAdminStock){
+      print('OnLoadProducDataAdminStock');
+      yield state.copyWith(adminStock: event.adminStock);
+    }else if ( event is OnUpdateProduct){
+        yield* _mapOnUpdateProduct(event,state);
+
+
     }
   }
 
+  Stream<ProductsState> _mapOnUpdateProduct(OnUpdateProduct event, ProductsState state )async*{
+
+ List stock = [];
+
+    if (state.stocktype == StockType.UNIQUE) {
+      stock = state.adminStock.map((e) => e.toJsonUnique()).toList();
+    }
+
+    if (state.stocktype == StockType.BY_COLOR) {
+      stock = state.adminStock.map((e) => e.toJsonColor()).toList();
+      print(stock);
+    }
+    if (state.stocktype == StockType.BY_COLOR_SIZE) {
+      stock = state.adminStock.map((e) => e.toJsonSizeColor()).toList();
+    }
+
+    if (state.stocktype == StockType.BY_SIZE) {
+      stock = state.adminStock.map((e) => e.toJsonSize()).toList();
+    }
+
+
+    final resp = await _productService.updateProduct(event.id, state.stocktype.index,stock, state.priceType.index,state.normalPrice,state.offerPrice);
+   
+   
+    if(resp == true){
+       yield state.copyWith(isProductEdited: IsProductEdited.SUCCESS);
+       yield state.copyWith(isProductEdited: IsProductEdited.UNDEFINED);
+    }else{
+        yield state.copyWith(isProductEdited: IsProductEdited.FAIL);
+       yield state.copyWith(isProductEdited: IsProductEdited.UNDEFINED);
+    }
+
+  }
+
+
   ProductsState _mapOnLoadProductDataToEdit(
       OnLoadProductDataToEdit event, ProductsState state) {
+    print('OnLoadProductDataToEdit');
     return state.copyWith(
         stocktype: event.stockType,
         priceType: event.priceType,
         normalPrice: event.normalPrice,
         offerPrice: event.offerPrice,
-        adminStock: event.adminStock);
+        );
   }
 
   Stream<ProductsState> _mapOnDeleteProduct(
@@ -187,8 +231,8 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
 
   //CREATE PRODUCT
 
-  Future<ProductsState> _mapHandleCreateProduct(
-      OnHandleCreateProduct event, ProductsState state) async {
+  Stream<ProductsState> _mapHandleCreateProduct(
+      OnHandleCreateProduct event, ProductsState state) async* {
     List stock = [];
 
     if (state.stocktype == StockType.UNIQUE) {
@@ -207,6 +251,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       stock = state.adminStock.map((e) => e.toJsonSize()).toList();
     }
 
+    yield state.copyWith(isProductCreated: IsProductCreated.LOADING);
     final resp = await _productService.createProduct(
         state.productName,
         state.description,
@@ -220,9 +265,9 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
         state.productImage,
         state.filesProduct);
     if (resp) {
-      return state.copyWith(isProductCreated: IsProductCreated.SUCCESS);
+      yield state.copyWith(isProductCreated: IsProductCreated.SUCCESS);
     } else {
-      return state.copyWith(isProductCreated: IsProductCreated.FAIL);
+      yield state.copyWith(isProductCreated: IsProductCreated.FAIL);
     }
   }
 

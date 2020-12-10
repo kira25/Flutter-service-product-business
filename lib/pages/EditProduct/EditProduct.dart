@@ -8,6 +8,9 @@ import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/enums.dart';
 import 'package:service_products_business/helpers/products.dart';
 import 'package:service_products_business/helpers/route_transitions.dart';
+import 'package:service_products_business/helpers/show_alert.dart';
+import 'package:service_products_business/models/AdminProduct/admin_product.dart';
+import 'package:service_products_business/models/product_response.dart';
 import 'package:service_products_business/pages/Main/main_page.dart';
 import 'package:service_products_business/pages/Stock/stock_page.dart';
 import 'package:service_products_business/widgets/custom_fab.dart';
@@ -15,16 +18,36 @@ import 'package:service_products_business/widgets/custom_input.dart';
 import 'package:service_products_business/widgets/product_custom_input.dart';
 
 class EditProduct extends StatefulWidget {
+  final String normalPrice;
+  final String offerPrice;
+  final List<Stock> stock;
+  final List<AdminProduct> adminStock;
+  final StockType stockType;
+  final PriceType priceType;
+  final String id;
+  final String name;
+
+  const EditProduct(
+      {this.normalPrice,
+      this.offerPrice,
+      this.stock,
+      this.adminStock,
+      this.stockType,
+      this.priceType,
+      this.id,
+      this.name});
+
   @override
   _EditProductState createState() => _EditProductState();
 }
 
 class _EditProductState extends State<EditProduct> {
-  TextEditingController uniqueStock = TextEditingController();
+  TextEditingController uniqueStock;
 
-  TextEditingController normalPrice = TextEditingController();
+  TextEditingController normalPrice;
 
-  TextEditingController offertPrice = TextEditingController();
+  TextEditingController offertPrice;
+
   FocusNode fquantity;
   FocusNode fnormalprice;
   FocusNode fofferprice;
@@ -32,6 +55,14 @@ class _EditProductState extends State<EditProduct> {
   @override
   void initState() {
     super.initState();
+
+    normalPrice = TextEditingController(text: widget.normalPrice);
+    offertPrice = TextEditingController(
+        text: widget.offerPrice != "null" ? widget.offerPrice : '');
+    uniqueStock = TextEditingController(
+        text: widget.stock[0].quantity != null && widget.stock[0].color == null
+            ? widget.stock[0].quantity.toString()
+            : '');
     fquantity = FocusNode();
     fnormalprice = FocusNode();
     fofferprice = FocusNode();
@@ -49,27 +80,45 @@ class _EditProductState extends State<EditProduct> {
   Widget build(BuildContext context) {
     final Function wp = Screen(context).wp;
     final Function hp = Screen(context).hp;
+
     return Scaffold(
       floatingActionButton: CustomFloatingActionButton(
         wp: wp,
-        onPressed: () =>
-            CustomRouteTransition(context: context, child: MainPage()),
+        onPressed: () => BlocProvider.of<ProductsBloc>(context)
+            .add(OnUpdateProduct(widget.id)),
         text: 'Completar',
       ),
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
-        child: SafeArea(
-            child: Container(
-          child: Column(
-            children: [
-              _header(context, hp, wp),
-              BlocBuilder<ProductsBloc, ProductsState>(
-                  builder: (context, state) {
-                return _form(context, hp, wp, state);
-              })
-            ],
-          ),
-        )),
+        child: BlocListener<ProductsBloc, ProductsState>(
+          listener: (_, state) {
+            if (state.isProductEdited == IsProductEdited.SUCCESS) {
+              showAlert(context,
+                  title: 'Producto creado con exito',
+                  subtitle: 'Aceptar',
+                  child: MainPage());
+              BlocProvider.of<ProductsBloc>(context).add(OnCleanProductData());
+            } else if (state.isProductEdited == IsProductEdited.FAIL) {
+              showDialog(
+                  context: _,
+                  builder: (_) => new AlertDialog(
+                        title: new Text("Product already exist"),
+                      ));
+            }
+          },
+          child: SafeArea(
+              child: Container(
+            child: Column(
+              children: [
+                _header(context, hp, wp),
+                BlocBuilder<ProductsBloc, ProductsState>(
+                    builder: (context, state) {
+                  return _form(context, hp, wp, state);
+                })
+              ],
+            ),
+          )),
+        ),
       ),
     );
   }
@@ -81,11 +130,16 @@ class _EditProductState extends State<EditProduct> {
       margin: EdgeInsets.only(left: 30, right: 30, top: 20),
       child: Column(
         children: [
-          Text('Stock',
+          Text('${widget.name}',
               style: GoogleFonts.lato(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: wp(4.5))),
+                fontSize: wp(4.5),
+                fontWeight: FontWeight.bold,
+              )),
+          SizedBox(
+            height: hp(3),
+          ),
+          Text('Stock',
+              style: GoogleFonts.lato(color: Colors.black, fontSize: wp(4.5))),
           SizedBox(
             height: hp(3),
           ),
@@ -116,7 +170,10 @@ class _EditProductState extends State<EditProduct> {
                 )
               : GestureDetector(
                   onTap: () => CustomRouteTransition(
-                      context: context, child: StockPage()),
+                      context: context,
+                      child: StockPage(
+                        adminStock: widget.adminStock,
+                      )),
                   child: Container(
                     height: hp(7),
                     margin: EdgeInsets.only(bottom: 20),
@@ -153,10 +210,7 @@ class _EditProductState extends State<EditProduct> {
                   ),
                 ),
           Text('Precio',
-              style: GoogleFonts.lato(
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                  fontSize: wp(4.5))),
+              style: GoogleFonts.lato(color: Colors.black, fontSize: wp(4.5))),
           SizedBox(
             height: hp(3),
           ),
@@ -168,7 +222,9 @@ class _EditProductState extends State<EditProduct> {
             icon: Icons.arrow_forward_ios,
             text: state.priceType != null
                 ? handlePriceType(state.priceType)
-                : 'Normal',
+                : widget.priceType != null
+                    ? handlePriceType(widget.priceType)
+                    : 'Normal',
           ),
           //NORMAL PRICE
           CustomInput(
@@ -218,10 +274,14 @@ class _EditProductState extends State<EditProduct> {
               children: [
                 IconButton(
                     icon: Icon(Icons.arrow_back),
-                    onPressed: () => CustomRouteTransition(
-                        replacement: true,
-                        context: context,
-                        child: MainPage())),
+                    onPressed: () {
+                      CustomRouteTransition(
+                          replacement: true,
+                          context: context,
+                          child: MainPage());
+                      BlocProvider.of<ProductsBloc>(context)
+                          .add(OnCleanProductData());
+                    }),
                 Text(
                   'Editar Producto',
                   style: GoogleFonts.lato(

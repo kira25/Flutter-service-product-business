@@ -7,6 +7,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:responsive_screen/responsive_screen.dart';
 import 'package:service_products_business/bloc/auth/auth_bloc.dart';
 import 'package:service_products_business/bloc/orders_products/orders_products_bloc.dart';
+import 'package:service_products_business/bloc/orders_services/orders_services_bloc.dart';
 import 'package:service_products_business/bloc/products/products_bloc.dart';
 import 'package:service_products_business/bloc/shop/shop_bloc.dart';
 import 'package:service_products_business/helpers/colors.dart';
@@ -14,8 +15,10 @@ import 'package:service_products_business/helpers/enums.dart';
 import 'package:service_products_business/helpers/products.dart';
 import 'package:service_products_business/helpers/route_transitions.dart';
 import 'package:service_products_business/helpers/show_alert.dart';
+import 'package:service_products_business/models/AdminProduct/admin_product.dart';
 import 'package:service_products_business/models/product_response.dart';
 import 'package:service_products_business/pages/AddProducts/add_products_page.dart';
+import 'package:service_products_business/pages/AddServices/add_services_page.dart';
 import 'package:service_products_business/pages/EditProduct/EditProduct.dart';
 import 'package:service_products_business/pages/Login/login_page.dart';
 
@@ -106,6 +109,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: kprimarycolorlight,
+        centerTitle: true,
         title: Text('Ordenes',
             style: GoogleFonts.lato(
                 fontWeight: FontWeight.bold, color: Colors.black)),
@@ -229,10 +233,85 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                 ],
               ),
             ),
-            Expanded(
+            Container(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Icon(Icons.meeting_room),
+                  Container(
+                    height: 40,
+                    margin: EdgeInsets.only(top: 10, left: 10),
+                    width: double.infinity,
+                    child: ListView.separated(
+                      padding: EdgeInsets.all(5),
+                      itemCount: 3,
+                      physics: BouncingScrollPhysics(),
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (BuildContext context, int index) {
+                        List list = [
+                          'Por coordinar',
+                          'Realizados',
+                          'Cancelados',
+                        ];
+                        return MaterialButton(
+                          key: Key(index.toString()),
+                          onPressed: () {
+                            switch (index) {
+                              case 0:
+                                BlocProvider.of<OrdersServicesBloc>(context)
+                                    .add(OnServicePending());
+
+                                break;
+                              case 1:
+                                BlocProvider.of<OrdersServicesBloc>(context)
+                                    .add(OnServiceDone());
+                                break;
+                              case 2:
+                                BlocProvider.of<OrdersServicesBloc>(context)
+                                    .add(OnServiceCancel());
+                                break;
+
+                              default:
+                            }
+                          },
+                          color: Colors.blue[200],
+                          child: Text(list[index],
+                              style: GoogleFonts.lato(
+                                fontSize: wp(4),
+                              )),
+                          shape: StadiumBorder(),
+                        );
+                      },
+                      separatorBuilder: (BuildContext context, int index) =>
+                          Divider(
+                        indent: 10,
+                      ),
+                    ),
+                  ),
+                  BlocBuilder<OrdersServicesBloc, OrdersServicesState>(
+                    builder: (context, state) {
+                      if (state.showPending) {
+                        return OrdersProducts(
+                          hp: hp,
+                          title: 'No tienes servicios por coodinar',
+                          subtitle: 'Coordinar tus servicios con los clientes',
+                        );
+                      } else if (state.showDone) {
+                        return OrdersProducts(
+                          hp: hp,
+                          title: 'No tienes servicios realizados',
+                          subtitle: 'Verifica tus servicios realizados',
+                        );
+                      } else if (state.showCancel) {
+                        return OrdersProducts(
+                          hp: hp,
+                          title: 'No tienes servicios cancelados',
+                          subtitle: 'Verifica tus servicios cancelados',
+                        );
+                      } else {
+                        return Container();
+                      }
+                    },
+                  ),
                 ],
               ),
             ),
@@ -279,6 +358,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             )
           ],
           backgroundColor: kprimarycolorlight,
+          centerTitle: true,
           title: Text(
             'Mi cuenta',
             style: GoogleFonts.lato(
@@ -403,8 +483,10 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
             Icons.add,
             size: 35,
           ),
-          onPressed: () {}),
+          onPressed: () => CustomRouteTransition(
+              context: context, child: AddServicesPage())),
       appBar: AppBar(
+          centerTitle: true,
           elevation: 4,
           backgroundColor: kprimarycolorlight,
           title: Text(
@@ -472,6 +554,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         context: context, child: AddProducts());
                   }),
               appBar: AppBar(
+                  centerTitle: true,
                   elevation: 4,
                   backgroundColor: kprimarycolorlight,
                   bottom: PreferredSize(
@@ -730,19 +813,36 @@ class ItemsCategoryProduct extends StatelessWidget {
                           color: kprimarycolorlight,
                         ),
                         onTap: () {
+                          List<AdminProduct> list2 = [];
+                          if (result[index].stock.length != 0) {
+                            List<Map<String, dynamic>> list = result[index]
+                                .stock
+                                .map((e) => e.toJson())
+                                .toList();
+                            print(list);
+
+                            list2 = list
+                                .map((e) => AdminProduct.fromJsonAdmin(e))
+                                .toList();
+                          }
+
                           CustomRouteTransition(
                               context: context,
-                              child: EditProduct(),
+                              child: EditProduct(
+                                name: result[index].name,
+                                id: result[index].id,
+                                adminStock: list2,
+                                priceType: handleIntToPriceType(
+                                    result[index].priceType),
+                                stockType: handleIntToStockType(
+                                    result[index].stockType),
+                                stock: result[index].stock,
+                                normalPrice:
+                                    result[index].price.normalPrice.toString(),
+                                offerPrice:
+                                    result[index].price.offertPrice.toString(),
+                              ),
                               animation: AnimationType.fadeIn);
-                          BlocProvider.of<ProductsBloc>(context).add(
-                              OnLoadProductDataToEdit(
-                               
-                                normalPrice: result[index].price.normalPrice.toString(),
-                                  offerPrice: result[index].price.offertPrice.toString(),
-                                  stockType: handleIntToStockType(
-                                      result[index].stockType),
-                                  priceType: handleIntToPriceType(
-                                      result[index].priceType)));
                         },
                       ),
                       IconSlideAction(

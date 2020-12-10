@@ -22,38 +22,47 @@ class ProductImagePage extends StatelessWidget {
         onPressed: () =>
             BlocProvider.of<ProductsBloc>(context).add(OnHandleCreateProduct()),
       ),
-      body: SafeArea(
-          child: BlocListener<ProductsBloc, ProductsState>(
-        listenWhen: (previous, current) =>
-            previous.isProductCreated != current.isProductCreated,
-        listener: (_, state) {
-          if (state.isProductCreated == IsProductCreated.SUCCESS) {
-            showAlert(context,
-                title: 'Producto creado con exito',
-                subtitle: 'Aceptar',
-                child: MainPage());
-            BlocProvider.of<ProductsBloc>(context).add(OnCleanProductData());
-          } else if (state.isProductCreated == IsProductCreated.FAIL) {
-            showDialog(
-                context: _,
-                builder: (_) => new AlertDialog(
-                      title: new Text("Product already exist"),
-                    ));
-          }
-        },
-        child: Container(
-          child: Column(
-            children: [
-              _header(context),
-              BlocBuilder<ProductsBloc, ProductsState>(
-                builder: (context, state) {
-                  return _imageProducts(hp, wp, context, state);
-                },
-              ),
-            ],
+      body: SingleChildScrollView(
+        physics: BouncingScrollPhysics(),
+        child: SafeArea(
+            child: BlocListener<ProductsBloc, ProductsState>(
+          listenWhen: (previous, current) =>
+              previous.isProductCreated != current.isProductCreated,
+          listener: (_, state) {
+            if (state.isProductCreated == IsProductCreated.SUCCESS) {
+              showAlert(context,
+                  title: 'Producto creado con exito',
+                  subtitle: 'Aceptar',
+                  child: MainPage());
+              BlocProvider.of<ProductsBloc>(context).add(OnCleanProductData());
+            } else if (state.isProductCreated == IsProductCreated.FAIL) {
+              showDialog(
+                  context: _,
+                  builder: (_) => new AlertDialog(
+                        title: new Text("Product already exist"),
+                      ));
+            } else if (state.isProductCreated == IsProductCreated.LOADING) {
+              showDialog(
+                  context: _,
+                  builder: (_) => new AlertDialog(
+                        title: new Text("Creating product..."),
+                      ));
+            }
+          },
+          child: Container(
+            child: Column(
+              children: [
+                _header(context),
+                BlocBuilder<ProductsBloc, ProductsState>(
+                  builder: (context, state) {
+                    return _imageProducts(hp, wp, context, state);
+                  },
+                ),
+              ],
+            ),
           ),
-        ),
-      )),
+        )),
+      ),
     );
   }
 

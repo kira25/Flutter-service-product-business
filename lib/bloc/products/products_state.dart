@@ -1,13 +1,14 @@
 part of 'products_bloc.dart';
 
-enum IsProductCreated { UNDEFINED, SUCCESS, FAIL }
-enum IsProductDeleted { UNDEFINED,SUCCESS, FAIL}
-
+enum IsProductCreated { UNDEFINED, SUCCESS, FAIL, LOADING }
+enum IsProductDeleted { UNDEFINED, SUCCESS, FAIL }
+enum IsProductEdited { UNDEFINED, SUCCESS, FAIL }
 
 class ProductsState {
   ProductsState(
-      {this.isProductDeleted = IsProductDeleted.UNDEFINED
-        ,this.filesProduct = const [],
+      {this.isProductEdited = IsProductEdited.UNDEFINED,
+      this.isProductDeleted = IsProductDeleted.UNDEFINED,
+      this.filesProduct = const [],
       this.showProducts = ProductCategory.UNDEFINED,
       this.productResponse,
       this.isProductCreated = IsProductCreated.UNDEFINED,
@@ -34,8 +35,9 @@ class ProductsState {
                     ])
               ]
             : adminStock;
-  
+
   final IsProductDeleted isProductDeleted;
+  final IsProductEdited isProductEdited;
   final String productName;
   final String description;
   final ProductCategory category;
@@ -54,9 +56,9 @@ class ProductsState {
   final List<File> filesProduct;
 
   ProductsState copyWith(
-      {
-        IsProductDeleted isProductDeleted,
-        ProductCategory showProducts,
+      {IsProductEdited isProductEdited,
+      IsProductDeleted isProductDeleted,
+      ProductCategory showProducts,
       ProductResponse productResponse,
       List<File> filesProduct,
       IsProductCreated isProductCreated,
@@ -73,7 +75,8 @@ class ProductsState {
       String offerPrice,
       List<AdminProduct> adminStock}) {
     return ProductsState(
-      isProductDeleted: isProductDeleted ?? this.isProductDeleted,
+        isProductEdited: isProductEdited ?? this.isProductEdited,
+        isProductDeleted: isProductDeleted ?? this.isProductDeleted,
         filesProduct: filesProduct ?? this.filesProduct,
         productResponse: productResponse ?? this.productResponse,
         showProducts: showProducts ?? this.showProducts,

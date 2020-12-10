@@ -40,7 +40,7 @@ class CustomInput extends StatelessWidget {
     return Container(
       height: hp,
       margin: EdgeInsets.only(bottom: 20),
-      padding: EdgeInsets.only(top: 5, bottom: 5, left: 25, right: 20),
+      padding: EdgeInsets.only(top: 5, bottom: 5, left: 25, right: 15),
       decoration: BoxDecoration(
           border: border,
           boxShadow: [
@@ -51,6 +51,7 @@ class CustomInput extends StatelessWidget {
           color: Colors.grey[200],
           borderRadius: BorderRadius.circular(20)),
       child: TextField(
+        
         onEditingComplete: onFocus,
         focusNode: focusNode,
         autofocus: autofocus != null ? autofocus : true,

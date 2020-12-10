@@ -6,3 +6,11 @@ abstract class OrdersServicesEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class OnServicePending extends OrdersServicesEvent {}
+
+class OnServiceDone extends OrdersServicesEvent {}
+
+class OnServiceCancel extends OrdersServicesEvent {}
+
+

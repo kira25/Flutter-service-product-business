@@ -1,5 +1,28 @@
 import 'package:service_products_business/helpers/enums.dart';
 
+
+Sizes handleResponseToSize ( int size){
+  switch(size){
+    case 0:
+      return Sizes.S;
+      break;
+    case 1:
+      return Sizes.M;
+      break;
+    case 2:
+      return Sizes.L;
+      break;
+    case 3:
+      return Sizes.XL;
+      break;
+    case 4:
+      return Sizes.XXL;
+      break;
+    default:
+      return Sizes.S;
+  }
+}
+
 StockType handleIntToStockType(int stock) {
   switch (stock) {
     case 0:
@@ -236,6 +259,38 @@ String handleProductSubcategory(ProductSubCategory productSubCategory) {
     default:
       return 'Subcategoria';
   }
+}
+
+AdminColorType handleIntToAdminColorType( int value){
+   switch (value) {
+    case 0:
+      return AdminColorType.YELLOW;
+
+      break;
+    case 1:
+      return AdminColorType.BLUE;
+
+      break;
+    case 2:
+      return AdminColorType.GREY;
+
+      break;
+    case 3:
+      return AdminColorType.BLACK;
+
+      break;
+    case 4:
+      return AdminColorType.RED;
+
+      break;
+    case 5:
+      return AdminColorType.PINK;
+
+      break;
+
+    default:
+      return AdminColorType.YELLOW;
+}
 }
 
 String handleAdminColorStock(AdminColorType adminColorType) {

@@ -21,7 +21,7 @@ class ProductService {
   final _createProduct = '${Environment.apiUrl}/products/create';
   final _getProductByUser = '${Environment.apiUrl}/products/user';
   final _addProductImages = '${Environment.apiUrl}/products/imageProduct/';
-  final _updateProduct = '${Environment.apiUrl}/products/update';
+  final _updateProduct = '${Environment.apiUrl}/products/update/';
   final _deleteProduct = '${Environment.apiUrl}/products/delete';
 
   Future createProduct(
@@ -117,19 +117,45 @@ class ProductService {
     }
   }
 
-  Future updateProduct(String id) async {
-    final resp =
-        await _dio.put(_updateProduct, queryParameters: {"productID": id});
+  Future updateProduct(
+    String id,
+    int stockType,
+    List stock,
+    int priceType,
+    String normalPrice,
+    String offerPrice,
+  ) async {
+    final token = await _preferencesRepository.getData('token');
+
+    final data = {
+      "stockType": stockType,
+      "stock": stock,
+      "priceType": priceType,
+      "price": {
+        "normalPrice": int.parse(normalPrice),
+        "offertPrice": offerPrice != null ? int.parse(offerPrice) : "",
+      },
+    };
+    final resp = await _dio.put('$_updateProduct$id',
+        data: data,
+        
+        options: Options(
+          headers: {HttpHeaders.authorizationHeader: 'Bearer $token'},
+        ));
+    if (resp.data['ok'] == true) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   Future deleteProduct(String id) async {
     final resp =
         await _dio.delete(_deleteProduct, queryParameters: {"productID": id});
-        if(resp.data['ok'] == true){
-          return true;
-        }else{
-          return false;
-        }
-    
+    if (resp.data['ok'] == true) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

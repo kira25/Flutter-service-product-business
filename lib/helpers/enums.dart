@@ -43,4 +43,17 @@ enum AdminColorType { YELLOW, BLUE, GREY, BLACK, RED, PINK }
 
 enum Sizes { S, M, L, XL, XXL }
 
+enum AvailableType { SHOP, HOME, SHOP_HOME }
 
+enum DepartmentType { LIMA, ICA, AREQUIPA, TACNA }
+enum ProvinceType { LIMA, NAZCA, HUARAZ, CHICLAYO }
+
+enum DistrictType {
+  SANBORJA,
+  SANISIDRO,
+  SURQUILLO,
+  SURCO,
+  MOLINA,
+  LINCE,
+  JESUSMARIA
+}

@@ -2,12 +2,20 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:responsive_screen/responsive_screen.dart';
+import 'package:service_products_business/bloc/products/products_bloc.dart';
 import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/route_transitions.dart';
+import 'package:service_products_business/pages/Main/main_page.dart';
 
-showAlert(BuildContext context, {String title, String subtitle, Widget child}) {
+showAlert(
+  BuildContext context, {
+  String title,
+  String subtitle,
+  Widget child,
+}) {
   final Function wp = Screen(context).wp;
   final Function hp = Screen(context).hp;
   if (Platform.isIOS) {
@@ -25,6 +33,7 @@ showAlert(BuildContext context, {String title, String subtitle, Widget child}) {
   }
   //ANDROID
   showDialog(
+    barrierDismissible: false,
     context: context,
     builder: (context) => AlertDialog(
       contentPadding: EdgeInsets.zero,
@@ -80,6 +89,146 @@ showAlert(BuildContext context, {String title, String subtitle, Widget child}) {
                     child: child,
                     animation: AnimationType.fadeIn,
                     replacement: true)),
+      ],
+    ),
+  );
+}
+
+showDiscardProduct(
+  BuildContext context, {
+  String title,
+  Widget child,
+}) {
+  final Function wp = Screen(context).wp;
+  final Function hp = Screen(context).hp;
+  if (Platform.isIOS) {
+    return showCupertinoDialog(
+      context: context,
+      builder: (context) => CupertinoAlertDialog(
+        title: Padding(
+          padding: EdgeInsets.symmetric(vertical: hp(1.5)),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: GoogleFonts.lato(
+                    fontWeight: FontWeight.bold, fontSize: wp(4.5)),
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          MaterialButton(
+              child: Text('Salir',
+                  style:
+                      GoogleFonts.lato(fontSize: wp(4), color: kwrongAnswer)),
+              elevation: 5,
+              textColor: kintroselected,
+              onPressed: () {
+                CustomRouteTransition(
+                    replacement: true, context: context, child: child);
+                BlocProvider.of<ProductsBloc>(context)
+                    .add(OnCleanProductData());
+              }),
+          MaterialButton(
+              child: Text(
+                'Seguir editando',
+                style: GoogleFonts.lato(fontSize: wp(4)),
+              ),
+              elevation: 5,
+              textColor: kintroselected,
+              onPressed: () => Navigator.pop(context)),
+        ],
+      ),
+    );
+  }
+  //ANDROID
+  showDialog(
+    barrierDismissible: false,
+    context: context,
+    builder: (context) => AlertDialog(
+      contentPadding: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(
+          Radius.circular(18),
+        ),
+      ),
+      content: Padding(
+        padding: EdgeInsets.only(top: hp(4)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.lato(
+                  fontWeight: FontWeight.bold, fontSize: wp(4.5)),
+            ),
+          ],
+        ),
+      ),
+      // title: Padding(
+      //   padding: EdgeInsets.symmetric(vertical: hp(1.5)),
+      //   child: Row(
+      //     mainAxisAlignment: MainAxisAlignment.center,
+      //     children: [
+      //       Text(
+      //         title,
+      //         textAlign: TextAlign.center,
+      //         style: GoogleFonts.lato(
+      //             fontWeight: FontWeight.bold, fontSize: wp(4.5)),
+      //       ),
+      //     ],
+      //   ),
+      // ),
+      // content: Column(
+      //   crossAxisAlignment: CrossAxisAlignment.center,
+      //   mainAxisSize: MainAxisSize.min,
+      //   children: [
+      //     Text(
+      //       title,
+      //       textAlign: TextAlign.center,
+      //       style: GoogleFonts.lato(
+      //           fontWeight: FontWeight.bold, fontSize: wp(4.5)),
+      //     ),
+      //     Container(
+      //       margin: EdgeInsets.only(top: 20),
+      //       color: kintroNotSelected,
+      //       width: double.infinity,
+      //       height: 1,
+      //     )
+      //   ],
+      // ),
+
+      actions: [
+        Padding(
+          padding: EdgeInsets.only(right: wp(6)),
+          child: MaterialButton(
+              child: Text('Salir',
+                  style:
+                      GoogleFonts.lato(fontSize: wp(4), color: kwrongAnswer)),
+              elevation: 5,
+              textColor: kintroselected,
+              onPressed: () {
+                CustomRouteTransition(
+                    replacement: true, context: context, child: child);
+                BlocProvider.of<ProductsBloc>(context)
+                    .add(OnCleanProductData());
+              }),
+        ),
+        Padding(
+          padding: EdgeInsets.only(right: wp(6)),
+          child: MaterialButton(
+              child: Text(
+                'Seguir editando',
+                style: GoogleFonts.lato(fontSize: wp(4)),
+              ),
+              elevation: 5,
+              textColor: kdarkcolor,
+              onPressed: () => Navigator.pop(context)),
+        ),
       ],
     ),
   );
