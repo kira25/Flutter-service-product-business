@@ -186,17 +186,22 @@ class OnUpdateProduct extends ProductsEvent {
 
 class OnLoadProductDataToEdit extends ProductsEvent {
   final StockType stockType;
- 
+
   final PriceType priceType;
   final String normalPrice;
   final String offerPrice;
+  final AdminStockType adminStockType;
 
-  OnLoadProductDataToEdit({this.stockType,  this.priceType,
-    this.normalPrice, this.offerPrice});
+  OnLoadProductDataToEdit(
+      {this.stockType,
+      this.priceType,
+      this.normalPrice,
+      this.offerPrice,
+      this.adminStockType});
 }
 
-class OnLoadProducDataAdminStock extends ProductsEvent{
-   final List<AdminProduct> adminStock;
+class OnLoadProducDataAdminStock extends ProductsEvent {
+  final List<AdminProduct> adminStock;
 
   OnLoadProducDataAdminStock({this.adminStock});
 }

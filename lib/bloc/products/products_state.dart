@@ -14,7 +14,7 @@ class ProductsState {
       this.isProductCreated = IsProductCreated.UNDEFINED,
       List<AdminProduct> adminStock,
       this.adminColorType,
-      this.adminStockType,
+      this.adminStockType = AdminStockType.ADMIN_STOCK_UNIQUE,
       this.priceType = PriceType.NORMAL,
       this.normalPrice,
       this.offerPrice,

@@ -104,3 +104,15 @@ class OnDeleteService extends ServicesEvent{
 
   OnDeleteService(this.id);
 }
+
+class OnLoadServiceToEdit extends ServicesEvent{
+
+}
+
+class OnUpdateSerice extends ServicesEvent{
+  final String id;
+
+  OnUpdateSerice(this.id);
+
+
+}

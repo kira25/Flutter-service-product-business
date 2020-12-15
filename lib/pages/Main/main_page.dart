@@ -23,6 +23,8 @@ import 'package:service_products_business/pages/AddProducts/add_products_page.da
 import 'package:service_products_business/pages/AddServices/add_services_page.dart';
 import 'package:service_products_business/pages/EditProduct/EditProduct.dart';
 import 'package:service_products_business/pages/Login/login_page.dart';
+import 'package:service_products_business/widgets/search_products.dart';
+import 'package:service_products_business/widgets/search_services.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -395,8 +397,17 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         CircleAvatar(
                           radius: wp(7),
                           backgroundImage: Image.network(
-                                  state.shopResponse.shop.profilePhoto)
-                              .image,
+                            state.shopResponse.shop.profilePhoto,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) {
+                                return child;
+                              } else {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                            },
+                          ).image,
                         ),
                         SizedBox(
                           width: wp(3),
@@ -505,6 +516,26 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   onPressed: () => CustomRouteTransition(
                       context: context, child: AddServicesPage())),
               appBar: AppBar(
+                  actions: [
+                    IconButton(
+                        icon: Icon(
+                          Icons.search,
+                          color: kdarkcolor,
+                        ),
+                        onPressed: state.isServices == true
+                            ? () {
+                                showSearch(
+                                    context: context,
+                                    delegate: SearchServices(
+                                        BlocProvider.of<ServicesBloc>(context)
+                                            .state
+                                            .serviceResponse
+                                            .service,
+                                        hp,
+                                        wp));
+                              }
+                            : null)
+                  ],
                   centerTitle: true,
                   elevation: 4,
                   backgroundColor: kprimarycolorlight,
@@ -821,6 +852,24 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         context: context, child: AddProducts());
                   }),
               appBar: AppBar(
+                  actions: [
+                    IconButton(
+                        icon: Icon(
+                          Icons.search,
+                          color: kdarkcolor,
+                        ),
+                        onPressed: () {
+                          showSearch(
+                              context: context,
+                              delegate: SearchProducts(
+                                  BlocProvider.of<ProductsBloc>(context)
+                                      .state
+                                      .productResponse
+                                      .product,
+                                  hp,
+                                  wp));
+                        })
+                  ],
                   centerTitle: true,
                   elevation: 4,
                   backgroundColor: kprimarycolorlight,
@@ -848,64 +897,58 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           productCategory: ProductCategory.HOME,
                           hp: hp,
                           wp: wp);
-                    }
-                    if (state.showProducts == ProductCategory.MAN) {
+                    } else if (state.showProducts == ProductCategory.MAN) {
                       return ItemsCategoryProduct(
                           refreshController: _refresherProduct,
                           state: state,
                           productCategory: ProductCategory.MAN,
                           hp: hp,
                           wp: wp);
-                    }
-                    if (state.showProducts == ProductCategory.KID) {
+                    } else if (state.showProducts == ProductCategory.KID) {
                       return ItemsCategoryProduct(
                           refreshController: _refresherProduct,
                           state: state,
                           productCategory: ProductCategory.KID,
                           hp: hp,
                           wp: wp);
-                    }
-                    if (state.showProducts == ProductCategory.PET) {
+                    } else if (state.showProducts == ProductCategory.PET) {
                       return ItemsCategoryProduct(
                           refreshController: _refresherProduct,
                           state: state,
                           productCategory: ProductCategory.PET,
                           hp: hp,
                           wp: wp);
-                    }
-                    if (state.showProducts == ProductCategory.WOMEN) {
+                    } else if (state.showProducts == ProductCategory.WOMEN) {
                       return ItemsCategoryProduct(
                           refreshController: _refresherProduct,
                           state: state,
                           productCategory: ProductCategory.WOMEN,
                           hp: hp,
                           wp: wp);
-                    }
-                    if (state.showProducts == ProductCategory.RESTAURANT) {
+                    } else if (state.showProducts ==
+                        ProductCategory.RESTAURANT) {
                       return ItemsCategoryProduct(
                           refreshController: _refresherProduct,
                           state: state,
                           productCategory: ProductCategory.RESTAURANT,
                           hp: hp,
                           wp: wp);
-                    }
-                    if (state.showProducts == ProductCategory.HEALTH) {
+                    } else if (state.showProducts == ProductCategory.HEALTH) {
                       return ItemsCategoryProduct(
                           refreshController: _refresherProduct,
                           state: state,
                           productCategory: ProductCategory.HEALTH,
                           hp: hp,
                           wp: wp);
-                    }
-                    if (state.showProducts == ProductCategory.TECHNOLOGY) {
+                    } else if (state.showProducts ==
+                        ProductCategory.TECHNOLOGY) {
                       return ItemsCategoryProduct(
                           refreshController: _refresherProduct,
                           state: state,
                           productCategory: ProductCategory.TECHNOLOGY,
                           hp: hp,
                           wp: wp);
-                    }
-                    if (state.productResponse == null) {
+                    } else if (state.productResponse == null) {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -934,8 +977,9 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           )
                         ],
                       );
+                    } else {
+                      return Container();
                     }
-                    return Container();
                   },
                 ),
               )),
@@ -1096,6 +1140,34 @@ class ItemsCategoryProduct extends StatelessWidget {
                                 .toList();
                           }
 
+                          // BlocProvider.of<ProductsBloc>(context).add(
+                          //     OnLoadProductDataToEdit(
+                          //         adminStockType: handleIntToStockType(
+                          //                     result[index].stockType) ==
+                          //                 StockType.UNIQUE
+                          //             ? AdminStockType.ADMIN_STOCK_UNIQUE
+                          //             : handleIntToStockType(
+                          //                         result[index].stockType) ==
+                          //                     StockType.BY_COLOR
+                          //                 ? AdminStockType.ADMIN_STOCK_COLOR
+                          //                 : handleIntToStockType(result[index]
+                          //                             .stockType) ==
+                          //                         StockType.BY_SIZE
+                          //                     ? AdminStockType
+                          //                         .ADMIN_STOCK_BY_SIZE
+                          //                     : handleIntToStockType(
+                          //                                 result[index]
+                          //                                     .stockType) ==
+                          //                             StockType.BY_COLOR_SIZE
+                          //                         ? AdminStockType
+                          //                             .ADMIN_STOCK_BY_COLOR_SIZE
+                          //                         : AdminStockType
+                          //                             .ADMIN_STOCK_UNIQUE,
+                          //         stockType: handleIntToStockType(
+                          //             result[index].stockType),
+                          //         priceType: handleIntToPriceType(
+                          //             result[index].priceType)));
+
                           CustomRouteTransition(
                               context: context,
                               child: EditProduct(
@@ -1141,6 +1213,16 @@ class ItemsCategoryProduct extends StatelessWidget {
                                   : Image.network(
                                       result[index].imageProduct[0].product,
                                       height: hp(15),
+                                      loadingBuilder:
+                                          (context, child, loadingProgress) {
+                                        if (loadingProgress == null) {
+                                          return child;
+                                        } else {
+                                          return Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        }
+                                      },
                                     ),
                             ],
                           ),

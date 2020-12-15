@@ -26,6 +26,7 @@ class EditProduct extends StatefulWidget {
   final PriceType priceType;
   final String id;
   final String name;
+  final ProductsState state;
 
   const EditProduct(
       {this.normalPrice,
@@ -35,7 +36,8 @@ class EditProduct extends StatefulWidget {
       this.stockType,
       this.priceType,
       this.id,
-      this.name});
+      this.name,
+      this.state});
 
   @override
   _EditProductState createState() => _EditProductState();
@@ -111,9 +113,17 @@ class _EditProductState extends State<EditProduct> {
             child: Column(
               children: [
                 _header(context, hp, wp),
+                SizedBox(
+                  height: hp(3),
+                ),
+                Text('${widget.name}',
+                    style: GoogleFonts.lato(
+                      fontSize: wp(4.5),
+                      fontWeight: FontWeight.bold,
+                    )),
                 BlocBuilder<ProductsBloc, ProductsState>(
                     builder: (context, state) {
-                  return _form(context, hp, wp, state);
+                  return _form(context, hp, wp,  state);
                 })
               ],
             ),
@@ -129,15 +139,8 @@ class _EditProductState extends State<EditProduct> {
       height: hp(76),
       margin: EdgeInsets.only(left: 30, right: 30, top: 20),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('${widget.name}',
-              style: GoogleFonts.lato(
-                fontSize: wp(4.5),
-                fontWeight: FontWeight.bold,
-              )),
-          SizedBox(
-            height: hp(3),
-          ),
           Text('Stock',
               style: GoogleFonts.lato(color: Colors.black, fontSize: wp(4.5))),
           SizedBox(
@@ -145,18 +148,18 @@ class _EditProductState extends State<EditProduct> {
           ),
           //STOCK TYPE
           ProductCustomInput(
+            isCompleted: state.stocktype != null ? true : false,
             hp: hp(7),
             fontSize: wp(4),
             iconSize: wp(5),
             function: () => displayModalBottomSheetStock(context),
-            text: state.stocktype != null
-                ? handleStockType(state.stocktype)
-                : 'Unico',
+            text: handleStockType(state.stocktype),
             icon: Icons.keyboard_arrow_down,
           ),
           //ADMIN STOCK TYPE
           state.stocktype == StockType.UNIQUE
               ? CustomInput(
+                  hp: hp(7),
                   focusNode: fquantity,
                   textInputAction: TextInputAction.next,
                   onFocus: () {
@@ -188,9 +191,7 @@ class _EditProductState extends State<EditProduct> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          state.adminStockType != null
-                              ? handleAdminStockType(state.adminStockType)
-                              : 'Cantidad',
+                          handleAdminStockType(state.adminStockType),
                           style: GoogleFonts.oswald(
                               color: state.adminStockType != null
                                   ? kintroselected
@@ -217,17 +218,12 @@ class _EditProductState extends State<EditProduct> {
           ),
           //PRICE TYPE
           ProductCustomInput(
-            fontSize: wp(4),
-            iconSize: wp(5),
-            hp: hp(7),
-            function: () => displayModalBottomSheetPrice(context),
-            icon: Icons.arrow_forward_ios,
-            text: state.priceType != null
-                ? handlePriceType(state.priceType)
-                : widget.priceType != null
-                    ? handlePriceType(widget.priceType)
-                    : 'Normal',
-          ),
+              fontSize: wp(4),
+              iconSize: wp(5),
+              hp: hp(7),
+              function: () => displayModalBottomSheetPrice(context),
+              icon: Icons.arrow_forward_ios,
+              text: handlePriceType(state.priceType)),
           //NORMAL PRICE
           CustomInput(
               keyboardType: TextInputType.number,

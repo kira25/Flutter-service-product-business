@@ -98,9 +98,10 @@ class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
     print('OnLoadShopServices');
     final resp = await _servicesService.getServiceByUser();
     if (resp[0]) {
-      return state.copyWith(serviceResponse: resp[1],isServices: true);
+      return state.copyWith(serviceResponse: resp[1], isServices: true);
     } else {
-      return state.copyWith(serviceResponse: null,isServices: false);
+      return state.copyWith(
+          serviceResponse: ServiceResponse(), isServices: false);
     }
   }
 
@@ -160,20 +161,19 @@ class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
       OnCleanServiceData event, ServicesState state) {
     print('OnCleanServiceData');
     return state.copyWith(
-      serviceName: null,
-      description: null,
-      deliveryTime: null,
-      attentionHours: null,
-      availableType: AvailableType.SHOP,
-      departmentType: DepartmentType.UNDEFINED,
-      provinceType: ProvinceType.UNDEFINED,
-      districtType: DistrictType.UNDEFINED,
-      address: null,
-      districtAvailable: [],
-      priceType: PriceType.NORMAL,
-      normalPrice: null,
-      offerPrice: null,
-      filesService: []
-    );
+        serviceName: null,
+        description: null,
+        deliveryTime: null,
+        attentionHours: null,
+        availableType: AvailableType.SHOP,
+        departmentType: DepartmentType.UNDEFINED,
+        provinceType: ProvinceType.UNDEFINED,
+        districtType: DistrictType.UNDEFINED,
+        address: null,
+        districtAvailable: [],
+        priceType: PriceType.NORMAL,
+        normalPrice: null,
+        offerPrice: null,
+        filesService: []);
   }
 }

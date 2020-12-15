@@ -315,24 +315,20 @@ void displayModalBottomSheetStock(context) {
                   child: Container(
                     margin: EdgeInsets.only(left: 5, right: 10),
                     height: 50,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Stack(
                       children: [
-                        Row(
-                          children: [
-                            IconButton(
-                                icon: Icon(Icons.arrow_back),
-                                onPressed: () => Navigator.pop(context)),
-                            SizedBox(
-                              width: wp(22),
-                            ),
-                            Text(
-                              'Stock',
-                              style: GoogleFonts.lato(
-                                  fontWeight: FontWeight.bold, fontSize: 15),
-                            ),
-                          ],
+                        Align(alignment: Alignment.centerLeft,
+                                                  child: IconButton(
+                              icon: Icon(Icons.arrow_back),
+                              onPressed: () => Navigator.pop(context)),
+                        ),
+                     
+                        Align(alignment: Alignment.center,
+                                                  child: Text(
+                            'Stock',
+                            style: GoogleFonts.lato(
+                                fontWeight: FontWeight.bold, fontSize: 15),
+                          ),
                         ),
                       ],
                     ),

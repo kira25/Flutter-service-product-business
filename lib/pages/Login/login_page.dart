@@ -42,6 +42,8 @@ class _LoginPageState extends State<LoginPage> {
     fpassword.dispose();
   }
 
+ 
+
   @override
   Widget build(BuildContext context) {
     final Function wp = Screen(context).wp;
@@ -98,9 +100,10 @@ class _LoginPageState extends State<LoginPage> {
                                 CustomInput(
                                     autofocus: false,
                                     focusNode: femail,
-                                    onFocus: (){
+                                    onFocus: () {
                                       femail.unfocus();
-                                      FocusScope.of(context).requestFocus(fpassword);
+                                      FocusScope.of(context)
+                                          .requestFocus(fpassword);
                                     },
                                     textInputAction: TextInputAction.next,
                                     function: (value) =>
@@ -125,10 +128,9 @@ class _LoginPageState extends State<LoginPage> {
                                     textEditingController: emailCtrl),
                                 CustomInput(
                                     autofocus: false,
-                                       focusNode: fpassword,
-                                    onFocus: (){
+                                    focusNode: fpassword,
+                                    onFocus: () {
                                       fpassword.unfocus();
-                                      
                                     },
                                     textInputAction: TextInputAction.done,
                                     function: (value) =>

@@ -10,10 +10,28 @@ import 'package:service_products_business/pages/Login/login_page.dart';
 import 'package:service_products_business/pages/Main/main_page.dart';
 import 'package:service_products_business/widgets/logo.dart';
 
-class SplashPage extends StatelessWidget {
+class SplashPage extends StatefulWidget {
+  @override
+  _SplashPageState createState() => _SplashPageState();
+}
+
+class _SplashPageState extends State<SplashPage> {
+  @override
+  void didChangeDependencies() {
+    precacheImage(AssetImage('./assets/store_manager.jpg'), context);
+    precacheImage(
+      AssetImage('./assets/splash_1.jpg'),
+      context,
+    );
+    precacheImage(AssetImage('./assets/splash_2.jpg'), context);
+    precacheImage(AssetImage('./assets/splash_3.jpg'), context);
+    super.didChangeDependencies();
+  }
+
   final Shader linearGradient = LinearGradient(
     colors: <Color>[primaryColor, secondaryColor],
   ).createShader(Rect.fromLTWH(0.0, 0.0, 200.0, 70.0));
+
   @override
   Widget build(BuildContext context) {
     final Function wp = Screen(context).wp;

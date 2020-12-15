@@ -40,6 +40,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       yield state.copyWith(description: event.description);
     } else if (event is OnStockType) {
       yield state.copyWith(stocktype: event.stockType);
+      print(state.stocktype);
     } else if (event is OnStockChange) {
       yield _mapOnStockChange(event, state);
     } else if (event is OnPriceTypeChange) {
@@ -113,6 +114,9 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     } else if (event is OnLoadProductDataToEdit) {
       yield _mapOnLoadProductDataToEdit(event, state);
       print(state.adminStock[0]);
+      print(state.stocktype);
+      print(state.adminStockType);
+      print(state.priceType);
     } else if (event is OnLoadProducDataAdminStock) {
       print('OnLoadProducDataAdminStock');
       yield state.copyWith(adminStock: event.adminStock);
@@ -162,11 +166,9 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       OnLoadProductDataToEdit event, ProductsState state) {
     print('OnLoadProductDataToEdit');
     return state.copyWith(
-      stocktype: event.stockType,
-      priceType: event.priceType,
-      normalPrice: event.normalPrice,
-      offerPrice: event.offerPrice,
-    );
+        stocktype: event.stockType,
+        priceType: event.priceType,
+        adminStockType: event.adminStockType);
   }
 
   Stream<ProductsState> _mapOnDeleteProduct(
