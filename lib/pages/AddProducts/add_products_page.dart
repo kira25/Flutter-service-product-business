@@ -8,13 +8,13 @@ import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/enums.dart';
 import 'package:service_products_business/helpers/products.dart';
 import 'package:service_products_business/helpers/route_transitions.dart';
-import 'package:service_products_business/helpers/show_alert.dart';
 import 'package:service_products_business/pages/Category/category_page.dart';
 import 'package:service_products_business/pages/Main/main_page.dart';
 import 'package:service_products_business/pages/ProductImage/product_image_page.dart';
 import 'package:service_products_business/pages/Stock/stock_page.dart';
 import 'package:service_products_business/widgets/custom_fab.dart';
 import 'package:service_products_business/widgets/custom_input.dart';
+import 'package:service_products_business/widgets/header.dart';
 import 'package:service_products_business/widgets/product_custom_input.dart';
 
 // ignore: must_be_immutable
@@ -78,7 +78,18 @@ class _AddProductsState extends State<AddProducts> {
             child: Container(
           child: Column(
             children: [
-              _header(context),
+              Header(
+                title: 'Nuevo producto',
+                subtitle: '1/2',
+                dialogTitle:
+                    'Se descartará la informacion de tu\n nuevo producto',
+                function: () {
+                  CustomRouteTransition(
+                      replacement: true, context: context, child: MainPage());
+                  BlocProvider.of<ProductsBloc>(context)
+                      .add(OnCleanProductData());
+                },
+              ),
               //PRODUCT INFORMATION
               BlocBuilder<ProductsBloc, ProductsState>(
                 builder: (context, state) {
@@ -110,7 +121,7 @@ class _AddProductsState extends State<AddProducts> {
           ),
           //NAME
           CustomInput(
-            autofocus: false,
+              autofocus: false,
               focusNode: fproductname,
               textInputAction: TextInputAction.next,
               onFocus: () {
@@ -125,6 +136,7 @@ class _AddProductsState extends State<AddProducts> {
               textEditingController: name),
           //DESCRIPTION
           CustomInput(
+            autofocus: false,
             focusNode: fdescription,
             textInputAction: TextInputAction.next,
             onFocus: () {
@@ -142,8 +154,10 @@ class _AddProductsState extends State<AddProducts> {
           ),
           //CATEGORY
           GestureDetector(
-            onTap: () =>
-                CustomRouteTransition(context: context, child: CategoryPage()),
+            onTap: () => CustomRouteTransition(
+                context: context,
+                child: CategoryPage(),
+                animation: AnimationType.fadeIn),
             child: Container(
               height: hp(7),
               margin: EdgeInsets.only(bottom: 20),
@@ -180,7 +194,8 @@ class _AddProductsState extends State<AddProducts> {
           //STOCK TYPE
           ProductCustomInput(
             hp: hp(7),
-            wp: wp,
+            fontSize: wp(4),
+            iconSize: wp(5),
             function: () => displayModalBottomSheetStock(context),
             text: state.stocktype != null
                 ? handleStockType(state.stocktype)
@@ -190,6 +205,7 @@ class _AddProductsState extends State<AddProducts> {
           //ADMIN STOCK TYPE
           state.stocktype == StockType.UNIQUE
               ? CustomInput(
+                  autofocus: false,
                   focusNode: fquantity,
                   textInputAction: TextInputAction.next,
                   onFocus: () {
@@ -250,7 +266,8 @@ class _AddProductsState extends State<AddProducts> {
           ),
           //PRICE TYPE
           ProductCustomInput(
-            wp: wp,
+            fontSize: wp(4),
+            iconSize: wp(5),
             hp: hp(7),
             function: () => displayModalBottomSheetPrice(context),
             icon: Icons.arrow_forward_ios,
@@ -260,6 +277,7 @@ class _AddProductsState extends State<AddProducts> {
           ),
           //NORMAL PRICE
           CustomInput(
+              autofocus: false,
               keyboardType: TextInputType.number,
               focusNode: fnormalprice,
               textInputAction: state.priceType == PriceType.OFFERT
@@ -276,6 +294,7 @@ class _AddProductsState extends State<AddProducts> {
               textEditingController: normalPrice),
           state.priceType == PriceType.OFFERT
               ? CustomInput(
+                  autofocus: false,
                   keyboardType: TextInputType.number,
                   focusNode: fofferprice,
                   textInputAction: TextInputAction.done,
@@ -293,55 +312,57 @@ class _AddProductsState extends State<AddProducts> {
     );
   }
 
-  Widget _header(BuildContext context) {
-    return Material(
-      elevation: 5,
-      child: Container(
-        margin: EdgeInsets.only(left: 5, right: 10),
-        height: 50,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                IconButton(
-                    icon: Icon(Icons.arrow_back),
-                    onPressed: () {
-                      showDiscardProduct(context,
-                          child: MainPage(),
-                          title:
-                              'Se descartará la informacion de tu\n nuevo producto',);
-                    }),
-                Text(
-                  'Nuevo producto',
-                  style: GoogleFonts.lato(
-                      fontWeight: FontWeight.bold, fontSize: 15),
-                ),
-              ],
-            ),
-            Container(
-              height: 30,
-              width: 60,
-              child: Center(
-                  child: Text(
-                '1/2',
-                style: GoogleFonts.lato(color: kprimarycolorlight),
-              )),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                gradient: LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                  colors: [
-                    primaryColor,
-                    secondaryColor,
-                  ],
-                ),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget _header(BuildContext context) {
+  //   return Material(
+  //     elevation: 5,
+  //     child: Container(
+  //       margin: EdgeInsets.only(left: 5, right: 10),
+  //       height: 50,
+  //       child: Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //         children: [
+  //           Row(
+  //             children: [
+  //               IconButton(
+  //                   icon: Icon(Icons.arrow_back),
+  //                   onPressed: () {
+  //                     showDiscardProduct(
+  //                       context,
+
+  //                       title:
+  //                           'Se descartará la informacion de tu\n nuevo producto',
+  //                     );
+  //                   }),
+  //               Text(
+  //                 'Nuevo producto',
+  //                 style: GoogleFonts.lato(
+  //                     fontWeight: FontWeight.bold, fontSize: 15),
+  //               ),
+  //             ],
+  //           ),
+  //           Container(
+  //             height: 30,
+  //             width: 60,
+  //             child: Center(
+  //                 child: Text(
+  //               '1/2',
+  //               style: GoogleFonts.lato(color: kprimarycolorlight),
+  //             )),
+  //             decoration: BoxDecoration(
+  //               borderRadius: BorderRadius.circular(20),
+  //               gradient: LinearGradient(
+  //                 begin: Alignment.centerLeft,
+  //                 end: Alignment.centerRight,
+  //                 colors: [
+  //                   primaryColor,
+  //                   secondaryColor,
+  //                 ],
+  //               ),
+  //             ),
+  //           )
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 }

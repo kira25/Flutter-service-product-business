@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Material App',
+        title: 'Kallpa Business',
         initialRoute: SPLASH_PAGE,
         routes: appRoutes,
       ),

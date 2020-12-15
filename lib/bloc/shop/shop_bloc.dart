@@ -19,6 +19,8 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
 
   ShopService _shopService = ShopService();
 
+  List<File> filesImage = [];
+
   @override
   Stream<ShopState> mapEventToState(
     ShopEvent event,
@@ -49,12 +51,16 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
       yield await _mapOnProfileTitle(event, state);
     } else if (event is OnRemoveProfilePhoto) {
       yield _mapOnRemoveProfilePhoto(event, state);
+      print(state.profilePhoto);
     } else if (event is OnRemoveProfileTitle) {
-      yield state.copyWith(profileTitle: null);
+      //REMOVE PROFILE TITLE
+      yield _mapOnRemoveProfileTitle(event, state);
     } else if (event is OnLoadShopData) {
       yield await _mapOnLoadShopInfo(event, state);
     } else if (event is OnTabIndexChange) {
       yield state.copyWith(tabindex: event.index);
+    } else if (event is OnCleanShopData) {
+      yield state.copyWith(profilePhoto: null);
     }
   }
 
@@ -70,35 +76,56 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
     }
   }
 
+  ShopState _mapOnRemoveProfileTitle(
+      OnRemoveProfileTitle event, ShopState state) {
+    print('OnRemoveProfileTitle');
+    filesImage = [...state.listImages];
+    filesImage[1] = null;
+    print(filesImage);
+
+    return state.copyWith(profilePhoto: null, imageList: filesImage);
+  }
+
   Future<ShopState> _mapOnProfileTitle(
       OnProfileTitle event, ShopState state) async {
+    filesImage = [...state.listImages];
     final profilePicker = ImagePicker();
     final picketFile =
         await profilePicker.getImage(source: ImageSource.gallery);
     print(File(picketFile.path).uri);
+    filesImage[1] = File(picketFile.path);
     if (picketFile != null) {
-      return state.copyWith(profileTitle: File(picketFile.path));
+      return state.copyWith(
+          profileTitle: File(picketFile.path), imageList: filesImage);
     } else {
-      return state.copyWith(profileTitle: null);
+      return state.copyWith(profileTitle: null, imageList: state.listImages);
     }
   }
 
   ShopState _mapOnRemoveProfilePhoto(
       OnRemoveProfilePhoto event, ShopState state) {
     print('OnRemoveProfilePhoto');
-    return state.copyWith(profilePhoto: null);
+    filesImage = [...state.listImages];
+    filesImage[0] = null;
+    print(filesImage);
+
+    return state.copyWith(profilePhoto: null, imageList: filesImage);
   }
 
   Future<ShopState> _mapOnProfilePhoto(
       OnProfilePhoto event, ShopState state) async {
+    filesImage = [...state.listImages];
     final profilePicker = ImagePicker();
     final picketFile =
         await profilePicker.getImage(source: ImageSource.gallery);
     print(File(picketFile.path).uri);
+    filesImage[0] = File(picketFile.path);
+
     if (picketFile != null) {
-      return state.copyWith(profilePhoto: File(picketFile.path));
+      return state.copyWith(
+          profilePhoto: File(picketFile.path), imageList: filesImage);
     } else {
-      return state.copyWith(profilePhoto: null);
+      return state.copyWith(profilePhoto: null, imageList: state.listImages);
     }
   }
 
@@ -134,13 +161,18 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
   ShopState _mapFacebookChange(FacebookChange event, ShopState state) {
     final facebook = Facebook.dirty(event.facebook);
     return state.copyWith(
-        facebook: facebook, shopStatus: Formz.validate([facebook]));
+        facebook: facebook,
+        shopStatus:
+            facebook == null ? FormzStatus.valid : Formz.validate([facebook]));
   }
 
   ShopState _mapInstagramChange(InstagramChange event, ShopState state) {
     final instagram = Instagram.dirty(event.instagram);
     return state.copyWith(
-        instagram: instagram, shopStatus: Formz.validate([instagram]));
+        instagram: instagram,
+        shopStatus: instagram == null
+            ? FormzStatus.valid
+            : Formz.validate([instagram]));
   }
 
   ShopState _mapBankAccountChange(BankAccountChange event, ShopState state) {
@@ -176,8 +208,8 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
           state.interbankAccount.value,
           "",
           "");
-      final update =
-          await _shopService.updateShop(state.profilePhoto, state.profileTitle);
+      final update = await _shopService.updateShop(
+          state.listImages[0], state.listImages[1]);
       print(resp);
       print(update);
       if (resp && update) {

@@ -8,8 +8,7 @@ import 'package:service_products_business/repository/preferences/preferences_rep
 class ShopService {
   ShopService._privateConstructor();
 
-  static final ShopService _instance =
-   ShopService._privateConstructor();
+  static final ShopService _instance = ShopService._privateConstructor();
 
   factory ShopService() {
     return _instance;
@@ -68,8 +67,12 @@ class ShopService {
     final token = await _preferencesRepository.getData('token');
 
     FormData data = FormData.fromMap({
-      "profilePhoto": await MultipartFile.fromFile(profilePhoto.path) ?? "",
-      "profileTitle": await MultipartFile.fromFile(profileTitle.path) ?? ""
+      "profilePhoto": profilePhoto != null
+          ? await MultipartFile.fromFile(profilePhoto.path)
+          : null,
+      "profileTitle": profileTitle != null
+          ? await MultipartFile.fromFile(profileTitle.path)
+          : null
     });
     final resp = await _dio.put(_shopUpdate,
         data: data,

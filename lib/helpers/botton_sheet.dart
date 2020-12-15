@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:grouped_buttons/grouped_buttons.dart';
 import 'package:responsive_screen/responsive_screen.dart';
 import 'package:service_products_business/bloc/products/products_bloc.dart';
+import 'package:service_products_business/bloc/services/services_bloc.dart';
 import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/enums.dart';
-
-
-
-
-
+import 'package:service_products_business/widgets/custom_checkbox.dart';
 
 void displayModalBottomSheetAdminStock(context, int indexStock) {
   final Function wp = Screen(context).wp;
@@ -129,6 +127,89 @@ void displayModalBottomSheetAdminStock(context, int indexStock) {
                       ),
                     ],
                   ),
+                ),
+              ],
+            ));
+      });
+}
+
+//SERVICE PRICE TYPE
+void displayModalBottomSheetPriceService(context) {
+  final Function wp = Screen(context).wp;
+  showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (context) {
+        return Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height / 4.0 * 3.0,
+            ),
+            child: Wrap(
+              children: <Widget>[
+                Material(
+                  elevation: 5,
+                  child: Container(
+                    margin: EdgeInsets.only(left: 5, right: 10),
+                    height: 50,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            IconButton(
+                                icon: Icon(Icons.arrow_back),
+                                onPressed: () => Navigator.pop(context)),
+                            SizedBox(
+                              width: wp(22),
+                            ),
+                            Text(
+                              'Nuevo servicio',
+                              style: GoogleFonts.lato(
+                                  fontWeight: FontWeight.bold, fontSize: 15),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                BlocBuilder<ServicesBloc, ServicesState>(
+                  builder: (context, state) {
+                    return Container(
+                      padding: EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Normal'),
+                              IconButton(
+                                  icon: state.priceType == PriceType.NORMAL
+                                      ? Icon(FontAwesomeIcons.dotCircle)
+                                      : Icon(FontAwesomeIcons.circle),
+                                  onPressed: () =>
+                                      BlocProvider.of<ServicesBloc>(context)
+                                          .add(OnPriceType(PriceType.NORMAL)))
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('¡Oferta!'),
+                              IconButton(
+                                  icon: state.priceType == PriceType.OFFERT
+                                      ? Icon(FontAwesomeIcons.dotCircle)
+                                      : Icon(FontAwesomeIcons.circle),
+                                  onPressed: () =>
+                                      BlocProvider.of<ServicesBloc>(context)
+                                          .add(OnPriceType(PriceType.OFFERT)))
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
               ],
             ));
@@ -331,6 +412,198 @@ void displayModalBottomSheetStock(context) {
                                             .ADMIN_STOCK_BY_COLOR_SIZE));
                                     BlocProvider.of<ProductsBloc>(context).add(
                                         OnStockType(StockType.BY_COLOR_SIZE));
+                                  })
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ));
+      });
+}
+
+void displayModalBottomSheetDistrictAvailable(context) {
+  final Function wp = Screen(context).wp;
+  showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (context) {
+        return Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height / 4.0 * 3.0,
+            ),
+            child: ListView(
+              children: <Widget>[
+                Material(
+                  elevation: 5,
+                  child: Container(
+                    margin: EdgeInsets.only(left: 5, right: 10),
+                    height: 50,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            IconButton(
+                                icon: Icon(Icons.arrow_back),
+                                onPressed: () => Navigator.pop(context)),
+                            SizedBox(
+                              width: wp(15),
+                            ),
+                            Text(
+                              'Disponibilidad en distritos',
+                              style: GoogleFonts.lato(
+                                  fontWeight: FontWeight.bold, fontSize: 15),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                BlocBuilder<ServicesBloc, ServicesState>(
+                  buildWhen: (previous, current) =>
+                      previous.districtAvailable != current.districtAvailable,
+                  builder: (context, state) {
+                    return CustomCheckBox(
+                      state: state,
+                      itemBuilder: (checkBox, label, index) {
+                        return Container(
+                          child: ListTile(
+                            title: label,
+                            trailing: checkBox,
+                          ),
+                        );
+                      },
+                      wp: wp(35),
+                      labels: [
+                        DistrictType.ANCON,
+                        DistrictType.ATE,
+                        DistrictType.BARRANCO,
+                        DistrictType.BRENA,
+                        DistrictType.CARABAYLLO,
+                        DistrictType.COMAS,
+                        DistrictType.JESUSMARIA,
+                        DistrictType.LIMA,
+                        DistrictType.LINCE,
+                        DistrictType.LURIGANCHO,
+                        DistrictType.MOLINA,
+                        DistrictType.OLIVOS,
+                        DistrictType.SANBORJA,
+                        DistrictType.SANISIDRO,
+                        DistrictType.SURCO,
+                        DistrictType.SURQUILLO
+                      ],
+                      onSelected: (selected) =>
+                          BlocProvider.of<ServicesBloc>(context)
+                              .add(OnDistrictAvailable(selected)),
+                    );
+                  },
+                ),
+                MaterialButton(
+                    child: Text('Limpiar seleccion'),
+                    onPressed: () => BlocProvider.of<ServicesBloc>(context)
+                        .add(OnDistrictAvailable([])))
+              ],
+            ));
+      });
+}
+
+void displayModalBottomSheetAvailableType(context) {
+  final Function wp = Screen(context).wp;
+  showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (context) {
+        return Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height / 4.0 * 3.0,
+            ),
+            child: Wrap(
+              children: <Widget>[
+                Material(
+                  elevation: 5,
+                  child: Container(
+                    margin: EdgeInsets.only(left: 5, right: 10),
+                    height: 50,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            IconButton(
+                                icon: Icon(Icons.arrow_back),
+                                onPressed: () => Navigator.pop(context)),
+                            SizedBox(
+                              width: wp(22),
+                            ),
+                            Text(
+                              'Disponibilidad',
+                              style: GoogleFonts.lato(
+                                  fontWeight: FontWeight.bold, fontSize: 15),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                BlocBuilder<ServicesBloc, ServicesState>(
+                  buildWhen: (previous, current) =>
+                      previous.availableType != current.availableType,
+                  builder: (context, state) {
+                    return Container(
+                      padding: EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('En tienda'),
+                              IconButton(
+                                  icon:
+                                      state.availableType == AvailableType.SHOP
+                                          ? Icon(FontAwesomeIcons.dotCircle)
+                                          : Icon(FontAwesomeIcons.circle),
+                                  onPressed: () {
+                                    BlocProvider.of<ServicesBloc>(context).add(
+                                        OnAvailableType(AvailableType.SHOP));
+                                  })
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('A domicilio'),
+                              IconButton(
+                                  icon:
+                                      state.availableType == AvailableType.HOME
+                                          ? Icon(FontAwesomeIcons.dotCircle)
+                                          : Icon(FontAwesomeIcons.circle),
+                                  onPressed: () {
+                                    BlocProvider.of<ServicesBloc>(context).add(
+                                        OnAvailableType(AvailableType.HOME));
+                                  })
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Tienda / Domicilio'),
+                              IconButton(
+                                  icon: state.availableType ==
+                                          AvailableType.SHOP_HOME
+                                      ? Icon(FontAwesomeIcons.dotCircle)
+                                      : Icon(FontAwesomeIcons.circle),
+                                  onPressed: () {
+                                    BlocProvider.of<ServicesBloc>(context).add(
+                                        OnAvailableType(
+                                            AvailableType.SHOP_HOME));
                                   })
                             ],
                           ),

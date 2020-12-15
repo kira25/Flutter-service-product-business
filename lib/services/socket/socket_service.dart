@@ -30,12 +30,12 @@ class SocketService {
       'autoConnect': true,
       'forceNew': true //forzar una nueva sesion de conexion al socket
       ,
-      'extraHeaders': {'x-token': token}
     });
 
     //Listen on connect
     _socket.on('connect', (_) {
       this._serverStatus = ServerStatus.Online;
+      print('Connected');
     });
     //Listen on connecting
     _socket.on('connecting', (_) {

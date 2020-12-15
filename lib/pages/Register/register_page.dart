@@ -14,15 +14,62 @@ import 'package:formz/formz.dart';
 
 enum documentType { DNI }
 
-class RegisterPage extends StatelessWidget {
+class RegisterPage extends StatefulWidget {
+  @override
+  _RegisterPageState createState() => _RegisterPageState();
+}
+
+class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController firstname = TextEditingController();
+
   final TextEditingController lastname = TextEditingController();
+
   final TextEditingController identifier = TextEditingController();
+
   final TextEditingController cellphone = TextEditingController();
+
   final TextEditingController shopName = TextEditingController();
+
   final TextEditingController email = TextEditingController();
+
   final TextEditingController password = TextEditingController();
+
   final TextEditingController confirmPassword = TextEditingController();
+
+  FocusNode fname;
+  FocusNode flastname;
+  FocusNode fidentifier;
+  FocusNode fcellphone;
+  FocusNode fshopname;
+  FocusNode femail;
+  FocusNode fpassword;
+  FocusNode fconfirmpassword;
+
+  @override
+  void initState() {
+    super.initState();
+    fname = FocusNode();
+    flastname = FocusNode();
+    fidentifier = FocusNode();
+    fcellphone = FocusNode();
+    fshopname = FocusNode();
+    femail = FocusNode();
+    fpassword = FocusNode();
+    fconfirmpassword = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    fname.unfocus();
+    flastname.unfocus();
+    fidentifier.unfocus();
+    fcellphone.unfocus();
+    fshopname.unfocus();
+    femail.unfocus();
+    fpassword.unfocus();
+    fconfirmpassword.unfocus();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -103,6 +150,12 @@ class RegisterPage extends StatelessWidget {
                 //FORM HEADER
                 _formHeader(hp, wp),
                 CustomInput(
+                    textInputAction: TextInputAction.next,
+                    focusNode: fname,
+                    onFocus: () {
+                      fname.unfocus();
+                      FocusScope.of(context).requestFocus(flastname);
+                    },
                     function: (value) => BlocProvider.of<RegisterBloc>(context)
                         .add(FirstNameChanged(value)),
                     border: BlocProvider.of<RegisterBloc>(context)
@@ -121,6 +174,12 @@ class RegisterPage extends StatelessWidget {
                     placeholder: 'Nombres completos',
                     textEditingController: firstname),
                 CustomInput(
+                    textInputAction: TextInputAction.next,
+                    focusNode: flastname,
+                    onFocus: () {
+                      flastname.unfocus();
+                      FocusScope.of(context).requestFocus(fidentifier);
+                    },
                     function: (value) => BlocProvider.of<RegisterBloc>(context)
                         .add(LastNameChanged(value)),
                     border: BlocProvider.of<RegisterBloc>(context)
@@ -169,6 +228,12 @@ class RegisterPage extends StatelessWidget {
                   ),
                 ),
                 CustomInput(
+                    textInputAction: TextInputAction.next,
+                    focusNode: fidentifier,
+                    onFocus: () {
+                      fidentifier.unfocus();
+                      FocusScope.of(context).requestFocus(fcellphone);
+                    },
                     function: (value) => BlocProvider.of<RegisterBloc>(context)
                         .add(IdentifierChanged(value)),
                     border: BlocProvider.of<RegisterBloc>(context)
@@ -217,6 +282,12 @@ class RegisterPage extends StatelessWidget {
                   ),
                 ),
                 CustomInput(
+                    textInputAction: TextInputAction.next,
+                    focusNode: fcellphone,
+                    onFocus: () {
+                      fcellphone.unfocus();
+                      FocusScope.of(context).requestFocus(fshopname);
+                    },
                     function: (value) => BlocProvider.of<RegisterBloc>(context)
                         .add(CellphoneChanged(value)),
                     border: BlocProvider.of<RegisterBloc>(context)
@@ -236,6 +307,12 @@ class RegisterPage extends StatelessWidget {
                     keyboardType: TextInputType.number,
                     textEditingController: cellphone),
                 CustomInput(
+                    textInputAction: TextInputAction.next,
+                    focusNode: fshopname,
+                    onFocus: () {
+                      fshopname.unfocus();
+                      FocusScope.of(context).requestFocus(femail);
+                    },
                     function: (value) => BlocProvider.of<RegisterBloc>(context)
                         .add(ShopNameChanged(value)),
                     border: BlocProvider.of<RegisterBloc>(context)
@@ -255,21 +332,37 @@ class RegisterPage extends StatelessWidget {
                     placeholder: 'Nombre de la tienda',
                     textEditingController: shopName),
                 CustomInput(
+                    textInputAction: TextInputAction.next,
+                    focusNode: femail,
+                    onFocus: () {
+                      femail.unfocus();
+                      FocusScope.of(context).requestFocus(fpassword);
+                    },
                     function: (value) => BlocProvider.of<RegisterBloc>(context)
                         .add(EmailChanged(value)),
-                    border:
-                        BlocProvider.of<RegisterBloc>(context).state.registerEmail.invalid
-                            ? Border.all(color: Colors.red)
-                            : Border.all(color: Colors.white),
-                    errorText:
-                        BlocProvider.of<RegisterBloc>(context).state.registerEmail.invalid
-                            ? 'Coloque su correo'
-                            : '',
+                    border: BlocProvider.of<RegisterBloc>(context)
+                            .state
+                            .registerEmail
+                            .invalid
+                        ? Border.all(color: Colors.red)
+                        : Border.all(color: Colors.white),
+                    errorText: BlocProvider.of<RegisterBloc>(context)
+                            .state
+                            .registerEmail
+                            .invalid
+                        ? 'Coloque su correo'
+                        : '',
                     icon: null,
                     keyboardType: TextInputType.emailAddress,
                     placeholder: 'Correo electornico',
                     textEditingController: email),
                 CustomInput(
+                    textInputAction: TextInputAction.next,
+                    focusNode: fpassword,
+                    onFocus: () {
+                      fpassword.unfocus();
+                      FocusScope.of(context).requestFocus(fconfirmpassword);
+                    },
                     function: (value) => BlocProvider.of<RegisterBloc>(context)
                         .add(PasswordChanged(value)),
                     border: BlocProvider.of<RegisterBloc>(context)
@@ -290,6 +383,9 @@ class RegisterPage extends StatelessWidget {
                     placeholder: 'Contraseña',
                     textEditingController: password),
                 CustomInput(
+                    textInputAction: TextInputAction.done,
+                    focusNode: fconfirmpassword,
+                    onFocus: () => fconfirmpassword.unfocus(),
                     function: (value) => BlocProvider.of<RegisterBloc>(context)
                         .add(ConfirmPasswordChanged(value)),
                     border: BlocProvider.of<RegisterBloc>(context)
@@ -382,8 +478,6 @@ class RegisterPage extends StatelessWidget {
       ),
     );
   }
-
-
 
   Widget _sendActionButton(BuildContext context) {
     final Function wp = Screen(context).wp;

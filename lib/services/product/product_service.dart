@@ -94,7 +94,7 @@ class ProductService {
         return true;
       } else {
         print('error updated');
-        return true;
+        return false;
       }
     } else {
       print('error create');

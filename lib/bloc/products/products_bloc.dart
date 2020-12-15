@@ -68,7 +68,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     } else if (event is OnDeleteProductImage) {
       yield _mapOnDeleteProductImage(event, state);
     } else if (event is OnHandleCreateProduct) {
-      yield*  _mapHandleCreateProduct(event, state);
+      yield* _mapHandleCreateProduct(event, state);
     } else if (event is OnAddSizeProduct) {
       yield _mapOnAddSizeProduct(event, state);
     } else if (event is OnDeleteAdminSizeProduct) {
@@ -111,21 +111,19 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     } else if (event is OnDeleteProduct) {
       yield* _mapOnDeleteProduct(event, state);
     } else if (event is OnLoadProductDataToEdit) {
-      yield _mapOnLoadProductDataToEdit(event,state);
+      yield _mapOnLoadProductDataToEdit(event, state);
       print(state.adminStock[0]);
-    }else if ( event is OnLoadProducDataAdminStock){
+    } else if (event is OnLoadProducDataAdminStock) {
       print('OnLoadProducDataAdminStock');
       yield state.copyWith(adminStock: event.adminStock);
-    }else if ( event is OnUpdateProduct){
-        yield* _mapOnUpdateProduct(event,state);
-
-
+    } else if (event is OnUpdateProduct) {
+      yield* _mapOnUpdateProduct(event, state);
     }
   }
 
-  Stream<ProductsState> _mapOnUpdateProduct(OnUpdateProduct event, ProductsState state )async*{
-
- List stock = [];
+  Stream<ProductsState> _mapOnUpdateProduct(
+      OnUpdateProduct event, ProductsState state) async* {
+    List stock = [];
 
     if (state.stocktype == StockType.UNIQUE) {
       stock = state.adminStock.map((e) => e.toJsonUnique()).toList();
@@ -143,30 +141,32 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       stock = state.adminStock.map((e) => e.toJsonSize()).toList();
     }
 
+    final resp = await _productService.updateProduct(
+        event.id,
+        state.stocktype.index,
+        stock,
+        state.priceType.index,
+        state.normalPrice,
+        state.offerPrice);
 
-    final resp = await _productService.updateProduct(event.id, state.stocktype.index,stock, state.priceType.index,state.normalPrice,state.offerPrice);
-   
-   
-    if(resp == true){
-       yield state.copyWith(isProductEdited: IsProductEdited.SUCCESS);
-       yield state.copyWith(isProductEdited: IsProductEdited.UNDEFINED);
-    }else{
-        yield state.copyWith(isProductEdited: IsProductEdited.FAIL);
-       yield state.copyWith(isProductEdited: IsProductEdited.UNDEFINED);
+    if (resp == true) {
+      yield state.copyWith(isProductEdited: IsProductEdited.SUCCESS);
+      yield state.copyWith(isProductEdited: IsProductEdited.UNDEFINED);
+    } else {
+      yield state.copyWith(isProductEdited: IsProductEdited.FAIL);
+      yield state.copyWith(isProductEdited: IsProductEdited.UNDEFINED);
     }
-
   }
-
 
   ProductsState _mapOnLoadProductDataToEdit(
       OnLoadProductDataToEdit event, ProductsState state) {
     print('OnLoadProductDataToEdit');
     return state.copyWith(
-        stocktype: event.stockType,
-        priceType: event.priceType,
-        normalPrice: event.normalPrice,
-        offerPrice: event.offerPrice,
-        );
+      stocktype: event.stockType,
+      priceType: event.priceType,
+      normalPrice: event.normalPrice,
+      offerPrice: event.offerPrice,
+    );
   }
 
   Stream<ProductsState> _mapOnDeleteProduct(
@@ -204,7 +204,6 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       OnLoadShopProducts event, ProductsState state) async {
     print('OnLoadShopProducts');
     final resp = await _productService.getProductByUser();
-    print(resp);
     if (resp[0]) {
       return state.copyWith(
           productResponse: resp[1], showProducts: ProductCategory.HOME);

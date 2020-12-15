@@ -84,3 +84,23 @@ class OnOfferPriceChange extends ServicesEvent {
 
   OnOfferPriceChange(this.offerPrice);
 }
+
+class OnCleanServiceData extends ServicesEvent {}
+
+class OnHandleServiceCreate extends ServicesEvent {}
+
+class OnDeleteServiceImage extends ServicesEvent {
+  final int index;
+
+  OnDeleteServiceImage(this.index);
+}
+
+class OnAddServiceImage extends ServicesEvent {}
+
+class OnLoadShopServices extends ServicesEvent {}
+
+class OnDeleteService extends ServicesEvent{
+  final String id;
+
+  OnDeleteService(this.id);
+}

@@ -121,3 +121,8 @@ class OnTabIndexChange extends ShopEvent {
   @override
   List<Object> get props => throw UnimplementedError();
 }
+
+class OnCleanShopData extends ShopEvent {
+  @override
+  List<Object> get props => throw UnimplementedError();
+}

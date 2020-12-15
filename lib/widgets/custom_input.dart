@@ -63,6 +63,7 @@ class CustomInput extends StatelessWidget {
         onChanged: function,
         keyboardType: keyboardType,
         decoration: InputDecoration(
+          
             hintMaxLines: hintMaxLines,
             suffixIcon: Icon(icon),
             focusedBorder: InputBorder.none,

@@ -12,15 +12,54 @@ import 'package:service_products_business/widgets/custom_input.dart';
 enum deliveryTime { ONE_HR, TWO_HR, THREE_HR }
 
 // ignore: must_be_immutable
-class ShopInfoPage extends StatelessWidget {
+class ShopInfoPage extends StatefulWidget {
+  @override
+  _ShopInfoPageState createState() => _ShopInfoPageState();
+}
+
+class _ShopInfoPageState extends State<ShopInfoPage> {
   TextEditingController name = TextEditingController();
+
   TextEditingController info = TextEditingController();
+
   TextEditingController dpto = TextEditingController();
+
   TextEditingController address = TextEditingController();
-  // TextEditingController deliveryTime = TextEditingController();
+
   TextEditingController whatsapp = TextEditingController();
+
   TextEditingController facebook = TextEditingController();
+
   TextEditingController instagram = TextEditingController();
+
+  FocusNode fdescription;
+  FocusNode flocation;
+  FocusNode faddress;
+  FocusNode fwhatsaap;
+  FocusNode ffacebook;
+  FocusNode finstagram;
+
+  @override
+  void initState() {
+    super.initState();
+    fdescription = FocusNode();
+    flocation = FocusNode();
+    faddress = FocusNode();
+    fwhatsaap = FocusNode();
+    ffacebook = FocusNode();
+    finstagram = FocusNode();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    fdescription.dispose();
+    flocation.dispose();
+    faddress.dispose();
+    fwhatsaap.dispose();
+    ffacebook.dispose();
+    finstagram.unfocus();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +121,7 @@ class ShopInfoPage extends StatelessWidget {
                       Text(
                         'Bienvenido',
                         style: GoogleFonts.lato(
-                            fontWeight: FontWeight.bold, fontSize: 15),
+                            fontWeight: FontWeight.bold, fontSize: wp(5)),
                       ),
                       Container(
                         height: 30,
@@ -147,6 +186,12 @@ class ShopInfoPage extends StatelessWidget {
           //   hintMaxLines: 1,
           // ),
           CustomInput(
+            focusNode: fdescription,
+            onFocus: () {
+              fdescription.unfocus();
+              FocusScope.of(context).requestFocus(flocation);
+            },
+            textInputAction: TextInputAction.next,
             function: (String value) => BlocProvider.of<ShopBloc>(context)
                 .add(DescriptionChange(description: value.trim())),
             border: BlocProvider.of<ShopBloc>(context).state.description.invalid
@@ -159,7 +204,7 @@ class ShopInfoPage extends StatelessWidget {
             placeholder: 'Informacion',
             keyboardType: TextInputType.multiline,
             textEditingController: info,
-            maxlines: null,
+            maxlines: 6,
             hp: hp(30),
             hintMaxLines: 4,
           ),
@@ -199,6 +244,12 @@ class ShopInfoPage extends StatelessWidget {
             ),
           ),
           CustomInput(
+            focusNode: flocation,
+            onFocus: () {
+              fdescription.unfocus();
+              FocusScope.of(context).requestFocus(faddress);
+            },
+            textInputAction: TextInputAction.next,
             function: (value) =>
                 BlocProvider.of<ShopBloc>(context).add(StateChange(value)),
             border: BlocProvider.of<ShopBloc>(context).state.state.invalid
@@ -212,6 +263,12 @@ class ShopInfoPage extends StatelessWidget {
             hintMaxLines: 1,
           ),
           CustomInput(
+            focusNode: faddress,
+            onFocus: () {
+              fdescription.unfocus();
+              FocusScope.of(context).requestFocus(fwhatsaap);
+            },
+            textInputAction: TextInputAction.next,
             function: (value) =>
                 BlocProvider.of<ShopBloc>(context).add(AddressChange(value)),
             border: BlocProvider.of<ShopBloc>(context).state.address.invalid
@@ -230,6 +287,12 @@ class ShopInfoPage extends StatelessWidget {
           //   hintMaxLines: 1,
           // ),
           CustomInput(
+            focusNode: fwhatsaap,
+            onFocus: () {
+              fdescription.unfocus();
+              FocusScope.of(context).requestFocus(ffacebook);
+            },
+            textInputAction: TextInputAction.next,
             function: (value) =>
                 BlocProvider.of<ShopBloc>(context).add(WhatsappChange(value)),
             border: BlocProvider.of<ShopBloc>(context).state.whatsapp.invalid
@@ -252,6 +315,12 @@ class ShopInfoPage extends StatelessWidget {
             height: hp(3),
           ),
           CustomInput(
+            focusNode: ffacebook,
+            onFocus: () {
+              fdescription.unfocus();
+              FocusScope.of(context).requestFocus(finstagram);
+            },
+            textInputAction: TextInputAction.next,
             function: (value) =>
                 BlocProvider.of<ShopBloc>(context).add(FacebookChange(value)),
             placeholder: 'Facebook',
@@ -259,6 +328,9 @@ class ShopInfoPage extends StatelessWidget {
             hintMaxLines: 1,
           ),
           CustomInput(
+            focusNode: finstagram,
+            onFocus: () => fdescription.unfocus(),
+            textInputAction: TextInputAction.done,
             function: (value) =>
                 BlocProvider.of<ShopBloc>(context).add(InstagramChange(value)),
             placeholder: 'Instagram',

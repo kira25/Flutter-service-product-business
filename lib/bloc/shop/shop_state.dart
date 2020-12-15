@@ -2,7 +2,8 @@ part of 'shop_bloc.dart';
 
 class ShopState extends Equatable {
   ShopState(
-      {this.tabindex = 0,
+      {List<File> imageList,
+      this.tabindex = 0,
       this.description = const Description.pure(),
       this.state = const State.pure(),
       this.address = const Address.pure(),
@@ -16,7 +17,8 @@ class ShopState extends Equatable {
       this.deliveryTime = '1 hrs',
       this.profilePhoto,
       this.profileTitle,
-      this.shopResponse});
+      this.shopResponse})
+      : this.listImages = (imageList == null) ? new List(2) : imageList;
 
   final int tabindex;
   final Description description;
@@ -31,13 +33,14 @@ class ShopState extends Equatable {
   final FormzStatus shopStatus;
   final File profilePhoto;
   final File profileTitle;
+  final List<File> listImages;
   final bool failShop;
   final ShopResponse shopResponse;
 
   ShopState copyWith(
-      {
-        int tabindex,
-        Description description,
+      {List<File> imageList,
+      int tabindex,
+      Description description,
       State state,
       Address address,
       Whatsapp whatsapp,
@@ -52,7 +55,8 @@ class ShopState extends Equatable {
       File profileTitle,
       ShopResponse shopResponse}) {
     return ShopState(
-      tabindex: tabindex ?? this.tabindex,
+        imageList: imageList ?? this.listImages,
+        tabindex: tabindex ?? this.tabindex,
         description: description ?? this.description,
         state: state ?? this.state,
         address: address ?? this.address,
@@ -81,9 +85,8 @@ class ShopState extends Equatable {
         interbankAccount,
         shopStatus,
         deliveryTime,
-        profilePhoto,
-        profileTitle,
         shopResponse,
-        tabindex
+        tabindex,
+        listImages
       ];
 }

@@ -9,11 +9,13 @@ import 'package:service_products_business/bloc/auth/auth_bloc.dart';
 import 'package:service_products_business/bloc/orders_products/orders_products_bloc.dart';
 import 'package:service_products_business/bloc/orders_services/orders_services_bloc.dart';
 import 'package:service_products_business/bloc/products/products_bloc.dart';
+import 'package:service_products_business/bloc/services/services_bloc.dart';
 import 'package:service_products_business/bloc/shop/shop_bloc.dart';
 import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/enums.dart';
 import 'package:service_products_business/helpers/products.dart';
 import 'package:service_products_business/helpers/route_transitions.dart';
+import 'package:service_products_business/helpers/services.dart';
 import 'package:service_products_business/helpers/show_alert.dart';
 import 'package:service_products_business/models/AdminProduct/admin_product.dart';
 import 'package:service_products_business/models/product_response.dart';
@@ -29,7 +31,9 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   TabController tabController;
-  RefreshController refreshController =
+  RefreshController _refresherProduct =
+      RefreshController(initialRefresh: false);
+  RefreshController _refresherService =
       RefreshController(initialRefresh: false);
 
   @override
@@ -475,56 +479,319 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     );
   }
 
-  Scaffold _services(Function hp, Function wp) {
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-          heroTag: 'btn_services',
-          child: Icon(
-            Icons.add,
-            size: 35,
-          ),
-          onPressed: () => CustomRouteTransition(
-              context: context, child: AddServicesPage())),
-      appBar: AppBar(
-          centerTitle: true,
-          elevation: 4,
-          backgroundColor: kprimarycolorlight,
-          title: Text(
-            'Servicios',
-            style: GoogleFonts.lato(
-                fontWeight: FontWeight.bold, color: Colors.black),
-          )),
-      body: SafeArea(
-          child: Container(
-        width: double.infinity,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(FontAwesomeIcons.layerGroup,
-                      size: 45, color: Colors.purple),
-                  SizedBox(
-                    height: hp(3),
+  Widget _services(Function hp, Function wp) {
+    return BlocProvider<ServicesBloc>(
+      lazy: false,
+      create: (context) => ServicesBloc()..add(OnLoadShopServices()),
+      child: BlocListener<ServicesBloc, ServicesState>(
+        listener: (_, state) {
+          if (state.isServiceDeleted == IsServiceDeleted.SUCCESS) {
+            showDialog(
+                context: _,
+                builder: (_) => new AlertDialog(
+                      title: new Text("Servicio eliminado"),
+                    ));
+          }
+        },
+        child: BlocBuilder<ServicesBloc, ServicesState>(
+          builder: (context, state) {
+            return Scaffold(
+              floatingActionButton: FloatingActionButton(
+                  heroTag: 'btn_services',
+                  child: Icon(
+                    Icons.add,
+                    size: 35,
                   ),
-                  Text(
-                    'No tienes servicios',
+                  onPressed: () => CustomRouteTransition(
+                      context: context, child: AddServicesPage())),
+              appBar: AppBar(
+                  centerTitle: true,
+                  elevation: 4,
+                  backgroundColor: kprimarycolorlight,
+                  title: Text(
+                    'Servicios',
                     style: GoogleFonts.lato(
-                        fontWeight: FontWeight.bold, fontSize: 20),
-                  ),
-                  SizedBox(
-                    height: hp(3),
-                  ),
-                  Text('Añade un servicio para empezar a ofrecer ',
-                      style: GoogleFonts.lato(fontSize: 15)),
-                ],
-              ),
-            )
-          ],
+                        fontWeight: FontWeight.bold, color: Colors.black),
+                  )),
+              body: SafeArea(
+                  child: Container(
+                width: double.infinity,
+                child: BlocBuilder<ServicesBloc, ServicesState>(
+                  builder: (context, state) {
+                    if (state.isServices == true) {
+                      return Container(
+                        child: SmartRefresher(
+                          controller: _refresherService,
+                          enablePullDown: true,
+                          header: WaterDropHeader(
+                            waterDropColor: Colors.blue[400],
+                            complete:
+                                Icon(Icons.check, color: Colors.blue[400]),
+                          ),
+                          onRefresh: () {
+                            BlocProvider.of<ServicesBloc>(context)
+                                .add(OnLoadShopServices());
+                            _refresherService.refreshCompleted();
+                          },
+                          child: ListView.separated(
+                              itemBuilder: (context, index) {
+                                return Container(
+                                  height: hp(25),
+                                  child: Card(
+                                    elevation: 4,
+                                    margin: EdgeInsets.symmetric(
+                                        vertical: hp(3), horizontal: wp(3)),
+                                    child: Slidable(
+                                      actionPane: SlidableDrawerActionPane(),
+                                      actionExtentRatio: 0.20,
+                                      secondaryActions: [
+                                        IconSlideAction(
+                                          color: kintroselected,
+                                          iconWidget: Icon(
+                                            Icons.edit,
+                                            size: wp(8),
+                                            color: kprimarycolorlight,
+                                          ),
+                                          onTap: () {
+                                            // List<AdminProduct> list2 = [];
+                                            // if (state.serviceResponse.service[index].stock.length != 0) {
+                                            //   List<Map<String, dynamic>> list = result[index]
+                                            //       .stock
+                                            //       .map((e) => e.toJson())
+                                            //       .toList();
+                                            //   print(list);
+
+                                            //   list2 = list
+                                            //       .map((e) => AdminProduct.fromJsonAdmin(e))
+                                            //       .toList();
+                                            // }
+
+                                            // CustomRouteTransition(
+                                            //     context: context,
+                                            //     child: EditProduct(
+                                            //       name: result[index].name,
+                                            //       id: result[index].id,
+                                            //       adminStock: list2,
+                                            //       priceType: handleIntToPriceType(
+                                            //           result[index].priceType),
+                                            //       stockType: handleIntToStockType(
+                                            //           result[index].stockType),
+                                            //       stock: result[index].stock,
+                                            //       normalPrice:
+                                            //           result[index].price.normalPrice.toString(),
+                                            //       offerPrice:
+                                            //           result[index].price.offertPrice.toString(),
+                                            //     ),
+                                            //     animation: AnimationType.fadeIn);
+                                          },
+                                        ),
+                                        IconSlideAction(
+                                          color: kwrongAnswer,
+                                          iconWidget: Icon(
+                                            FontAwesomeIcons.trash,
+                                            size: wp(8),
+                                            color: kprimarycolorlight,
+                                          ),
+                                          onTap: () =>
+                                              BlocProvider.of<ServicesBloc>(
+                                                      context)
+                                                  .add(OnDeleteService(state
+                                                      .serviceResponse
+                                                      .service[index]
+                                                      .id)),
+                                        ),
+                                      ],
+                                      child: Row(
+                                        children: [
+                                          //IMAGE PRODUCT
+                                          Container(
+                                            margin: EdgeInsets.symmetric(
+                                                horizontal: wp(4),
+                                                vertical: hp(1)),
+                                            width: wp(30),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                state
+                                                        .serviceResponse
+                                                        .service[index]
+                                                        .imageService
+                                                        .isEmpty
+                                                    ? Container()
+                                                    : Image.network(
+                                                        state
+                                                            .serviceResponse
+                                                            .service[index]
+                                                            .imageService[0]
+                                                            .service,
+                                                        height: hp(15),
+                                                      ),
+                                              ],
+                                            ),
+                                          ),
+                                          //PRODUCT DATA
+                                          Container(
+                                            width: wp(55),
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: hp(1)),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                //NAME
+                                                Text(
+                                                  state.serviceResponse
+                                                      .service[index].name,
+                                                  style: GoogleFonts.lato(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: wp(4.5)),
+                                                ),
+
+                                                //PRICE
+                                                state
+                                                            .serviceResponse
+                                                            .service[index]
+                                                            .price
+                                                            .offertPrice !=
+                                                        null
+                                                    ? RichText(
+                                                        text: TextSpan(
+                                                            text:
+                                                                'Precio Oferta: ',
+                                                            style: GoogleFonts.lato(
+                                                                textStyle:
+                                                                    TextStyle(
+                                                                        color:
+                                                                            kintroNotSelected),
+                                                                fontSize:
+                                                                    wp(3.5)),
+                                                            children: [
+                                                              TextSpan(
+                                                                  text:
+                                                                      'S/ ${state.serviceResponse.service[index].price.offertPrice}',
+                                                                  style: GoogleFonts.lato(
+                                                                      textStyle:
+                                                                          TextStyle(
+                                                                              color: kdarkcolor)))
+                                                            ]),
+                                                      )
+                                                    : RichText(
+                                                        text: TextSpan(
+                                                            text:
+                                                                'Precio Normal: ',
+                                                            style: GoogleFonts.lato(
+                                                                textStyle:
+                                                                    TextStyle(
+                                                                        color:
+                                                                            kintroNotSelected),
+                                                                fontSize:
+                                                                    wp(3.5)),
+                                                            children: [
+                                                              TextSpan(
+                                                                  text:
+                                                                      'S/ ${state.serviceResponse.service[index].price.normalPrice}',
+                                                                  style: GoogleFonts.lato(
+                                                                      textStyle:
+                                                                          TextStyle(
+                                                                              color: kdarkcolor)))
+                                                            ]),
+                                                      ),
+                                                RichText(
+                                                  text: TextSpan(
+                                                      text: 'Disponibilidad ',
+                                                      style: GoogleFonts.lato(
+                                                          textStyle: TextStyle(
+                                                              color:
+                                                                  kintroNotSelected),
+                                                          fontSize: wp(3.5)),
+                                                      children: [
+                                                        TextSpan(
+                                                            text: handleIntToAvailableType(state
+                                                                .serviceResponse
+                                                                .service[index]
+                                                                .availableType),
+                                                            style: GoogleFonts.lato(
+                                                                textStyle:
+                                                                    TextStyle(
+                                                                        color:
+                                                                            kdarkcolor)))
+                                                      ]),
+                                                ),
+                                                SwitchListTile(
+                                                  contentPadding:
+                                                      EdgeInsets.only(
+                                                          right: wp(5)),
+                                                  dense: true,
+                                                  activeColor: kdialogicon,
+                                                  secondary: Text(
+                                                    'Servicio disponible:',
+                                                    textAlign: TextAlign.start,
+                                                    style: GoogleFonts.lato(
+                                                        fontSize: wp(3.5)),
+                                                  ),
+                                                  value: true,
+                                                  onChanged: (bool value) {
+                                                    print(value);
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                              separatorBuilder: (context, index) => Divider(
+                                    height: 10,
+                                    color: kprimarycolorlight,
+                                  ),
+                              itemCount: state.serviceResponse.service.length),
+                        ),
+                      );
+                    } else {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(FontAwesomeIcons.layerGroup,
+                                    size: 45, color: Colors.purple),
+                                SizedBox(
+                                  height: hp(3),
+                                ),
+                                Text(
+                                  'No tienes servicios',
+                                  style: GoogleFonts.lato(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20),
+                                ),
+                                SizedBox(
+                                  height: hp(3),
+                                ),
+                                Text(
+                                    'Añade un servicio para empezar a ofrecer ',
+                                    style: GoogleFonts.lato(fontSize: 15)),
+                              ],
+                            ),
+                          )
+                        ],
+                      );
+                    }
+                  },
+                ),
+              )),
+            );
+          },
         ),
-      )),
+      ),
     );
   }
 
@@ -576,7 +843,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     //PRODUCTS CATEGORY
                     if (state.showProducts == ProductCategory.HOME) {
                       return ItemsCategoryProduct(
-                          refreshController: refreshController,
+                          refreshController: _refresherProduct,
                           state: state,
                           productCategory: ProductCategory.HOME,
                           hp: hp,
@@ -584,7 +851,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     }
                     if (state.showProducts == ProductCategory.MAN) {
                       return ItemsCategoryProduct(
-                          refreshController: refreshController,
+                          refreshController: _refresherProduct,
                           state: state,
                           productCategory: ProductCategory.MAN,
                           hp: hp,
@@ -592,7 +859,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     }
                     if (state.showProducts == ProductCategory.KID) {
                       return ItemsCategoryProduct(
-                          refreshController: refreshController,
+                          refreshController: _refresherProduct,
                           state: state,
                           productCategory: ProductCategory.KID,
                           hp: hp,
@@ -600,7 +867,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     }
                     if (state.showProducts == ProductCategory.PET) {
                       return ItemsCategoryProduct(
-                          refreshController: refreshController,
+                          refreshController: _refresherProduct,
                           state: state,
                           productCategory: ProductCategory.PET,
                           hp: hp,
@@ -608,7 +875,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     }
                     if (state.showProducts == ProductCategory.WOMEN) {
                       return ItemsCategoryProduct(
-                          refreshController: refreshController,
+                          refreshController: _refresherProduct,
                           state: state,
                           productCategory: ProductCategory.WOMEN,
                           hp: hp,
@@ -616,7 +883,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     }
                     if (state.showProducts == ProductCategory.RESTAURANT) {
                       return ItemsCategoryProduct(
-                          refreshController: refreshController,
+                          refreshController: _refresherProduct,
                           state: state,
                           productCategory: ProductCategory.RESTAURANT,
                           hp: hp,
@@ -624,7 +891,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     }
                     if (state.showProducts == ProductCategory.HEALTH) {
                       return ItemsCategoryProduct(
-                          refreshController: refreshController,
+                          refreshController: _refresherProduct,
                           state: state,
                           productCategory: ProductCategory.HEALTH,
                           hp: hp,
@@ -632,7 +899,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     }
                     if (state.showProducts == ProductCategory.TECHNOLOGY) {
                       return ItemsCategoryProduct(
-                          refreshController: refreshController,
+                          refreshController: _refresherProduct,
                           state: state,
                           productCategory: ProductCategory.TECHNOLOGY,
                           hp: hp,
@@ -696,52 +963,55 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
       scrollDirection: Axis.horizontal,
       itemBuilder: (context, index) {
         return MaterialButton(
+          disabledColor: kintroNotSelected,
           key: Key('Category'),
-          onPressed: () {
-            switch (index) {
-              case 0:
-                BlocProvider.of<ProductsBloc>(context)
-                    .add(OnShowProducts(ProductCategory.HOME));
+          onPressed: state.productResponse == null
+              ? null
+              : () {
+                  switch (index) {
+                    case 0:
+                      BlocProvider.of<ProductsBloc>(context)
+                          .add(OnShowProducts(ProductCategory.HOME));
 
-                break;
-              case 1:
-                BlocProvider.of<ProductsBloc>(context)
-                    .add(OnShowProducts(ProductCategory.MAN));
+                      break;
+                    case 1:
+                      BlocProvider.of<ProductsBloc>(context)
+                          .add(OnShowProducts(ProductCategory.MAN));
 
-                break;
-              case 2:
-                BlocProvider.of<ProductsBloc>(context)
-                    .add(OnShowProducts(ProductCategory.KID));
+                      break;
+                    case 2:
+                      BlocProvider.of<ProductsBloc>(context)
+                          .add(OnShowProducts(ProductCategory.KID));
 
-                break;
-              case 3:
-                BlocProvider.of<ProductsBloc>(context)
-                    .add(OnShowProducts(ProductCategory.PET));
+                      break;
+                    case 3:
+                      BlocProvider.of<ProductsBloc>(context)
+                          .add(OnShowProducts(ProductCategory.PET));
 
-                break;
-              case 4:
-                BlocProvider.of<ProductsBloc>(context)
-                    .add(OnShowProducts(ProductCategory.WOMEN));
+                      break;
+                    case 4:
+                      BlocProvider.of<ProductsBloc>(context)
+                          .add(OnShowProducts(ProductCategory.WOMEN));
 
-                break;
-              case 5:
-                BlocProvider.of<ProductsBloc>(context)
-                    .add(OnShowProducts(ProductCategory.RESTAURANT));
+                      break;
+                    case 5:
+                      BlocProvider.of<ProductsBloc>(context)
+                          .add(OnShowProducts(ProductCategory.RESTAURANT));
 
-                break;
-              case 6:
-                BlocProvider.of<ProductsBloc>(context)
-                    .add(OnShowProducts(ProductCategory.HEALTH));
+                      break;
+                    case 6:
+                      BlocProvider.of<ProductsBloc>(context)
+                          .add(OnShowProducts(ProductCategory.HEALTH));
 
-                break;
-              case 7:
-                BlocProvider.of<ProductsBloc>(context)
-                    .add(OnShowProducts(ProductCategory.TECHNOLOGY));
+                      break;
+                    case 7:
+                      BlocProvider.of<ProductsBloc>(context)
+                          .add(OnShowProducts(ProductCategory.TECHNOLOGY));
 
-                break;
-              default:
-            }
-          },
+                      break;
+                    default:
+                  }
+                },
           color: state.showProducts.index == index
               ? kproductoptions
               : kintroNotSelected,

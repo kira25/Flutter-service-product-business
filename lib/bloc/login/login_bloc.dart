@@ -6,6 +6,7 @@ import 'package:formz/formz.dart';
 import 'package:meta/meta.dart';
 import 'package:service_products_business/models/login/login_models.dart';
 import 'package:service_products_business/services/auth/auth_service.dart';
+import 'package:service_products_business/services/socket/socket_service.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
@@ -14,6 +15,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc() : super(LoginState());
 
   AuthService _authService = AuthService();
+  SocketService _socketService = SocketService();
 
   @override
   Stream<LoginState> mapEventToState(
@@ -21,8 +23,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   ) async* {
     if (event is EmailChanged) {
       yield _mapEmailChanged(event, state);
+      print(state.status);
     } else if (event is PasswordChanged) {
       yield _mapPasswordChanged(event, state);
+      print(state.status);
     } else if (event is LoginSubmitted) {
       yield* _mapLoginSubmitted(event, state);
     }
@@ -43,7 +47,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   Stream<LoginState> _mapLoginSubmitted(
       LoginSubmitted event, LoginState state) async* {
     print('LoginSubmitted');
-    print(state.status);
+
     if (state.status.isValid) {
       yield state.copyWith(status: FormzStatus.submissionInProgress);
       print('validated');
@@ -54,9 +58,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         if (login[0] == true && login[1] == true) {
           yield state.copyWith(
               status: FormzStatus.submissionSuccess, isShopInfo: true);
+          _socketService.connect();
         } else if (login[0] == true && login[1] == false) {
           yield state.copyWith(
               status: FormzStatus.submissionSuccess, isShopInfo: false);
+          _socketService.connect();
         } else {
           yield state.copyWith(status: FormzStatus.submissionFailure);
         }
@@ -65,7 +71,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         yield state.copyWith(
           failLogging: true,
         );
-        Future.delayed(Duration(milliseconds: 1000));
+
         yield state.copyWith(
           failLogging: false,
         );

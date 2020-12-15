@@ -11,9 +11,20 @@ import 'package:service_products_business/widgets/custom_input.dart';
 import 'package:formz/formz.dart';
 
 // ignore: must_be_immutable
-class BankPhotoPage extends StatelessWidget {
+class BankPhotoPage extends StatefulWidget {
+  @override
+  _BankPhotoPageState createState() => _BankPhotoPageState();
+}
+
+class _BankPhotoPageState extends State<BankPhotoPage> {
   TextEditingController bankAccount = TextEditingController();
+
   TextEditingController interbankAccount = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,15 +70,19 @@ class BankPhotoPage extends StatelessWidget {
         },
       ),
       body: BlocListener<ShopBloc, ShopState>(
+        listenWhen: (previous, current) =>
+            previous.shopStatus != current.shopStatus,
         listener: (_, state) {
           if (state.shopStatus.isSubmissionSuccess) {
             showAlert(context,
-                child: MainPage(), title: 'Tienda creada con exito',subtitle: 'Listo');
+                child: MainPage(),
+                title: 'Tienda creada con exito',
+                subtitle: 'Listo');
             if (state.shopStatus.isSubmissionFailure) {
               showDialog(
                   context: _,
                   builder: (_) => new AlertDialog(
-                        title: new Text("Bad credentials"),
+                        title: new Text("Something go wrong"),
                       ));
             }
             if (state.failShop) {
@@ -75,6 +90,13 @@ class BankPhotoPage extends StatelessWidget {
                   context: _,
                   builder: (_) => new AlertDialog(
                         title: new Text("Fail to connect"),
+                      ));
+            }
+            if (state.shopStatus.isSubmissionInProgress) {
+              showDialog(
+                  context: _,
+                  builder: (_) => new AlertDialog(
+                        title: new Text("Creating shop..."),
                       ));
             }
           }
@@ -87,6 +109,9 @@ class BankPhotoPage extends StatelessWidget {
                 _header(hp, wp, context),
                 BlocBuilder<ShopBloc, ShopState>(
                   builder: (context, state) {
+                    print(state.profilePhoto);
+                    print(state.profileTitle);
+                    print(state.listImages);
                     return _form(hp, wp, state, context);
                   },
                 ),
@@ -113,7 +138,7 @@ class BankPhotoPage extends StatelessWidget {
           SizedBox(
             height: hp(3),
           ),
-          state.profilePhoto != null
+          state.listImages[0] != null
               ? MaterialButton(
                   height: hp(8),
                   color: kprimarycolorlight,
@@ -130,7 +155,7 @@ class BankPhotoPage extends StatelessWidget {
                           backgroundImage:
                               Image.file(state.profilePhoto).image),
                       Text(
-                        '${state.profilePhoto.path.split('/').last}',
+                        '${state.listImages[0].path.split('/').last}',
                         style: GoogleFonts.lato(fontSize: 10),
                       ),
                       IconButton(
@@ -162,7 +187,7 @@ class BankPhotoPage extends StatelessWidget {
             height: hp(2),
           ),
           //PROFILE TITLE IMAGE
-          state.profileTitle != null
+          state.listImages[1] != null
               ? MaterialButton(
                   height: hp(8),
                   color: kprimarycolorlight,
@@ -179,7 +204,7 @@ class BankPhotoPage extends StatelessWidget {
                           backgroundImage:
                               Image.file(state.profileTitle).image),
                       Text(
-                        '${state.profileTitle.path.split('/').last}',
+                        '${state.listImages[1].path.split('/').last}',
                         style: GoogleFonts.lato(fontSize: 10),
                       ),
                       IconButton(

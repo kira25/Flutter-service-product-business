@@ -94,10 +94,12 @@ showAlert(
   );
 }
 
+//DISCARD CREATE PRODUCT OR SERVICE
 showDiscardProduct(
   BuildContext context, {
   String title,
-  Widget child,
+ 
+  Function function
 }) {
   final Function wp = Screen(context).wp;
   final Function hp = Screen(context).hp;
@@ -126,12 +128,7 @@ showDiscardProduct(
                       GoogleFonts.lato(fontSize: wp(4), color: kwrongAnswer)),
               elevation: 5,
               textColor: kintroselected,
-              onPressed: () {
-                CustomRouteTransition(
-                    replacement: true, context: context, child: child);
-                BlocProvider.of<ProductsBloc>(context)
-                    .add(OnCleanProductData());
-              }),
+              onPressed: function),
           MaterialButton(
               child: Text(
                 'Seguir editando',
@@ -169,39 +166,6 @@ showDiscardProduct(
           ],
         ),
       ),
-      // title: Padding(
-      //   padding: EdgeInsets.symmetric(vertical: hp(1.5)),
-      //   child: Row(
-      //     mainAxisAlignment: MainAxisAlignment.center,
-      //     children: [
-      //       Text(
-      //         title,
-      //         textAlign: TextAlign.center,
-      //         style: GoogleFonts.lato(
-      //             fontWeight: FontWeight.bold, fontSize: wp(4.5)),
-      //       ),
-      //     ],
-      //   ),
-      // ),
-      // content: Column(
-      //   crossAxisAlignment: CrossAxisAlignment.center,
-      //   mainAxisSize: MainAxisSize.min,
-      //   children: [
-      //     Text(
-      //       title,
-      //       textAlign: TextAlign.center,
-      //       style: GoogleFonts.lato(
-      //           fontWeight: FontWeight.bold, fontSize: wp(4.5)),
-      //     ),
-      //     Container(
-      //       margin: EdgeInsets.only(top: 20),
-      //       color: kintroNotSelected,
-      //       width: double.infinity,
-      //       height: 1,
-      //     )
-      //   ],
-      // ),
-
       actions: [
         Padding(
           padding: EdgeInsets.only(right: wp(6)),
@@ -211,12 +175,7 @@ showDiscardProduct(
                       GoogleFonts.lato(fontSize: wp(4), color: kwrongAnswer)),
               elevation: 5,
               textColor: kintroselected,
-              onPressed: () {
-                CustomRouteTransition(
-                    replacement: true, context: context, child: child);
-                BlocProvider.of<ProductsBloc>(context)
-                    .add(OnCleanProductData());
-              }),
+              onPressed: function),
         ),
         Padding(
           padding: EdgeInsets.only(right: wp(6)),

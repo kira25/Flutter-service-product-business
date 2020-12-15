@@ -149,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
                                             : '',
                                     placeholder: 'Contraseña',
                                     isPassword: true,
-                                    keyboardType: TextInputType.emailAddress,
+                                    keyboardType: TextInputType.visiblePassword,
                                     textEditingController: passwCtrl),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
@@ -161,7 +161,7 @@ class _LoginPageState extends State<LoginPage> {
                                           context: context,
                                           child: ForgotPasswordPage()),
                                       child: Text(
-                                        '¿Olvidaste tu contraseña',
+                                        '¿Olvidaste tu contraseña?',
                                         textAlign: TextAlign.end,
                                       ),
                                     ),

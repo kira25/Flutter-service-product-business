@@ -12,9 +12,14 @@ import 'package:service_products_business/pages/ShopInfo/ShopInfo.dart';
 class IntroductionPage extends StatelessWidget {
   PageController pageController = PageController();
 
+  
+
   @override
   Widget build(BuildContext context) {
-    precacheImage(AssetImage('./assets/splash_1.jpg'), context,);
+    precacheImage(
+      AssetImage('./assets/splash_1.jpg'),
+      context,
+    );
     precacheImage(AssetImage('./assets/splash_2.jpg'), context);
     precacheImage(AssetImage('./assets/splash_3.jpg'), context);
     final Function wp = Screen(context).wp;
@@ -37,13 +42,18 @@ class IntroductionPage extends StatelessWidget {
           // ),
           body: SafeArea(
               child: Container(
-            child: Column(children: [
-              _header(hp, wp),
-              _textSection(hp, wp),
-              SizedBox(height: hp(3),),
-              _btnStart(context, 'Empezar', hp, wp),
-            ]),
-          ))),
+        child: Column(children: [
+          _header(hp, wp),
+          SizedBox(
+            height: hp(3),
+          ),
+          _textSection(hp, wp),
+          SizedBox(
+            height: hp(3),
+          ),
+          _btnStart(context, 'Empezar', hp, wp),
+        ]),
+      ))),
     );
   }
 
@@ -125,14 +135,15 @@ class IntroductionPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Text(
-            'Bienvenido a iKram Business',
-            style: GoogleFonts.lato(
-                fontWeight: FontWeight.bold, fontSize: wp(5.5)),
+            'Bienvenido a Kallpa Business',
+            style:
+                GoogleFonts.lato(fontWeight: FontWeight.bold, fontSize: wp(6)),
           ),
           Text(
               'Administra los pedidos de tus clientes,\n crea productos y servicios',
               textAlign: TextAlign.center,
-              style: GoogleFonts.lato(fontSize: wp(3.5)))
+              style:
+                  GoogleFonts.lato(fontSize: wp(4.5), color: kintroNotSelected))
         ],
       ),
     );
@@ -152,27 +163,26 @@ class IntroSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.only(top: hp(40), left: wp(30), right: wp(30)),
+        padding: EdgeInsets.only(top: hp(50), left: wp(30), right: wp(30)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             CircleAvatar(
               backgroundColor: first,
-              radius: wp(2),
+              radius: wp(1.5),
             ),
             CircleAvatar(
               backgroundColor: second,
-              radius: wp(2),
+              radius: wp(1.5),
             ),
             CircleAvatar(
               backgroundColor: third,
-              radius: wp(2),
+              radius: wp(1.5),
             ),
           ],
         ),
         decoration: BoxDecoration(
             image: DecorationImage(
-
                 colorFilter: ColorFilter.mode(
                     Colors.black87.withOpacity(0.6), BlendMode.darken),
                 fit: BoxFit.cover,

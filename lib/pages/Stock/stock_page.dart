@@ -223,7 +223,8 @@ class _StockPageState extends State<StockPage> {
                         )
                       //STOCK BY COLOR
                       : ProductCustomInput(
-                          wp: wp,
+                          fontSize: wp(4),
+                          iconSize: wp(5),
                           hp: hp(7),
                           icon: Icons.keyboard_arrow_down,
                           function: () =>

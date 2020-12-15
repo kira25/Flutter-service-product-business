@@ -146,7 +146,8 @@ class _EditProductState extends State<EditProduct> {
           //STOCK TYPE
           ProductCustomInput(
             hp: hp(7),
-            wp: wp,
+            fontSize: wp(4),
+            iconSize: wp(5),
             function: () => displayModalBottomSheetStock(context),
             text: state.stocktype != null
                 ? handleStockType(state.stocktype)
@@ -216,7 +217,8 @@ class _EditProductState extends State<EditProduct> {
           ),
           //PRICE TYPE
           ProductCustomInput(
-            wp: wp,
+            fontSize: wp(4),
+            iconSize: wp(5),
             hp: hp(7),
             function: () => displayModalBottomSheetPrice(context),
             icon: Icons.arrow_forward_ios,

@@ -45,8 +45,8 @@ enum Sizes { S, M, L, XL, XXL }
 
 enum AvailableType { SHOP, HOME, SHOP_HOME }
 
-enum DepartmentType { LIMA, ICA, AREQUIPA, TACNA }
-enum ProvinceType { LIMA, NAZCA, HUARAZ, CHICLAYO }
+enum DepartmentType { LIMA, ICA, AREQUIPA, LAMBAYEQUE, UNDEFINED }
+enum ProvinceType { LIMA, NAZCA, AREQUIPA, CHICLAYO ,UNDEFINED }
 
 enum DistrictType {
   SANBORJA,
@@ -55,5 +55,20 @@ enum DistrictType {
   SURCO,
   MOLINA,
   LINCE,
-  JESUSMARIA
+  JESUSMARIA,
+  LIMA,
+  ANCON,
+  ATE,
+  BARRANCO,
+  BRENA,
+  CARABAYLLO,
+  COMAS,
+  OLIVOS,
+  LURIGANCHO,UNDEFINED
+}
+
+
+enum GroupedButtonsOrientation{
+  HORIZONTAL,
+  VERTICAL,
 }
