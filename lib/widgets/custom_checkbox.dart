@@ -7,7 +7,6 @@ Licensing: More information can be found here: https://github.com/akshathjain/gr
 */
 
 import 'package:flutter/material.dart';
-import 'package:service_products_business/bloc/products/products_bloc.dart';
 import 'package:service_products_business/bloc/services/services_bloc.dart';
 import 'package:service_products_business/helpers/enums.dart';
 import 'package:service_products_business/helpers/services.dart';

@@ -30,8 +30,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<AuthState> _mapAuthenticationStatus(
       AuthenticationStatus event, AuthState state) async {
     final data = await _preferencesRepository.getData('token');
-    final resp = await _authService.renew(data);
     try {
+      final resp = await _authService.renew(data);
+
       if (resp[0] == true && resp[1] == false) {
         return state.copyWith(authenticated: true, isShopInfo: false);
       } else if (resp[0] == true && resp[1] == true) {

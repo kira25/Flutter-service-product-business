@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:responsive_screen/responsive_screen.dart';
@@ -11,6 +12,7 @@ import 'package:service_products_business/bloc/orders_services/orders_services_b
 import 'package:service_products_business/bloc/products/products_bloc.dart';
 import 'package:service_products_business/bloc/services/services_bloc.dart';
 import 'package:service_products_business/bloc/shop/shop_bloc.dart';
+import 'package:service_products_business/controller/editproduct_controller.dart';
 import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/enums.dart';
 import 'package:service_products_business/helpers/products.dart';
@@ -32,6 +34,8 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
+  final c = Get.put(EditProductController());
+
   TabController tabController;
   RefreshController _refresherProduct =
       RefreshController(initialRefresh: false);
@@ -892,6 +896,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     //PRODUCTS CATEGORY
                     if (state.showProducts == ProductCategory.HOME) {
                       return ItemsCategoryProduct(
+                          controller: c,
                           refreshController: _refresherProduct,
                           state: state,
                           productCategory: ProductCategory.HOME,
@@ -899,6 +904,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           wp: wp);
                     } else if (state.showProducts == ProductCategory.MAN) {
                       return ItemsCategoryProduct(
+                          controller: c,
                           refreshController: _refresherProduct,
                           state: state,
                           productCategory: ProductCategory.MAN,
@@ -906,6 +912,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           wp: wp);
                     } else if (state.showProducts == ProductCategory.KID) {
                       return ItemsCategoryProduct(
+                          controller: c,
                           refreshController: _refresherProduct,
                           state: state,
                           productCategory: ProductCategory.KID,
@@ -913,6 +920,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           wp: wp);
                     } else if (state.showProducts == ProductCategory.PET) {
                       return ItemsCategoryProduct(
+                          controller: c,
                           refreshController: _refresherProduct,
                           state: state,
                           productCategory: ProductCategory.PET,
@@ -920,6 +928,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           wp: wp);
                     } else if (state.showProducts == ProductCategory.WOMEN) {
                       return ItemsCategoryProduct(
+                          controller: c,
                           refreshController: _refresherProduct,
                           state: state,
                           productCategory: ProductCategory.WOMEN,
@@ -928,6 +937,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     } else if (state.showProducts ==
                         ProductCategory.RESTAURANT) {
                       return ItemsCategoryProduct(
+                          controller: c,
                           refreshController: _refresherProduct,
                           state: state,
                           productCategory: ProductCategory.RESTAURANT,
@@ -935,6 +945,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           wp: wp);
                     } else if (state.showProducts == ProductCategory.HEALTH) {
                       return ItemsCategoryProduct(
+                          controller: c,
                           refreshController: _refresherProduct,
                           state: state,
                           productCategory: ProductCategory.HEALTH,
@@ -943,6 +954,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                     } else if (state.showProducts ==
                         ProductCategory.TECHNOLOGY) {
                       return ItemsCategoryProduct(
+                          controller: c,
                           refreshController: _refresherProduct,
                           state: state,
                           productCategory: ProductCategory.TECHNOLOGY,
@@ -1079,6 +1091,7 @@ class ItemsCategoryProduct extends StatelessWidget {
   final ProductsState state;
   final ProductCategory productCategory;
   final RefreshController refreshController;
+  final EditProductController controller;
 
   const ItemsCategoryProduct({
     this.refreshController,
@@ -1087,6 +1100,7 @@ class ItemsCategoryProduct extends StatelessWidget {
     this.wp,
     this.state,
     this.productCategory,
+    this.controller,
   });
 
   @override
@@ -1140,33 +1154,32 @@ class ItemsCategoryProduct extends StatelessWidget {
                                 .toList();
                           }
 
-                          // BlocProvider.of<ProductsBloc>(context).add(
-                          //     OnLoadProductDataToEdit(
-                          //         adminStockType: handleIntToStockType(
-                          //                     result[index].stockType) ==
-                          //                 StockType.UNIQUE
-                          //             ? AdminStockType.ADMIN_STOCK_UNIQUE
-                          //             : handleIntToStockType(
-                          //                         result[index].stockType) ==
-                          //                     StockType.BY_COLOR
-                          //                 ? AdminStockType.ADMIN_STOCK_COLOR
-                          //                 : handleIntToStockType(result[index]
-                          //                             .stockType) ==
-                          //                         StockType.BY_SIZE
-                          //                     ? AdminStockType
-                          //                         .ADMIN_STOCK_BY_SIZE
-                          //                     : handleIntToStockType(
-                          //                                 result[index]
-                          //                                     .stockType) ==
-                          //                             StockType.BY_COLOR_SIZE
-                          //                         ? AdminStockType
-                          //                             .ADMIN_STOCK_BY_COLOR_SIZE
-                          //                         : AdminStockType
-                          //                             .ADMIN_STOCK_UNIQUE,
-                          //         stockType: handleIntToStockType(
-                          //             result[index].stockType),
-                          //         priceType: handleIntToPriceType(
-                          //             result[index].priceType)));
+                          controller.setDataToEdit(
+                              handleIntToStockType(result[index].stockType),
+                              handleIntToStockType(result[index].stockType) ==
+                                      StockType.UNIQUE
+                                  ? AdminStockType.ADMIN_STOCK_UNIQUE
+                                  : handleIntToStockType(
+                                              result[index].stockType) ==
+                                          StockType.BY_COLOR
+                                      ? AdminStockType.ADMIN_STOCK_COLOR
+                                      : handleIntToStockType(
+                                                  result[index].stockType) ==
+                                              StockType.BY_SIZE
+                                          ? AdminStockType.ADMIN_STOCK_BY_SIZE
+                                          : handleIntToStockType(result[index]
+                                                      .stockType) ==
+                                                  StockType.BY_COLOR_SIZE
+                                              ? AdminStockType
+                                                  .ADMIN_STOCK_BY_COLOR_SIZE
+                                              : AdminStockType
+                                                  .ADMIN_STOCK_UNIQUE,
+                              handleIntToPriceType(result[index].priceType),
+                              result[index].price.normalPrice.toString(),
+                              result[index].price.offertPrice.toString(),
+                              result[index].stock);
+
+                          controller.setAdminStock(list2);
 
                           CustomRouteTransition(
                               context: context,
@@ -1174,15 +1187,6 @@ class ItemsCategoryProduct extends StatelessWidget {
                                 name: result[index].name,
                                 id: result[index].id,
                                 adminStock: list2,
-                                priceType: handleIntToPriceType(
-                                    result[index].priceType),
-                                stockType: handleIntToStockType(
-                                    result[index].stockType),
-                                stock: result[index].stock,
-                                normalPrice:
-                                    result[index].price.normalPrice.toString(),
-                                offerPrice:
-                                    result[index].price.offertPrice.toString(),
                               ),
                               animation: AnimationType.fadeIn);
                         },

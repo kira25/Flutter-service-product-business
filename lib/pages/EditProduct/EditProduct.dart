@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:responsive_screen/responsive_screen.dart';
 import 'package:service_products_business/bloc/products/products_bloc.dart';
+import 'package:service_products_business/controller/editproduct_controller.dart';
 import 'package:service_products_business/helpers/botton_sheet.dart';
 import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/enums.dart';
@@ -17,7 +19,7 @@ import 'package:service_products_business/widgets/custom_fab.dart';
 import 'package:service_products_business/widgets/custom_input.dart';
 import 'package:service_products_business/widgets/product_custom_input.dart';
 
-class EditProduct extends StatefulWidget {
+class EditProduct extends StatelessWidget {
   final String normalPrice;
   final String offerPrice;
   final List<Stock> stock;
@@ -26,117 +28,103 @@ class EditProduct extends StatefulWidget {
   final PriceType priceType;
   final String id;
   final String name;
-  final ProductsState state;
+  final AdminStockType adminStockType;
 
-  const EditProduct(
-      {this.normalPrice,
-      this.offerPrice,
-      this.stock,
-      this.adminStock,
-      this.stockType,
-      this.priceType,
-      this.id,
-      this.name,
-      this.state});
+  EditProduct({
+    this.normalPrice,
+    this.offerPrice,
+    this.stock,
+    this.adminStock,
+    this.stockType,
+    this.priceType,
+    this.id,
+    this.name,
+    this.adminStockType,
+  });
 
-  @override
-  _EditProductState createState() => _EditProductState();
-}
-
-class _EditProductState extends State<EditProduct> {
-  TextEditingController uniqueStock;
-
-  TextEditingController normalPrice;
-
-  TextEditingController offertPrice;
-
-  FocusNode fquantity;
-  FocusNode fnormalprice;
-  FocusNode fofferprice;
-
-  @override
-  void initState() {
-    super.initState();
-
-    normalPrice = TextEditingController(text: widget.normalPrice);
-    offertPrice = TextEditingController(
-        text: widget.offerPrice != "null" ? widget.offerPrice : '');
-    uniqueStock = TextEditingController(
-        text: widget.stock[0].quantity != null && widget.stock[0].color == null
-            ? widget.stock[0].quantity.toString()
-            : '');
-    fquantity = FocusNode();
-    fnormalprice = FocusNode();
-    fofferprice = FocusNode();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    fquantity.dispose();
-    fnormalprice.dispose();
-    fofferprice.dispose();
-  }
+  final c = Get.put(EditProductController());
 
   @override
   Widget build(BuildContext context) {
     final Function wp = Screen(context).wp;
     final Function hp = Screen(context).hp;
-
     return Scaffold(
+      appBar: AppBar(
+        elevation: 4,
+        backgroundColor: kprimarycolorlight,
+        title: Text(
+          'Editar Producto',
+          style: GoogleFonts.lato(
+              fontWeight: FontWeight.bold,
+              fontSize: wp(4.5),
+              color: kdarkcolor),
+        ),
+        leading: IconButton(
+            color: kdarkcolor,
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              CustomRouteTransition(
+                  replacement: true, context: context, child: MainPage());
+              // BlocProvider.of<ProductsBloc>(context)
+              //     .add(OnCleanProductData());
+              c.cleanProductData();
+            }),
+      ),
       floatingActionButton: CustomFloatingActionButton(
         wp: wp,
-        onPressed: () => BlocProvider.of<ProductsBloc>(context)
-            .add(OnUpdateProduct(widget.id)),
+        onPressed: () async {
+          final resp = await c.updateProduct(
+              id,
+              c.stockType.value,
+              c.adminStock,
+              c.priceType.value.index,
+              c.normalPrice.value.text,
+              c.offerPrice.value.text);
+          print('product updated');
+
+          if (resp) {
+            showAlert(context,
+                title: 'Producto creado con exito',
+                subtitle: 'Aceptar',
+                child: MainPage());
+          } else {
+            showDialog(
+                context: context,
+                builder: (_) => new AlertDialog(
+                      title: new Text("Datos incorrectos"),
+                    ));
+          }
+        },
         text: 'Completar',
       ),
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: BlocListener<ProductsBloc, ProductsState>(
-          listener: (_, state) {
-            if (state.isProductEdited == IsProductEdited.SUCCESS) {
-              showAlert(context,
-                  title: 'Producto creado con exito',
-                  subtitle: 'Aceptar',
-                  child: MainPage());
-              BlocProvider.of<ProductsBloc>(context).add(OnCleanProductData());
-            } else if (state.isProductEdited == IsProductEdited.FAIL) {
-              showDialog(
-                  context: _,
-                  builder: (_) => new AlertDialog(
-                        title: new Text("Product already exist"),
-                      ));
-            }
-          },
-          child: SafeArea(
-              child: Container(
-            child: Column(
-              children: [
-                _header(context, hp, wp),
-                SizedBox(
-                  height: hp(3),
-                ),
-                Text('${widget.name}',
-                    style: GoogleFonts.lato(
-                      fontSize: wp(4.5),
-                      fontWeight: FontWeight.bold,
-                    )),
-                BlocBuilder<ProductsBloc, ProductsState>(
-                    builder: (context, state) {
-                  return _form(context, hp, wp,  state);
-                })
-              ],
+      body: GetX<EditProductController>(
+        builder: (controller) {
+          return SafeArea(
+              child: SingleChildScrollView(
+            child: Container(
+              height: hp(90),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('$name',
+                      style: GoogleFonts.lato(
+                        fontSize: wp(4.5),
+                        fontWeight: FontWeight.bold,
+                      )),
+                  _form(context, hp, wp, controller)
+                ],
+              ),
             ),
-          )),
-        ),
+          ));
+        },
       ),
     );
   }
 
-  Widget _form(
-      BuildContext context, Function hp, Function wp, ProductsState state) {
+  Widget _form(BuildContext context, Function hp, Function wp,
+      EditProductController controller) {
     return Container(
-      height: hp(76),
+      height: hp(70),
       margin: EdgeInsets.only(left: 30, right: 30, top: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,35 +136,35 @@ class _EditProductState extends State<EditProduct> {
           ),
           //STOCK TYPE
           ProductCustomInput(
-            isCompleted: state.stocktype != null ? true : false,
+            // isCompleted: state.stocktype != StockType.UNDEFINED ? true : false,
             hp: hp(7),
             fontSize: wp(4),
-            iconSize: wp(5),
-            function: () => displayModalBottomSheetStock(context),
-            text: handleStockType(state.stocktype),
+            iconSize: wp(6),
+            function: () => displayModalBottomSheetToEditProduct(context),
+            text: handleStockType(controller.stockType.value),
             icon: Icons.keyboard_arrow_down,
           ),
           //ADMIN STOCK TYPE
-          state.stocktype == StockType.UNIQUE
+          controller.stockType.value == StockType.UNIQUE
               ? CustomInput(
                   hp: hp(7),
-                  focusNode: fquantity,
+                  focusNode: controller.fquantity,
                   textInputAction: TextInputAction.next,
                   onFocus: () {
-                    fquantity.unfocus();
-                    FocusScope.of(context).requestFocus(fnormalprice);
+                    controller.fquantity.unfocus();
+                    FocusScope.of(context)
+                        .requestFocus(controller.fnormalprice);
                   },
                   placeholder: 'Cantidad',
-                  textEditingController: uniqueStock,
-                  function: (value) => BlocProvider.of<ProductsBloc>(context)
-                      .add(OnStockChange(value, 0)),
+                  textEditingController: controller.uniqueStockController.value,
+                  function: (value) => controller.setAdminProduct(0, value),
                   keyboardType: TextInputType.number,
                 )
               : GestureDetector(
                   onTap: () => CustomRouteTransition(
                       context: context,
                       child: StockPage(
-                        adminStock: widget.adminStock,
+                        isEdited: true,
                       )),
                   child: Container(
                     height: hp(7),
@@ -191,19 +179,19 @@ class _EditProductState extends State<EditProduct> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          handleAdminStockType(state.adminStockType),
+                          handleAdminStockType(controller.adminStockType.value),
                           style: GoogleFonts.oswald(
-                              color: state.adminStockType != null
+                              color: controller.adminStockType.value !=
+                                      AdminStockType.UNDEFINED
                                   ? kintroselected
                                   : kintroNotSelected,
                               fontSize: wp(4.5)),
                         ),
                         Icon(
-                          state.adminStockType != null
-                              ? Icons.arrow_forward_ios
-                              : Icons.keyboard_arrow_down,
-                          size: 23,
-                          color: state.adminStockType != null
+                          Icons.arrow_forward_ios,
+                          size: wp(5),
+                          color: controller.adminStockType.value !=
+                                  AdminStockType.UNDEFINED
                               ? kintroselected
                               : kintroNotSelected,
                         ),
@@ -221,74 +209,39 @@ class _EditProductState extends State<EditProduct> {
               fontSize: wp(4),
               iconSize: wp(5),
               hp: hp(7),
-              function: () => displayModalBottomSheetPrice(context),
+              function: () =>
+                  displayModalBottomSheetPriceToEditProduct(context),
               icon: Icons.arrow_forward_ios,
-              text: handlePriceType(state.priceType)),
+              text: handlePriceType(controller.priceType.value)),
           //NORMAL PRICE
           CustomInput(
               keyboardType: TextInputType.number,
-              focusNode: fnormalprice,
-              textInputAction: state.priceType == PriceType.OFFERT
+              focusNode: controller.fnormalprice,
+              textInputAction: controller.priceType.value == PriceType.OFFERT
                   ? TextInputAction.next
                   : TextInputAction.done,
               onFocus: () {
-                fnormalprice.unfocus();
-                FocusScope.of(context).requestFocus(fofferprice);
+                controller.fnormalprice.unfocus();
+                FocusScope.of(context).requestFocus(controller.fofferprice);
               },
               hp: hp(7),
-              function: (value) => BlocProvider.of<ProductsBloc>(context)
-                  .add(OnNormalPriceChange(value)),
+              function: (value) => controller.setnormalPrice(value),
               placeholder: 'Precio Normal (S/)',
-              textEditingController: normalPrice),
-          state.priceType == PriceType.OFFERT
+              textEditingController: controller.normalPrice.value),
+          controller.priceType.value == PriceType.OFFERT
               ? CustomInput(
                   keyboardType: TextInputType.number,
-                  focusNode: fofferprice,
+                  focusNode: controller.fofferprice,
                   textInputAction: TextInputAction.done,
                   onFocus: () {
-                    fofferprice.unfocus();
+                    controller.fofferprice.unfocus();
                   },
                   hp: hp(7),
-                  function: (value) => BlocProvider.of<ProductsBloc>(context)
-                      .add(OnOfferPriceChange(value)),
+                  function: (value) => controller.setofferPrice(value),
                   placeholder: 'Precio Oferta (S/)',
-                  textEditingController: offertPrice)
+                  textEditingController: controller.offerPrice.value)
               : Container()
         ],
-      ),
-    );
-  }
-
-  Widget _header(BuildContext context, Function hp, Function wp) {
-    return Material(
-      elevation: 5,
-      child: Container(
-        margin: EdgeInsets.only(left: 5, right: 10),
-        height: 50,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                IconButton(
-                    icon: Icon(Icons.arrow_back),
-                    onPressed: () {
-                      CustomRouteTransition(
-                          replacement: true,
-                          context: context,
-                          child: MainPage());
-                      BlocProvider.of<ProductsBloc>(context)
-                          .add(OnCleanProductData());
-                    }),
-                Text(
-                  'Editar Producto',
-                  style: GoogleFonts.lato(
-                      fontWeight: FontWeight.bold, fontSize: wp(4.5)),
-                ),
-              ],
-            ),
-          ],
-        ),
       ),
     );
   }

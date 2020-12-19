@@ -133,12 +133,11 @@ class ProductService {
       "priceType": priceType,
       "price": {
         "normalPrice": int.parse(normalPrice),
-        "offertPrice": offerPrice != null ? int.parse(offerPrice) : "",
+        "offertPrice": offerPrice != null && offerPrice.isNotEmpty ? int.parse(offerPrice) : null,
       },
     };
     final resp = await _dio.put('$_updateProduct$id',
         data: data,
-        
         options: Options(
           headers: {HttpHeaders.authorizationHeader: 'Bearer $token'},
         ));

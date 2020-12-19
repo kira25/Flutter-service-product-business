@@ -49,6 +49,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       yield state.copyWith(normalPrice: event.normalPrice);
     } else if (event is OnOfferPriceChange) {
       yield state.copyWith(offerPrice: event.offerPrice);
+      print(state.offerPrice);
     } else if (event is OnProductImageChange) {
       yield state
           .copyWith(productImage: [...state.productImage, event.productImage]);
@@ -89,16 +90,16 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
                   size: Sizes.S, sizeStock: TextEditingController(text: ''))
             ])
           ],
-          adminStockType: null,
+          adminStockType: AdminStockType.ADMIN_STOCK_UNIQUE,
           category: ProductCategory.UNDEFINED,
           description: null,
           isProductCreated: IsProductCreated.UNDEFINED,
           normalPrice: null,
           offerPrice: null,
-          priceType: PriceType.NORMAL,
+          priceType: PriceType.UNDEFINED,
           productImage: [],
           productName: null,
-          stocktype: StockType.UNIQUE,
+          stocktype: StockType.UNDEFINED,
           subCategory: ProductSubCategory.UNDEFINED,
           filesProduct: []);
     } else if (event is OnLoadShopProducts) {
@@ -112,7 +113,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     } else if (event is OnDeleteProduct) {
       yield* _mapOnDeleteProduct(event, state);
     } else if (event is OnLoadProductDataToEdit) {
-      yield _mapOnLoadProductDataToEdit(event, state);
+      yield* _mapOnLoadProductDataToEdit(event, state);
       print(state.adminStock[0]);
       print(state.stocktype);
       print(state.adminStockType);
@@ -151,7 +152,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
         stock,
         state.priceType.index,
         state.normalPrice,
-        state.offerPrice);
+        state.offerPrice ?? "");
 
     if (resp == true) {
       yield state.copyWith(isProductEdited: IsProductEdited.SUCCESS);
@@ -162,10 +163,10 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
     }
   }
 
-  ProductsState _mapOnLoadProductDataToEdit(
-      OnLoadProductDataToEdit event, ProductsState state) {
+  Stream<ProductsState> _mapOnLoadProductDataToEdit(
+      OnLoadProductDataToEdit event, ProductsState state) async* {
     print('OnLoadProductDataToEdit');
-    return state.copyWith(
+    yield state.copyWith(
         stocktype: event.stockType,
         priceType: event.priceType,
         adminStockType: event.adminStockType);

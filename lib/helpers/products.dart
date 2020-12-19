@@ -337,7 +337,7 @@ String handlePriceType(PriceType priceType) {
       break;
 
     default:
-      return '';
+      return 'Normal';
   }
 }
 

@@ -176,7 +176,7 @@ class _AddProductsState extends State<AddProducts> {
                   ),
                   Icon(
                     Icons.arrow_forward_ios,
-                    size: 23,
+                    size: wp(5),
                   ),
                 ],
               ),
@@ -195,7 +195,7 @@ class _AddProductsState extends State<AddProducts> {
           ProductCustomInput(
             hp: hp(7),
             fontSize: wp(4),
-            iconSize: wp(5),
+            iconSize: wp(6),
             function: () => displayModalBottomSheetStock(context),
             text: state.stocktype != null
                 ? handleStockType(state.stocktype)

@@ -14,13 +14,13 @@ class ProductsState {
       this.isProductCreated = IsProductCreated.UNDEFINED,
       List<AdminProduct> adminStock,
       this.adminColorType,
-      this.adminStockType = AdminStockType.ADMIN_STOCK_UNIQUE,
-      this.priceType = PriceType.NORMAL,
+      this.adminStockType = AdminStockType.UNDEFINED,
+      this.priceType = PriceType.UNDEFINED,
       this.normalPrice,
       this.offerPrice,
       this.productName,
       this.description,
-      this.stocktype = StockType.UNIQUE,
+      this.stocktype = StockType.UNDEFINED,
       this.category,
       this.subCategory,
       this.productImage = const []})
@@ -95,20 +95,5 @@ class ProductsState {
         isProductCreated: isProductCreated ?? this.isProductCreated);
   }
 
-  @override
-  List<Object> get props => [
-        adminStockType,
-        subCategory,
-        category,
-        stocktype,
-        priceType,
-        description,
-        productImage,
-        productName,
-        normalPrice,
-        offerPrice,
-        adminColorType,
-        adminStock,
-        isProductCreated
-      ];
+
 }

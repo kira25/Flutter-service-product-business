@@ -1,14 +1,135 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:grouped_buttons/grouped_buttons.dart';
 import 'package:responsive_screen/responsive_screen.dart';
 import 'package:service_products_business/bloc/products/products_bloc.dart';
 import 'package:service_products_business/bloc/services/services_bloc.dart';
+import 'package:service_products_business/controller/editproduct_controller.dart';
 import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/enums.dart';
+import 'package:service_products_business/pages/EditProduct/EditProduct.dart';
 import 'package:service_products_business/widgets/custom_checkbox.dart';
+
+void displayModalBottomSheetAdminStockToEditProduct(context, int indexStock) {
+  final Function wp = Screen(context).wp;
+  final Function hp = Screen(context).hp;
+  showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (_) {
+        return Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height / 4.0 * 3.0,
+            ),
+            child: Wrap(
+              children: <Widget>[
+                Material(
+                  elevation: 5,
+                  child: Container(
+                    margin: EdgeInsets.only(left: 5, right: 10),
+                    height: hp(8),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            IconButton(
+                                icon: Icon(Icons.close),
+                                onPressed: () => Navigator.pop(context)),
+                            SizedBox(
+                              width: wp(30),
+                            ),
+                            Text(
+                              'Color',
+                              style: GoogleFonts.lato(
+                                  fontWeight: FontWeight.bold, fontSize: wp(5)),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                      Container(
+                        height: hp(42),
+                        child: ListView.builder(
+                          physics: BouncingScrollPhysics(),
+                          itemCount: 6,
+                          itemBuilder: (_, index) {
+                            List<Color> color = [
+                              kyellowcolor,
+                              kintroselected,
+                              kintroNotSelected,
+                              kdarkcolor,
+                              kwrongAnswer,
+                              primaryColor
+                            ];
+                            List namecolors = [
+                              'Amarillo',
+                              'Azul',
+                              'Gris',
+                              'Negro',
+                              'Rojo',
+                              'Rosado'
+                            ];
+                            List<AdminColorType> colortype = [
+                              AdminColorType.YELLOW,
+                              AdminColorType.BLUE,
+                              AdminColorType.GREY,
+                              AdminColorType.BLACK,
+                              AdminColorType.RED,
+                              AdminColorType.PINK,
+                            ];
+
+                            return GetX<EditProductController>(
+                              builder: (controller) {
+                                return Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Container(
+                                          height: 10,
+                                          width: 10,
+                                          color: color[index],
+                                        ),
+                                        SizedBox(
+                                          width: wp(3),
+                                        ),
+                                        Text(namecolors[index]),
+                                      ],
+                                    ),
+                                    IconButton(
+                                        icon: controller.adminStock[indexStock]
+                                                    .adminColorType ==
+                                                colortype[index]
+                                            ? Icon(FontAwesomeIcons.dotCircle)
+                                            : Icon(FontAwesomeIcons.circle),
+                                        onPressed: () =>
+                                            controller.onAdminColorStock(
+                                                indexStock, colortype[index]))
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ));
+      });
+}
 
 void displayModalBottomSheetAdminStock(context, int indexStock) {
   final Function wp = Screen(context).wp;
@@ -298,7 +419,7 @@ void displayModalBottomSheetPrice(context) {
       });
 }
 
-void displayModalBottomSheetStock(context) {
+void displayModalBottomSheetPriceToEditProduct(context) {
   final Function wp = Screen(context).wp;
   showModalBottomSheet(
       isScrollControlled: true,
@@ -315,16 +436,101 @@ void displayModalBottomSheetStock(context) {
                   child: Container(
                     margin: EdgeInsets.only(left: 5, right: 10),
                     height: 50,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            IconButton(
+                                icon: Icon(Icons.arrow_back),
+                                onPressed: () => Navigator.pop(context)),
+                            SizedBox(
+                              width: wp(22),
+                            ),
+                            Text(
+                              'Nuevo producto',
+                              style: GoogleFonts.lato(
+                                  fontWeight: FontWeight.bold, fontSize: 15),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                GetX<EditProductController>(
+                  init: EditProductController(),
+                  builder: (controller) {
+                    return Container(
+                      padding: EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Normal'),
+                              IconButton(
+                                  icon: controller.priceType.value ==
+                                          PriceType.NORMAL
+                                      ? Icon(FontAwesomeIcons.dotCircle)
+                                      : Icon(FontAwesomeIcons.circle),
+                                  onPressed: () =>
+                                      controller.setPriceType(PriceType.NORMAL))
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('¡Oferta!'),
+                              IconButton(
+                                  icon: controller.priceType.value ==
+                                          PriceType.OFFERT
+                                      ? Icon(FontAwesomeIcons.dotCircle)
+                                      : Icon(FontAwesomeIcons.circle),
+                                  onPressed: () =>
+                                      controller.setPriceType(PriceType.OFFERT))
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                )
+              ],
+            ));
+      });
+}
+
+void displayModalBottomSheetStock(context) {
+  final Function wp = Screen(context).wp;
+  showModalBottomSheet(
+      isDismissible: false,
+      isScrollControlled: true,
+      context: context,
+      builder: (context) {
+        return Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height / 4.0 * 3.0,
+            ),
+            child: Wrap(
+              children: <Widget>[
+                Material(
+                  elevation: 5,
+                  child: Container(
+                    margin: EdgeInsets.only(left: 5, right: 10),
+                    height: 50,
                     child: Stack(
                       children: [
-                        Align(alignment: Alignment.centerLeft,
-                                                  child: IconButton(
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: IconButton(
                               icon: Icon(Icons.arrow_back),
                               onPressed: () => Navigator.pop(context)),
                         ),
-                     
-                        Align(alignment: Alignment.center,
-                                                  child: Text(
+                        Align(
+                          alignment: Alignment.center,
+                          child: Text(
                             'Stock',
                             style: GoogleFonts.lato(
                                 fontWeight: FontWeight.bold, fontSize: 15),
@@ -416,6 +622,144 @@ void displayModalBottomSheetStock(context) {
                     );
                   },
                 ),
+              ],
+            ));
+      });
+}
+
+//UPDATE STOCK AND ADMINSTOCK TYPE
+
+void displayModalBottomSheetToEditProduct(context) {
+  final Function wp = Screen(context).wp;
+  showModalBottomSheet(
+      isDismissible: false,
+      isScrollControlled: true,
+      context: context,
+      builder: (context) {
+        return Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height / 4.0 * 3.0,
+            ),
+            child: Wrap(
+              children: <Widget>[
+                Material(
+                  elevation: 5,
+                  child: Container(
+                    margin: EdgeInsets.only(left: 5, right: 10),
+                    height: 50,
+                    child: Stack(
+                      children: [
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: IconButton(
+                              icon: Icon(Icons.arrow_back),
+                              onPressed: () => Navigator.pop(context)),
+                        ),
+                        Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            'Stock',
+                            style: GoogleFonts.lato(
+                                fontWeight: FontWeight.bold, fontSize: 15),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                GetX<EditProductController>(
+                  init: EditProductController(),
+                  builder: (controller) {
+                    return Container(
+                      padding: EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Unico'),
+                              IconButton(
+                                  icon: controller.stockType.value ==
+                                          StockType.UNIQUE
+                                      ? Icon(FontAwesomeIcons.dotCircle)
+                                      : Icon(FontAwesomeIcons.circle),
+                                  onPressed: () {
+                                    controller.setStockType(StockType.UNIQUE);
+                                    controller.setAdminStockType(
+                                        AdminStockType.ADMIN_STOCK_UNIQUE);
+                                    // BlocProvider.of<ProductsBloc>(context).add(
+                                    //     OnAdminStockType(
+                                    //         AdminStockType.ADMIN_STOCK_UNIQUE));
+                                    // BlocProvider.of<ProductsBloc>(context)
+                                    //     .add(OnStockType(StockType.UNIQUE));
+                                  })
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Por Color'),
+                              IconButton(
+                                  icon: controller.stockType.value ==
+                                          StockType.BY_COLOR
+                                      ? Icon(FontAwesomeIcons.dotCircle)
+                                      : Icon(FontAwesomeIcons.circle),
+                                  onPressed: () {
+                                    controller.setStockType(StockType.BY_COLOR);
+                                    controller.setAdminStockType(
+                                        AdminStockType.ADMIN_STOCK_COLOR);
+                                    // BlocProvider.of<ProductsBloc>(context).add(
+                                    //     OnAdminStockType(
+                                    //         AdminStockType.ADMIN_STOCK_COLOR));
+                                    // BlocProvider.of<ProductsBloc>(context)
+                                    //     .add(OnStockType(StockType.BY_COLOR));
+                                  })
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Por Talla'),
+                              IconButton(
+                                  icon: controller.stockType.value ==
+                                          StockType.BY_SIZE
+                                      ? Icon(FontAwesomeIcons.dotCircle)
+                                      : Icon(FontAwesomeIcons.circle),
+                                  onPressed: () {
+                                    controller.setStockType(StockType.BY_SIZE);
+                                    controller.setAdminStockType(
+                                        AdminStockType.ADMIN_STOCK_BY_SIZE);
+
+                                    // BlocProvider.of<ProductsBloc>(context).add(
+                                    //     OnAdminStockType(AdminStockType
+                                    //         .ADMIN_STOCK_BY_SIZE));
+                                    // BlocProvider.of<ProductsBloc>(context)
+                                    //     .add(OnStockType(StockType.BY_SIZE));
+                                  })
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Por Color y talla'),
+                              IconButton(
+                                  icon: controller.stockType.value ==
+                                          StockType.BY_COLOR_SIZE
+                                      ? Icon(FontAwesomeIcons.dotCircle)
+                                      : Icon(FontAwesomeIcons.circle),
+                                  onPressed: () {
+                                    controller
+                                        .setStockType(StockType.BY_COLOR_SIZE);
+                                    controller.setAdminStockType(AdminStockType
+                                        .ADMIN_STOCK_BY_COLOR_SIZE);
+                                  })
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                )
               ],
             ));
       });

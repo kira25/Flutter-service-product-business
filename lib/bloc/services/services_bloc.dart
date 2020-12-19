@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:service_products_business/bloc/products/products_bloc.dart';
 import 'package:service_products_business/helpers/enums.dart';
 import 'package:service_products_business/models/service_response.dart';
 import 'package:service_products_business/services/services/services_service.dart';

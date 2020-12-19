@@ -24,19 +24,17 @@ enum AdminStockType {
   ADMIN_STOCK_UNIQUE,
   ADMIN_STOCK_COLOR,
   ADMIN_STOCK_BY_SIZE,
-  ADMIN_STOCK_BY_COLOR_SIZE
+  ADMIN_STOCK_BY_COLOR_SIZE,
+  UNDEFINED
+  
 }
 
-enum StockType {
-  UNIQUE,
-  BY_COLOR,
-  BY_SIZE,
-  BY_COLOR_SIZE,
-}
+enum StockType { UNIQUE, BY_COLOR, BY_SIZE, BY_COLOR_SIZE, UNDEFINED }
 
 enum PriceType {
   NORMAL,
   OFFERT,
+  UNDEFINED
 }
 
 enum AdminColorType { YELLOW, BLUE, GREY, BLACK, RED, PINK }
@@ -46,7 +44,7 @@ enum Sizes { S, M, L, XL, XXL }
 enum AvailableType { SHOP, HOME, SHOP_HOME }
 
 enum DepartmentType { LIMA, ICA, AREQUIPA, LAMBAYEQUE, UNDEFINED }
-enum ProvinceType { LIMA, NAZCA, AREQUIPA, CHICLAYO ,UNDEFINED }
+enum ProvinceType { LIMA, NAZCA, AREQUIPA, CHICLAYO, UNDEFINED }
 
 enum DistrictType {
   SANBORJA,
@@ -64,11 +62,11 @@ enum DistrictType {
   CARABAYLLO,
   COMAS,
   OLIVOS,
-  LURIGANCHO,UNDEFINED
+  LURIGANCHO,
+  UNDEFINED
 }
 
-
-enum GroupedButtonsOrientation{
+enum GroupedButtonsOrientation {
   HORIZONTAL,
   VERTICAL,
 }
