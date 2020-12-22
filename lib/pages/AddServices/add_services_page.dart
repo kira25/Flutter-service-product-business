@@ -209,7 +209,7 @@ class _AddServicesPageState extends State<AddServicesPage> {
               },
               hp: hp(7),
               textInputAction: TextInputAction.next,
-              placeholder: 'Horario de atencion',
+              placeholder: 'Horario de atencion(Lun a Vie 5am a 6pm)',
               textEditingController: attentionHours),
 
           Text('Disponibilidad',

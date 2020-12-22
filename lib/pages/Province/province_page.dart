@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:responsive_screen/responsive_screen.dart';
 import 'package:service_products_business/bloc/services/services_bloc.dart';
+import 'package:service_products_business/controller/editservices_controller.dart';
 import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/enums.dart';
 import 'package:service_products_business/routes/routes.dart';
 import 'package:service_products_business/widgets/category_options.dart';
 
 class ProvincePage extends StatelessWidget {
+    final c = Get.put(EditServicesController());
+    final bool isEdit;
+
+   ProvincePage({ this.isEdit= false});
+
   @override
   Widget build(BuildContext context) {
     final Function wp = Screen(context).wp;
+    Map args = ModalRoute.of(context).settings.arguments;
 
     return Scaffold(
       appBar: AppBar(
@@ -36,15 +44,25 @@ class ProvincePage extends StatelessWidget {
               CategoryOptions(
                   wp: wp,
                   option: 'Lima',
-                  function: () {
+                  function: args["isEdit"] == true
+                      ? () {
+                          c.onProvinceType(ProvinceType.LIMA);
+                          Navigator.popAndPushNamed(context, DISTRICT_PAGE,arguments: {"isEdit": true});
+                        }
+                      :() {
                     BlocProvider.of<ServicesBloc>(context)
                         .add(OnProvinceType(ProvinceType.LIMA));
-                    Navigator.popAndPushNamed(context, DISTRICT_PAGE);
+                    Navigator.popAndPushNamed(context, DISTRICT_PAGE,);
                   }),
               CategoryOptions(
                   wp: wp,
                   option: 'Nazca',
-                  function: () {
+                  function:args["isEdit"] == true
+                      ? () {
+                          c.onProvinceType(ProvinceType.NAZCA);
+                          Navigator.popAndPushNamed(context, DISTRICT_PAGE,arguments: {"isEdit": true});
+                        }
+                      : () {
                     BlocProvider.of<ServicesBloc>(context)
                         .add(OnProvinceType(ProvinceType.NAZCA));
                     Navigator.popAndPushNamed(context, DISTRICT_PAGE);
@@ -52,7 +70,12 @@ class ProvincePage extends StatelessWidget {
               CategoryOptions(
                   wp: wp,
                   option: 'Arequipa',
-                  function: () {
+                  function: args["isEdit"] == true
+                      ? () {
+                          c.onProvinceType(ProvinceType.AREQUIPA);
+                          Navigator.popAndPushNamed(context, DISTRICT_PAGE,arguments: {"isEdit": true});
+                        }
+                      : () {
                     BlocProvider.of<ServicesBloc>(context)
                         .add(OnProvinceType(ProvinceType.AREQUIPA));
                     Navigator.popAndPushNamed(context, DISTRICT_PAGE);
@@ -61,7 +84,12 @@ class ProvincePage extends StatelessWidget {
                   border: false,
                   wp: wp,
                   option: 'Chiclayo',
-                  function: () {
+                  function: args["isEdit"] == true
+                      ? () {
+                          c.onProvinceType(ProvinceType.CHICLAYO);
+                          Navigator.popAndPushNamed(context, DISTRICT_PAGE,arguments: {"isEdit": true});
+                        }
+                      :() {
                     BlocProvider.of<ServicesBloc>(context)
                         .add(OnProvinceType(ProvinceType.CHICLAYO));
                     Navigator.popAndPushNamed(context, DISTRICT_PAGE);

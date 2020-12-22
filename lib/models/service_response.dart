@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:service_products_business/helpers/enums.dart';
+
 ServiceResponse serviceResponseFromJson(String str) =>
     ServiceResponse.fromJson(json.decode(str));
 
@@ -34,6 +36,7 @@ class ServiceResponse {
 
 class Service {
   Service({
+    this.priceType,
     this.location,
     this.price,
     this.id,
@@ -50,7 +53,7 @@ class Service {
     this.createdAt,
     this.v,
   });
-
+  int priceType;
   Location location;
   Price price;
   String id;
@@ -68,6 +71,7 @@ class Service {
   int v;
 
   factory Service.fromJson(Map<String, dynamic> json) => Service(
+      priceType: json["priceType"],
         location: json["location"] == null
             ? Location()
             : Location.fromJson(json["location"]),
@@ -78,8 +82,8 @@ class Service {
         deliveryTime: json["deliveryTime"],
         attentionHours: json["attentionHours"],
         availableType: json["availableType"],
-        address: json["address"],
-        districtAvailable: List<DistrictAvailable>.from(
+        address: json["address"] == null ? "":json["address"],
+        districtAvailable:  json["districtAvailable"] == null ? [] : List<DistrictAvailable>.from(
             json["districtAvailable"]
                 .map((x) => DistrictAvailable.fromJson(x))),
         imageService: List<ImageService>.from(
@@ -91,6 +95,7 @@ class Service {
       );
 
   Map<String, dynamic> toJson() => {
+    "priceType": priceType,
         "location": location.toJson(),
         "price": price.toJson(),
         "_id": id,

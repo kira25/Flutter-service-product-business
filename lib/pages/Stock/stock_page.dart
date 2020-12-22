@@ -18,10 +18,9 @@ class StockPage extends StatelessWidget {
   final List<AdminProduct> adminStock;
   final bool isEdited;
 
-   StockPage({this.adminStock, this.isEdited = false});
+  StockPage({this.adminStock, this.isEdited = false});
 
-
-  final c = Get.put(EditProductController());
+  final c = Get.put<EditProductController>(EditProductController());
 
   @override
   Widget build(BuildContext context) {
@@ -52,276 +51,357 @@ class StockPage extends StatelessWidget {
               init: EditProductController(),
               builder: (controller) {
                 return Container(
-                  height: hp(90),
-                  width: double.infinity,
                   margin:
-                      EdgeInsets.symmetric(horizontal: wp(5), vertical: hp(3)),
-                  child: Column(
-                    children: [
-                      //LIST OF ADMIN STOCKS
-                      Expanded(
-                          child: ListView.builder(
-                        itemExtent:
-                            controller.stockType.value == StockType.BY_SIZE
-                                ? hp(80)
-                                : hp(45),
-                        shrinkWrap: true,
-                        physics: BouncingScrollPhysics(),
-                        itemCount: controller.adminStock.length,
-                        itemBuilder: (_, index) {
-                          return Column(
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              //Color text
-                              Container(
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                      EdgeInsets.symmetric(horizontal: wp(6), vertical: hp(3)),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        //LIST OF ADMIN STOCKS
+                        Container(
+                            height: hp(75),
+                            child: ListView.separated(
+                              separatorBuilder: (context, index) => Divider(
+                                height: hp(2),
+                                color: kprimarycolorlight,
+                              ),
+                              shrinkWrap: true,
+                              physics: BouncingScrollPhysics(),
+                              itemCount: controller.adminStock.length,
+                              itemBuilder: (_, index) {
+                                return Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      'Color ${index + 1}',
-                                      style: GoogleFonts.lato(
-                                          fontSize: wp(4),
-                                          fontWeight: FontWeight.bold,
-                                          color: kdarkcolor),
-                                    ),
-                                    index > 0
-                                        ? GestureDetector(
-                                            child: Container(
-                                              width: wp(20),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceAround,
-                                                children: [
-                                                  Icon(
-                                                    FontAwesomeIcons.trash,
-                                                    size: wp(3),
-                                                    color: kwrongAnswer,
-                                                  ),
-                                                  Text(
-                                                    'Eliminar',
-                                                    style: GoogleFonts.lato(
-                                                      color: kwrongAnswer,
-                                                      fontSize: wp(4),
+                                    //Color text
+                                    Container(
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            controller.stockType.value ==
+                                                    StockType.BY_SIZE
+                                                ? 'Tallas '
+                                                : 'Color ${index + 1}',
+                                            style: GoogleFonts.lato(
+                                                fontSize: wp(4),
+                                                fontWeight: FontWeight.bold,
+                                                color: kdarkcolor),
+                                          ),
+                                          index > 0
+                                              ? GestureDetector(
+                                                  child: Container(
+                                                    width: wp(20),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceAround,
+                                                      children: [
+                                                        Icon(
+                                                          FontAwesomeIcons
+                                                              .trash,
+                                                          size: wp(3),
+                                                          color: kwrongAnswer,
+                                                        ),
+                                                        Text(
+                                                          'Eliminar',
+                                                          style:
+                                                              GoogleFonts.lato(
+                                                            color: kwrongAnswer,
+                                                            fontSize: wp(4),
+                                                          ),
+                                                        )
+                                                      ],
                                                     ),
-                                                  )
+                                                  ),
+                                                  onTap: () => controller
+                                                      .onDeleteAdminStock(
+                                                          index))
+                                              : Container()
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: hp(3),
+                                    ),
+                                    //STOCK BY SIZE
+                                    controller.stockType.value ==
+                                            StockType.BY_SIZE
+                                        ? Container(
+                                            height: hp(68),
+                                            child: ListView.separated(
+                                              physics: BouncingScrollPhysics(),
+                                              separatorBuilder:
+                                                  (context, index) => Divider(
+                                                height: hp(2),
+                                                color: kprimarycolorlight,
+                                              ),
+                                              shrinkWrap: true,
+                                              itemCount: controller
+                                                  .adminStock[0]
+                                                  .sizeProduct
+                                                  .length,
+                                              itemBuilder: (context, index) =>
+                                                  Column(
+                                                children: [
+                                                  Container(
+                                                    height: hp(7),
+                                                    width: double.infinity,
+                                                    padding: EdgeInsets.only(
+                                                        top: 5,
+                                                        bottom: 5,
+                                                        left: 25,
+                                                        right: 20),
+                                                    decoration: BoxDecoration(
+                                                        boxShadow: [
+                                                          BoxShadow(
+                                                            color: Colors.black
+                                                                .withOpacity(
+                                                                    0.05),
+                                                          ),
+                                                        ],
+                                                        color: Colors.grey[200],
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20)),
+                                                    child:
+                                                        DropdownButtonHideUnderline(
+                                                            child:
+                                                                DropdownButton(
+                                                                    value: controller.adminStock[0].sizeProduct[index] !=
+                                                                            null
+                                                                        ? handleAdminProductSize(controller
+                                                                            .adminStock[
+                                                                                0]
+                                                                            .sizeProduct[
+                                                                                index]
+                                                                            .size)
+                                                                        : 'S',
+                                                                    items: [
+                                                                      DropdownMenuItem(
+                                                                        child: Text(
+                                                                            'S'),
+                                                                        value:
+                                                                            'S',
+                                                                      ),
+                                                                      DropdownMenuItem(
+                                                                        child: Text(
+                                                                            'M'),
+                                                                        value:
+                                                                            'M',
+                                                                      ),
+                                                                      DropdownMenuItem(
+                                                                        child: Text(
+                                                                            'L'),
+                                                                        value:
+                                                                            'L',
+                                                                      ),
+                                                                      DropdownMenuItem(
+                                                                        child: Text(
+                                                                            'XL'),
+                                                                        value:
+                                                                            'XL',
+                                                                      ),
+                                                                      DropdownMenuItem(
+                                                                        child: Text(
+                                                                            'XXL'),
+                                                                        value:
+                                                                            'XXL',
+                                                                      ),
+                                                                    ],
+                                                                    onChanged: (value) => controller.onAdminSize(
+                                                                        index,
+                                                                        handleAdminProductSizeToValue(
+                                                                            value)))),
+                                                  ),
+                                                  SizedBox(
+                                                    height: hp(2),
+                                                  ),
+                                                  //ADMIN BY SIZE : STOCK
+                                                  CustomInput(
+                                                    autofocus: false,
+                                                    hp: hp(8),
+                                                    placeholder:
+                                                        'Stock por talla',
+                                                    keyboardType:
+                                                        TextInputType.phone,
+                                                    textEditingController:
+                                                        controller
+                                                            .adminStock[0]
+                                                            .sizeProduct[index]
+                                                            .sizeStock,
+                                                    function: (value) =>
+                                                        controller
+                                                            .onAdminBySizeStock(
+                                                                value, index),
+                                                  ),
+
+                                                  index > 0
+                                                      ? GestureDetector(
+                                                          child: Container(
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .end,
+                                                              children: [
+                                                                Icon(
+                                                                  FontAwesomeIcons
+                                                                      .trash,
+                                                                  size: wp(3),
+                                                                  color:
+                                                                      kwrongAnswer,
+                                                                ),
+                                                                SizedBox(
+                                                                  width: wp(2),
+                                                                ),
+                                                                Text(
+                                                                  'Eliminar',
+                                                                  style:
+                                                                      GoogleFonts
+                                                                          .lato(
+                                                                    color:
+                                                                        kwrongAnswer,
+                                                                    fontSize:
+                                                                        wp(4),
+                                                                  ),
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          onTap: () => controller
+                                                              .onDeletAdminSizeByStock(
+                                                                  index))
+                                                      : Container(),
                                                 ],
                                               ),
                                             ),
-                                            onTap: () => controller
-                                                .onDeleteAdminStock(index))
-                                        : Container()
+                                          )
+                                        //STOCK BY COLOR
+                                        : ProductCustomInput(
+                                            fontSize: wp(4),
+                                            iconSize: wp(5),
+                                            hp: hp(7),
+                                            icon: Icons.keyboard_arrow_down,
+                                            function: () =>
+                                                displayModalBottomSheetAdminStockToEditProduct(
+                                                    context, index),
+                                            text: handleAdminColorStock(
+                                                controller.adminStock[index]
+                                                    .adminColorType),
+                                          ),
+                                    //STOCK TYPE BY COLOR AND SIZE
+                                    controller.stockType.value ==
+                                            StockType.BY_COLOR_SIZE
+                                        ? Container(
+                                            child: Column(
+                                              children: [
+                                                ListView.builder(
+                                                    shrinkWrap: true,
+                                                    physics:
+                                                        BouncingScrollPhysics(),
+                                                    itemCount: controller
+                                                        .adminStock[index]
+                                                        .sizeProduct
+                                                        .length,
+                                                    itemBuilder:
+                                                        (_, indexProduct) {
+                                                      return Container(
+                                                        height: hp(10),
+                                                        child:
+                                                            _sizeProductToEdit(
+                                                                controller,
+                                                                index,
+                                                                indexProduct,
+                                                                context,
+                                                                wp,
+                                                                hp),
+                                                      );
+                                                    }),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    IconButton(
+                                                        color: kintroselected,
+                                                        icon: Icon(
+                                                          FontAwesomeIcons
+                                                              .ruler,
+                                                          size: wp(5),
+                                                        ),
+                                                        onPressed: () => controller
+                                                            .onAddSizeProduct(
+                                                                index,
+                                                                SizeProduct(
+                                                                    size: Sizes
+                                                                        .S))),
+                                                    Text(
+                                                      'Añadir talla',
+                                                      style: GoogleFonts.lato(
+                                                          color: kintroselected,
+                                                          fontSize: wp(4)),
+                                                    )
+                                                  ],
+                                                )
+                                              ],
+                                            ),
+                                          )
+                                        : controller.stockType.value ==
+                                                StockType.BY_SIZE
+                                            ? Container()
+                                            : CustomInput(
+                                                autofocus: false,
+                                                hp: hp(7),
+                                                placeholder: 'Stock por color',
+                                                keyboardType:
+                                                    TextInputType.phone,
+                                                textEditingController:
+                                                    controller.adminStock[index]
+                                                        .stock,
+                                                function: (value) =>
+                                                    controller.onAdminStock(
+                                                        index,
+                                                        controller
+                                                            .adminStock[index]
+                                                            .stock
+                                                            .text),
+                                              ),
                                   ],
-                                ),
+                                );
+                              },
+                            )),
+
+                        MaterialButton(
+                          height: hp(6),
+                          color: kprimarycolorlight,
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          onPressed: () {
+                            controller.stockType.value == StockType.BY_SIZE
+                                ? controller
+                                    .onAddOnylSize(SizeProduct(size: Sizes.S))
+                                : controller.onAddAdminStock(AdminProduct(
+                                    sizeProduct: [SizeProduct(size: Sizes.S)]));
+                          },
+                          elevation: 3,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Icons.add_box_rounded,
+                                color: Colors.blue,
                               ),
                               SizedBox(
-                                height: hp(3),
+                                width: wp(2),
                               ),
-                              //STOCK BY SIZE
-                              controller.stockType.value == StockType.BY_SIZE
-                                  ? Expanded(
-                                      child: ListView.builder(
-                                        itemCount: controller
-                                            .adminStock[0].sizeProduct.length,
-                                        itemBuilder: (context, index) => Column(
-                                          children: [
-                                            Container(
-                                              height: hp(7),
-                                              width: double.infinity,
-                                              padding: EdgeInsets.only(
-                                                  top: 5,
-                                                  bottom: 5,
-                                                  left: 25,
-                                                  right: 20),
-                                              decoration: BoxDecoration(
-                                                  boxShadow: [
-                                                    BoxShadow(
-                                                      color: Colors.black
-                                                          .withOpacity(0.05),
-                                                    ),
-                                                  ],
-                                                  color: Colors.grey[200],
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          20)),
-                                              child:
-                                                  DropdownButtonHideUnderline(
-                                                      child: DropdownButton(
-                                                          value: controller
-                                                                          .adminStock[
-                                                                              0]
-                                                                          .sizeProduct[
-                                                                      index] !=
-                                                                  null
-                                                              ? handleAdminProductSize(
-                                                                  controller
-                                                                      .adminStock[
-                                                                          0]
-                                                                      .sizeProduct[
-                                                                          index]
-                                                                      .size)
-                                                              : 'S',
-                                                          items: [
-                                                            DropdownMenuItem(
-                                                              child: Text('S'),
-                                                              value: 'S',
-                                                            ),
-                                                            DropdownMenuItem(
-                                                              child: Text('M'),
-                                                              value: 'M',
-                                                            ),
-                                                            DropdownMenuItem(
-                                                              child: Text('L'),
-                                                              value: 'L',
-                                                            ),
-                                                            DropdownMenuItem(
-                                                              child: Text('XL'),
-                                                              value: 'XL',
-                                                            ),
-                                                            DropdownMenuItem(
-                                                              child:
-                                                                  Text('XXL'),
-                                                              value: 'XXL',
-                                                            ),
-                                                          ],
-                                                          onChanged: (value) =>
-                                                              controller.onAdminSize(
-                                                                  index,
-                                                                  handleAdminProductSizeToValue(
-                                                                      value)))),
-                                            ),
-                                            SizedBox(
-                                              height: hp(2),
-                                            ),
-                                            //ADMIN BY SIZE : STOCK
-                                            CustomInput(
-                                              hp: hp(8),
-                                              placeholder: 'Stock por talla',
-                                              keyboardType: TextInputType.phone,
-                                              textEditingController: controller
-                                                  .adminStock[0]
-                                                  .sizeProduct[index]
-                                                  .sizeStock,
-                                              function: (value) =>
-                                                  controller.onAdminBySizeStock(
-                                                      value, index),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                  //STOCK BY COLOR
-                                  : ProductCustomInput(
-                                      fontSize: wp(4),
-                                      iconSize: wp(5),
-                                      hp: hp(7),
-                                      icon: Icons.keyboard_arrow_down,
-                                      function: () =>
-                                          displayModalBottomSheetAdminStockToEditProduct(
-                                              context, index),
-                                      text: handleAdminColorStock(controller
-                                          .adminStock[index].adminColorType),
-                                    ),
-                              //STOCK TYPE BY COLOR AND SIZE
-                              controller.stockType.value ==
-                                      StockType.BY_COLOR_SIZE
-                                  ? Expanded(
-                                      child: ListView(
-                                        shrinkWrap: true,
-                                        children: [
-                                          ListView.builder(
-                                              shrinkWrap: true,
-                                              physics: BouncingScrollPhysics(),
-                                              itemCount: controller
-                                                  .adminStock[index]
-                                                  .sizeProduct
-                                                  .length,
-                                              itemBuilder: (_, indexProduct) {
-                                                return Container(
-                                                  height: hp(10),
-                                                  child: _sizeProductToEdit(
-                                                      controller,
-                                                      index,
-                                                      indexProduct,
-                                                      context,
-                                                      wp,
-                                                      hp),
-                                                );
-                                              }),
-                                          Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              IconButton(
-                                                  color: kintroselected,
-                                                  icon: Icon(
-                                                    FontAwesomeIcons.ruler,
-                                                    size: wp(5),
-                                                  ),
-                                                  onPressed: () => controller
-                                                      .onAddSizeProduct(
-                                                          index,
-                                                          SizeProduct(
-                                                              size: Sizes.S))),
-                                              Text(
-                                                'Añadir talla',
-                                                style: GoogleFonts.lato(
-                                                    color: kintroselected,
-                                                    fontSize: wp(4)),
-                                              )
-                                            ],
-                                          )
-                                        ],
-                                      ),
-                                    )
-                                  : controller.stockType.value ==
-                                          StockType.BY_SIZE
-                                      ? Container()
-                                      : CustomInput(
-                                          hp: hp(7),
-                                          placeholder: 'Stock por color',
-                                          keyboardType: TextInputType.phone,
-                                          textEditingController: controller
-                                              .adminStock[index].stock,
-                                          function: (value) =>
-                                              controller.onAdminStock(
-                                                  index,
-                                                  controller.adminStock[index]
-                                                      .stock.text),
-                                        ),
+                              Text(controller.stockType.value ==
+                                      StockType.BY_SIZE
+                                  ? 'Añadir nueva talla'
+                                  : ' Añadir nuevo color')
                             ],
-                          );
-                        },
-                      )),
-
-                      MaterialButton(
-                        height: hp(6),
-                        color: kprimarycolorlight,
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        onPressed: () {
-                          controller.stockType.value == StockType.BY_SIZE
-                              ? controller
-                                  .onAddOnylSize(SizeProduct(size: Sizes.S))
-                              : controller.onAddAdminStock(AdminProduct(
-                                  sizeProduct: [SizeProduct(size: Sizes.S)]));
-                        },
-                        elevation: 3,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.add_box_rounded,
-                              color: Colors.blue,
-                            ),
-                            Text(controller.stockType.value == StockType.BY_SIZE
-                                ? 'Añadir nueva talla'
-                                : ' Añadir nuevo color')
-                          ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               },
@@ -341,226 +421,285 @@ class StockPage extends StatelessWidget {
   Container _stock(
       Function wp, Function hp, ProductsState state, BuildContext context) {
     return Container(
-      height: hp(90),
-      width: double.infinity,
       margin: EdgeInsets.symmetric(horizontal: wp(5), vertical: hp(3)),
       child: Column(
         children: [
           //LIST OF ADMIN STOCKS
-          Expanded(
-              child: ListView.builder(
-            itemExtent: state.stocktype == StockType.BY_SIZE ? hp(80) : hp(45),
-            shrinkWrap: true,
-            physics: BouncingScrollPhysics(),
-            itemCount: state.adminStock.length,
-            itemBuilder: (_, index) {
-              return Column(
-                mainAxisSize: MainAxisSize.max,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  //Color text
-                  Container(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Color ${index + 1}',
-                          style: GoogleFonts.lato(
-                              fontSize: wp(4),
-                              fontWeight: FontWeight.bold,
-                              color: kdarkcolor),
-                        ),
-                        index > 0
-                            ? GestureDetector(
-                                child: Container(
-                                  width: wp(20),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
-                                    children: [
-                                      Icon(
-                                        FontAwesomeIcons.trash,
-                                        size: wp(3),
-                                        color: kwrongAnswer,
+          Container(
+              height: hp(75),
+              child: ListView.separated(
+                separatorBuilder: (context, index) => Divider(
+                  height: hp(2),
+                  color: kprimarycolorlight,
+                ),
+                shrinkWrap: true,
+                physics: BouncingScrollPhysics(),
+                itemCount: state.adminStock.length,
+                itemBuilder: (_, index) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      //Color text
+                      Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              state.stocktype == StockType.BY_SIZE
+                                  ? 'Tallas'
+                                  : 'Color ${index + 1}',
+                              style: GoogleFonts.lato(
+                                  fontSize: wp(4),
+                                  fontWeight: FontWeight.bold,
+                                  color: kdarkcolor),
+                            ),
+                            index > 0
+                                ? GestureDetector(
+                                    child: Container(
+                                      width: wp(20),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          Icon(
+                                            FontAwesomeIcons.trash,
+                                            size: wp(3),
+                                            color: kwrongAnswer,
+                                          ),
+                                          Text(
+                                            'Eliminar',
+                                            style: GoogleFonts.lato(
+                                              color: kwrongAnswer,
+                                              fontSize: wp(4),
+                                            ),
+                                          )
+                                        ],
                                       ),
-                                      Text(
-                                        'Eliminar',
-                                        style: GoogleFonts.lato(
-                                          color: kwrongAnswer,
-                                          fontSize: wp(4),
-                                        ),
-                                      )
-                                    ],
-                                  ),
+                                    ),
+                                    onTap: () =>
+                                        BlocProvider.of<ProductsBloc>(context)
+                                            .add(OnDeleteAdminStock(index)))
+                                : Container()
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: hp(3),
+                      ),
+                      //STOCK BY SIZE
+                      state.stocktype == StockType.BY_SIZE
+                          ? Container(
+                              height: hp(68),
+                              child: ListView.separated(
+                                separatorBuilder: (context, index) => Divider(
+                                  height: hp(2),
+                                  color: kprimarycolorlight,
                                 ),
-                                onTap: () =>
-                                    BlocProvider.of<ProductsBloc>(context)
-                                        .add(OnDeleteAdminStock(index)))
-                            : Container()
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: hp(3),
-                  ),
-                  //STOCK BY SIZE
-                  state.stocktype == StockType.BY_SIZE
-                      ? Expanded(
-                          child: ListView.builder(
-                            itemCount: state.adminStock[0].sizeProduct.length,
-                            itemBuilder: (context, index) => Column(
-                              children: [
-                                Container(
-                                  height: hp(7),
-                                  width: double.infinity,
-                                  padding: EdgeInsets.only(
-                                      top: 5, bottom: 5, left: 25, right: 20),
-                                  decoration: BoxDecoration(
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color: Colors.black.withOpacity(0.05),
-                                        ),
-                                      ],
-                                      color: Colors.grey[200],
-                                      borderRadius: BorderRadius.circular(20)),
-                                  child: DropdownButtonHideUnderline(
-                                      child: DropdownButton(
-                                          value: state.adminStock[0]
-                                                      .sizeProduct[index] !=
-                                                  null
-                                              ? handleAdminProductSize(state
-                                                  .adminStock[0]
-                                                  .sizeProduct[index]
-                                                  .size)
-                                              : 'S',
-                                          items: [
-                                            DropdownMenuItem(
-                                              child: Text('S'),
-                                              value: 'S',
-                                            ),
-                                            DropdownMenuItem(
-                                              child: Text('M'),
-                                              value: 'M',
-                                            ),
-                                            DropdownMenuItem(
-                                              child: Text('L'),
-                                              value: 'L',
-                                            ),
-                                            DropdownMenuItem(
-                                              child: Text('XL'),
-                                              value: 'XL',
-                                            ),
-                                            DropdownMenuItem(
-                                              child: Text('XXL'),
-                                              value: 'XXL',
+                                physics: BouncingScrollPhysics(),
+                                shrinkWrap: true,
+                                itemCount:
+                                    state.adminStock[0].sizeProduct.length,
+                                itemBuilder: (context, index) => Column(
+                                  children: [
+                                    Container(
+                                      height: hp(7),
+                                      width: double.infinity,
+                                      padding: EdgeInsets.only(
+                                          top: 5,
+                                          bottom: 5,
+                                          left: 25,
+                                          right: 20),
+                                      decoration: BoxDecoration(
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black
+                                                  .withOpacity(0.05),
                                             ),
                                           ],
-                                          onChanged: (value) => BlocProvider.of<
-                                                  ProductsBloc>(context)
-                                              .add(OnAdminSize(
-                                                  handleAdminProductSizeToValue(
-                                                      value),
-                                                  index)))),
-                                ),
-                                SizedBox(
-                                  height: hp(2),
-                                ),
-                                //ADMIN BY SIZE : STOCK
-                                CustomInput(
-                                  hp: hp(8),
-                                  placeholder: 'Stock por talla',
-                                  keyboardType: TextInputType.phone,
-                                  textEditingController: state.adminStock[0]
-                                      .sizeProduct[index].sizeStock,
-                                  function: (value) =>
-                                      BlocProvider.of<ProductsBloc>(context)
-                                          .add(
-                                              OnAdminBySizeStock(value, index)),
-                                )
-                              ],
-                            ),
-                          ),
-                        )
-                      //STOCK BY COLOR
-                      : ProductCustomInput(
-                          fontSize: wp(4),
-                          iconSize: wp(5),
-                          hp: hp(7),
-                          icon: Icons.keyboard_arrow_down,
-                          function: () =>
-                              displayModalBottomSheetAdminStock(context, index),
-                          text: handleAdminColorStock(
-                              state.adminStock[index].adminColorType),
-                        ),
-                  //STOCK TYPE BY COLOR AND SIZE
-                  state.stocktype == StockType.BY_COLOR_SIZE
-                      ? Expanded(
-                          child: ListView(
-                            shrinkWrap: true,
-                            children: [
-                              BlocBuilder<ProductsBloc, ProductsState>(
-                                builder: (context, state) {
-                                  return ListView.builder(
-                                      shrinkWrap: true,
-                                      physics: BouncingScrollPhysics(),
-                                      itemCount:
+                                          color: Colors.grey[200],
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      child: DropdownButtonHideUnderline(
+                                          child: DropdownButton(
+                                              value: state.adminStock[0]
+                                                          .sizeProduct[index] !=
+                                                      null
+                                                  ? handleAdminProductSize(state
+                                                      .adminStock[0]
+                                                      .sizeProduct[index]
+                                                      .size)
+                                                  : 'S',
+                                              items: [
+                                                DropdownMenuItem(
+                                                  child: Text('S'),
+                                                  value: 'S',
+                                                ),
+                                                DropdownMenuItem(
+                                                  child: Text('M'),
+                                                  value: 'M',
+                                                ),
+                                                DropdownMenuItem(
+                                                  child: Text('L'),
+                                                  value: 'L',
+                                                ),
+                                                DropdownMenuItem(
+                                                  child: Text('XL'),
+                                                  value: 'XL',
+                                                ),
+                                                DropdownMenuItem(
+                                                  child: Text('XXL'),
+                                                  value: 'XXL',
+                                                ),
+                                              ],
+                                              onChanged: (value) => BlocProvider
+                                                      .of<ProductsBloc>(context)
+                                                  .add(OnAdminSize(
+                                                      handleAdminProductSizeToValue(
+                                                          value),
+                                                      index)))),
+                                    ),
+                                    SizedBox(
+                                      height: hp(2),
+                                    ),
+                                    //ADMIN BY SIZE : STOCK
+                                    CustomInput(
+                                      autofocus: false,
+                                      hp: hp(8),
+                                      placeholder: 'Stock por talla',
+                                      keyboardType: TextInputType.phone,
+                                      textEditingController: state.adminStock[0]
+                                          .sizeProduct[index].sizeStock,
+                                      function: (value) =>
                                           BlocProvider.of<ProductsBloc>(context)
-                                              .state
-                                              .adminStock[index]
-                                              .sizeProduct
-                                              .length,
-                                      itemBuilder: (_, indexProduct) {
-                                        return Container(
-                                          height: hp(10),
-                                          child: _sizeProduct(state, index,
-                                              indexProduct, context, wp, hp),
-                                        );
-                                      });
-                                },
+                                              .add(OnAdminBySizeStock(
+                                                  value, index)),
+                                    ),
+                                    index > 0
+                                        ? GestureDetector(
+                                            child: Container(
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  Icon(
+                                                    FontAwesomeIcons.trash,
+                                                    size: wp(3),
+                                                    color: kwrongAnswer,
+                                                  ),
+                                                  SizedBox(
+                                                    width: wp(2),
+                                                  ),
+                                                  Text(
+                                                    'Eliminar',
+                                                    style: GoogleFonts.lato(
+                                                      color: kwrongAnswer,
+                                                      fontSize: wp(4),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                            onTap: () => BlocProvider.of<
+                                                    ProductsBloc>(context)
+                                                .add(OnDeletAdminSizeByStock(
+                                                    index)))
+                                        : Container(),
+                                  ],
+                                ),
                               ),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
+                            )
+                          //STOCK BY COLOR
+                          : ProductCustomInput(
+                              fontSize: wp(4),
+                              iconSize: wp(5),
+                              hp: hp(7),
+                              icon: Icons.keyboard_arrow_down,
+                              function: () => displayModalBottomSheetAdminStock(
+                                  context, index),
+                              text: handleAdminColorStock(
+                                  state.adminStock[index].adminColorType),
+                            ),
+                      //STOCK TYPE BY COLOR AND SIZE
+                      state.stocktype == StockType.BY_COLOR_SIZE
+                          ? Container(
+                              child: Column(
+                                
                                 children: [
-                                  IconButton(
-                                      color: kintroselected,
-                                      icon: Icon(
-                                        FontAwesomeIcons.ruler,
-                                        size: wp(5),
-                                      ),
-                                      onPressed: () =>
-                                          BlocProvider.of<ProductsBloc>(context)
-                                              .add(OnAddSizeProduct(
-                                                  index: index,
-                                                  sizeProduct: SizeProduct(
-                                                      size: Sizes.S)))),
-                                  Text(
-                                    'Añadir talla',
-                                    style: GoogleFonts.lato(
-                                        color: kintroselected, fontSize: wp(4)),
+                                  BlocBuilder<ProductsBloc, ProductsState>(
+                                    builder: (context, state) {
+                                      return ListView.builder(
+                                          shrinkWrap: true,
+                                          physics: BouncingScrollPhysics(),
+                                          itemCount:
+                                              BlocProvider.of<ProductsBloc>(
+                                                      context)
+                                                  .state
+                                                  .adminStock[index]
+                                                  .sizeProduct
+                                                  .length,
+                                          itemBuilder: (_, indexProduct) {
+                                            return Container(
+                                              height: hp(10),
+                                              child: _sizeProduct(
+                                                  state,
+                                                  index,
+                                                  indexProduct,
+                                                  context,
+                                                  wp,
+                                                  hp),
+                                            );
+                                          });
+                                    },
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                    children: [
+                                      IconButton(
+                                          color: kintroselected,
+                                          icon: Icon(
+                                            FontAwesomeIcons.ruler,
+                                            size: wp(5),
+                                          ),
+                                          onPressed: () =>
+                                              BlocProvider.of<ProductsBloc>(
+                                                      context)
+                                                  .add(OnAddSizeProduct(
+                                                      index: index,
+                                                      sizeProduct: SizeProduct(
+                                                          size: Sizes.S)))),
+                                      Text(
+                                        'Añadir talla',
+                                        style: GoogleFonts.lato(
+                                            color: kintroselected,
+                                            fontSize: wp(4)),
+                                      )
+                                    ],
                                   )
                                 ],
-                              )
-                            ],
-                          ),
-                        )
-                      : state.stocktype == StockType.BY_SIZE
-                          ? Container()
-                          : CustomInput(
-                              hp: hp(7),
-                              placeholder: 'Stock por color',
-                              keyboardType: TextInputType.phone,
-                              textEditingController:
-                                  state.adminStock[index].stock,
-                              function: (value) =>
-                                  BlocProvider.of<ProductsBloc>(context).add(
-                                      OnAdminStock(
-                                          state.adminStock[index].stock.text,
-                                          index)),
-                            ),
-                ],
-              );
-            },
-          )),
+                              ),
+                            )
+                          : state.stocktype == StockType.BY_SIZE
+                              ? Container()
+                              : CustomInput(
+                                  autofocus: false,
+                                  hp: hp(7),
+                                  placeholder: 'Stock por color',
+                                  keyboardType: TextInputType.phone,
+                                  textEditingController:
+                                      state.adminStock[index].stock,
+                                  function: (value) =>
+                                      BlocProvider.of<ProductsBloc>(context)
+                                          .add(OnAdminStock(
+                                              state
+                                                  .adminStock[index].stock.text,
+                                              index)),
+                                ),
+                    ],
+                  );
+                },
+              )),
 
           MaterialButton(
             height: hp(6),
@@ -655,6 +794,7 @@ class StockPage extends StatelessWidget {
         ),
         Expanded(
           child: CustomInput(
+              autofocus: false,
               function: (value) => BlocProvider.of<ProductsBloc>(context)
                   .add(OnAdminSizeProductStock(value, index, indexProduct)),
               hp: hp(7),
@@ -743,6 +883,7 @@ class StockPage extends StatelessWidget {
         ),
         Expanded(
           child: CustomInput(
+              autofocus: false,
               function: (value) =>
                   state.onAdminSizeProductStock(value, index, indexProduct),
               hp: hp(7),

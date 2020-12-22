@@ -13,6 +13,7 @@ import 'package:service_products_business/bloc/products/products_bloc.dart';
 import 'package:service_products_business/bloc/services/services_bloc.dart';
 import 'package:service_products_business/bloc/shop/shop_bloc.dart';
 import 'package:service_products_business/controller/editproduct_controller.dart';
+import 'package:service_products_business/controller/editservices_controller.dart';
 import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/enums.dart';
 import 'package:service_products_business/helpers/products.dart';
@@ -24,6 +25,7 @@ import 'package:service_products_business/models/product_response.dart';
 import 'package:service_products_business/pages/AddProducts/add_products_page.dart';
 import 'package:service_products_business/pages/AddServices/add_services_page.dart';
 import 'package:service_products_business/pages/EditProduct/EditProduct.dart';
+import 'package:service_products_business/pages/EditServices/EditServices.dart';
 import 'package:service_products_business/pages/Login/login_page.dart';
 import 'package:service_products_business/widgets/search_products.dart';
 import 'package:service_products_business/widgets/search_services.dart';
@@ -35,6 +37,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   final c = Get.put(EditProductController());
+  final s = Get.put(EditServicesController());
 
   TabController tabController;
   RefreshController _refresherProduct =
@@ -59,14 +62,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
           create: (context) => ShopBloc()..add(OnLoadShopData()),
           child: Scaffold(
             bottomNavigationBar: BottomNavigationBar(
-                onTap: (value) {
-                  BlocProvider.of<ShopBloc>(context)
-                      .add(OnTabIndexChange(value));
-                  // if (BlocProvider.of<ShopBloc>(context).state.tabindex == 1) {
-                  //   BlocProvider.of<ProductsBloc>(context)
-                  //       .add(OnLoadShopProducts());
-                  // }
-                },
+                onTap: (value) => BlocProvider.of<ShopBloc>(context)
+                    .add(OnTabIndexChange(value)),
                 elevation: 4,
                 showUnselectedLabels: true,
                 unselectedLabelStyle:
@@ -103,7 +100,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                   //PRODUCTS
                   _products(hp, wp),
                   //SERVICES
-                  _services(hp, wp),
+                  _services(hp, wp, s),
                   //USER
                   _user(hp, wp),
                 ],
@@ -494,7 +491,8 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _services(Function hp, Function wp) {
+  Widget _services(
+      Function hp, Function wp, EditServicesController controller) {
     return BlocProvider<ServicesBloc>(
       lazy: false,
       create: (context) => ServicesBloc()..add(OnLoadShopServices()),
@@ -568,7 +566,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                                 .add(OnLoadShopServices());
                             _refresherService.refreshCompleted();
                           },
-                          child: ListView.separated(
+                          child: ListView.builder(
                               itemBuilder: (context, index) {
                                 return Container(
                                   height: hp(25),
@@ -588,36 +586,44 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                                             color: kprimarycolorlight,
                                           ),
                                           onTap: () {
-                                            // List<AdminProduct> list2 = [];
-                                            // if (state.serviceResponse.service[index].stock.length != 0) {
-                                            //   List<Map<String, dynamic>> list = result[index]
-                                            //       .stock
-                                            //       .map((e) => e.toJson())
-                                            //       .toList();
-                                            //   print(list);
+                                            final data = state
+                                                .serviceResponse.service[index];
+                                            final List<DistrictType> list = data
+                                                .districtAvailable
+                                                .map((e) =>
+                                                    handleDistrictTypeResponse(
+                                                        e.district))
+                                                .toList();
+                                            print(list);
+                                            print(data.location.department);
+                                            print(data.location.city);
+                                            print(data.location.district);
+                                            controller.onLoadServiceDataToEdit(
+                                                data.name,
+                                                data.deliveryTime,
+                                                data.attentionHours,
+                                                handleAvailableTypeResponse(
+                                                    data.availableType),
+                                                handleDepartmentTypeResponse(
+                                                    data.location.department),
+                                                handleProvinceTypeResponse(
+                                                    data.location.city),
+                                                handleDistrictTypeResponse(
+                                                    data.location.district),
+                                                data.address,
+                                                handleIntToPriceType(
+                                                    data.priceType),
+                                                list,
+                                                data.price.normalPrice
+                                                    .toString(),
+                                                data.price.offertPrice
+                                                    .toString());
+                                            CustomRouteTransition(
 
-                                            //   list2 = list
-                                            //       .map((e) => AdminProduct.fromJsonAdmin(e))
-                                            //       .toList();
-                                            // }
-
-                                            // CustomRouteTransition(
-                                            //     context: context,
-                                            //     child: EditProduct(
-                                            //       name: result[index].name,
-                                            //       id: result[index].id,
-                                            //       adminStock: list2,
-                                            //       priceType: handleIntToPriceType(
-                                            //           result[index].priceType),
-                                            //       stockType: handleIntToStockType(
-                                            //           result[index].stockType),
-                                            //       stock: result[index].stock,
-                                            //       normalPrice:
-                                            //           result[index].price.normalPrice.toString(),
-                                            //       offerPrice:
-                                            //           result[index].price.offertPrice.toString(),
-                                            //     ),
-                                            //     animation: AnimationType.fadeIn);
+                                                context: context,
+                                                child: EditServices(data.id),
+                                                animation:
+                                                    AnimationType.fadeIn);
                                           },
                                         ),
                                         IconSlideAction(
@@ -782,10 +788,6 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                                   ),
                                 );
                               },
-                              separatorBuilder: (context, index) => Divider(
-                                    height: 10,
-                                    color: kprimarycolorlight,
-                                  ),
                               itemCount: state.serviceResponse.service.length),
                         ),
                       );
@@ -1307,6 +1309,7 @@ class ItemsCategoryProduct extends StatelessWidget {
             },
             separatorBuilder: (context, index) => Divider(
                   height: 10,
+                  color: kprimarycolorlight,
                 ),
             itemCount: result.length),
       ),

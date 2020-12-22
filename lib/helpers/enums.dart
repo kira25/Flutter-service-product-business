@@ -41,7 +41,7 @@ enum AdminColorType { YELLOW, BLUE, GREY, BLACK, RED, PINK }
 
 enum Sizes { S, M, L, XL, XXL }
 
-enum AvailableType { SHOP, HOME, SHOP_HOME }
+enum AvailableType { SHOP, HOME, SHOP_HOME, UNDEFINED }
 
 enum DepartmentType { LIMA, ICA, AREQUIPA, LAMBAYEQUE, UNDEFINED }
 enum ProvinceType { LIMA, NAZCA, AREQUIPA, CHICLAYO, UNDEFINED }

@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:service_products_business/bloc/products/products_bloc.dart';
+import 'package:service_products_business/controller/editproduct_controller.dart';
 import 'package:service_products_business/helpers/colors.dart';
+import 'package:service_products_business/helpers/enums.dart';
 import 'package:service_products_business/helpers/products.dart';
+import 'package:service_products_business/helpers/route_transitions.dart';
+import 'package:service_products_business/models/AdminProduct/admin_product.dart';
 import 'package:service_products_business/models/product_response.dart';
+import 'package:service_products_business/pages/EditProduct/EditProduct.dart';
 
 class SearchProducts extends SearchDelegate {
   SearchProducts(this.listProducts, this.hp, this.wp);
@@ -51,7 +57,8 @@ class SearchProducts extends SearchDelegate {
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    List suggestionList = [];
+    final controller = Get.put(EditProductController());
+    List<Product> suggestionList = [];
     query.isEmpty
         ? suggestionList = []
         : suggestionList.addAll(
@@ -76,36 +83,55 @@ class SearchProducts extends SearchDelegate {
                       color: kprimarycolorlight,
                     ),
                     onTap: () {
-                      // List<AdminProduct> list2 = [];
-                      // if (result[index].stock.length != 0) {
-                      //   List<Map<String, dynamic>> list = result[index]
-                      //       .stock
-                      //       .map((e) => e.toJson())
-                      //       .toList();
-                      //   print(list);
+                      
+                          List<AdminProduct> list2 = [];
+                          if (suggestionList[index].stock.length != 0) {
+                            List<Map<String, dynamic>> list = suggestionList[index]
+                                .stock
+                                .map((e) => e.toJson())
+                                .toList();
+                            print(list);
 
-                      //   list2 = list
-                      //       .map((e) => AdminProduct.fromJsonAdmin(e))
-                      //       .toList();
-                      // }
+                            list2 = list
+                                .map((e) => AdminProduct.fromJsonAdmin(e))
+                                .toList();
+                          }
 
-                      // CustomRouteTransition(
-                      //     context: context,
-                      //     child: EditProduct(
-                      //       name: result[index].name,
-                      //       id: result[index].id,
-                      //       adminStock: list2,
-                      //       priceType: handleIntToPriceType(
-                      //           result[index].priceType),
-                      //       stockType: handleIntToStockType(
-                      //           result[index].stockType),
-                      //       stock: result[index].stock,
-                      //       normalPrice:
-                      //           result[index].price.normalPrice.toString(),
-                      //       offerPrice:
-                      //           result[index].price.offertPrice.toString(),
-                      //     ),
-                      //     animation: AnimationType.fadeIn);
+                          controller.setDataToEdit(
+                              handleIntToStockType(suggestionList[index].stockType),
+                              handleIntToStockType(suggestionList[index].stockType) ==
+                                      StockType.UNIQUE
+                                  ? AdminStockType.ADMIN_STOCK_UNIQUE
+                                  : handleIntToStockType(
+                                              suggestionList[index].stockType) ==
+                                          StockType.BY_COLOR
+                                      ? AdminStockType.ADMIN_STOCK_COLOR
+                                      : handleIntToStockType(
+                                                  suggestionList[index].stockType) ==
+                                              StockType.BY_SIZE
+                                          ? AdminStockType.ADMIN_STOCK_BY_SIZE
+                                          : handleIntToStockType(suggestionList[index]
+                                                      .stockType) ==
+                                                  StockType.BY_COLOR_SIZE
+                                              ? AdminStockType
+                                                  .ADMIN_STOCK_BY_COLOR_SIZE
+                                              : AdminStockType
+                                                  .ADMIN_STOCK_UNIQUE,
+                              handleIntToPriceType(suggestionList[index].priceType),
+                              suggestionList[index].price.normalPrice.toString(),
+                              suggestionList[index].price.offertPrice.toString(),
+                              suggestionList[index].stock);
+
+                          controller.setAdminStock(list2);
+
+                          CustomRouteTransition(
+                              context: context,
+                              child: EditProduct(
+                                name: suggestionList[index].name,
+                                id: suggestionList[index].id,
+                                adminStock: list2,
+                              ),
+                              animation: AnimationType.fadeIn);
                     },
                   ),
                   IconSlideAction(

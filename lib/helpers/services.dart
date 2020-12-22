@@ -1,13 +1,28 @@
 import 'package:service_products_business/helpers/enums.dart';
 
-
-String handleIntToAvailableType ( int type){
-    switch (type) {
+AvailableType handleAvailableTypeResponse(int available) {
+  switch (available) {
     case 0:
-      return 'A domicilio';
+      return AvailableType.SHOP;
       break;
     case 1:
+      return AvailableType.HOME;
+      break;
+    case 2:
+      return AvailableType.SHOP_HOME;
+      break;
+    default:
+      return AvailableType.UNDEFINED;
+  }
+}
+
+String handleIntToAvailableType(int type) {
+  switch (type) {
+    case 0:
       return 'En tienda';
+      break;
+    case 1:
+      return 'A domicilio';
       break;
     case 2:
       return 'Tienda / Domicilio';
@@ -16,7 +31,6 @@ String handleIntToAvailableType ( int type){
       return 'En tienda';
   }
 }
-
 
 String handleAvailableType(AvailableType availableType) {
   switch (availableType) {
@@ -33,6 +47,28 @@ String handleAvailableType(AvailableType availableType) {
       return 'En tienda';
   }
 }
+
+
+DepartmentType handleDepartmentTypeResponse(int departmentType) {
+  switch (departmentType) {
+    case 0:
+      return DepartmentType.LIMA;
+      break;
+    case 1:
+      return DepartmentType.ICA;
+      break;
+    case 2:
+      return DepartmentType.AREQUIPA;
+      break;
+    case 3:
+      return DepartmentType.LAMBAYEQUE;
+      break;
+    default:
+      return DepartmentType.UNDEFINED;
+  }
+}
+
+
 
 String handleDepartmentType(DepartmentType departmentType) {
   switch (departmentType) {
@@ -53,6 +89,26 @@ String handleDepartmentType(DepartmentType departmentType) {
   }
 }
 
+
+ProvinceType handleProvinceTypeResponse(int provinceType) {
+  switch (provinceType) {
+    case 0:
+      return ProvinceType.LIMA;
+      break;
+    case 1:
+      return ProvinceType.CHICLAYO;
+      break;
+    case 2:
+      return ProvinceType.NAZCA;
+      break;
+    case 3:
+      return ProvinceType.AREQUIPA;
+      break;
+    default:
+      return ProvinceType.UNDEFINED;
+  }
+}
+
 String handleProvinceType(ProvinceType provinceType) {
   switch (provinceType) {
     case ProvinceType.LIMA:
@@ -62,7 +118,7 @@ String handleProvinceType(ProvinceType provinceType) {
       return 'Ica';
       break;
     case ProvinceType.NAZCA:
-      return 'Nzca';
+      return 'Nazca';
       break;
     case ProvinceType.AREQUIPA:
       return 'Arequipa';
@@ -71,6 +127,62 @@ String handleProvinceType(ProvinceType provinceType) {
       return 'Provincia';
   }
 }
+
+DistrictType handleDistrictTypeResponse(int districtType) {
+  switch (districtType) {
+    case 0:
+      return DistrictType.SANBORJA;
+      break;
+    case 1:
+      return DistrictType.SANISIDRO;
+      break;
+    case 2:
+      return DistrictType.SURQUILLO;
+      break;
+    case 3:
+      return DistrictType.SURCO;
+      break;
+    case 4:
+      return DistrictType.MOLINA;
+      break;
+    case 5:
+      return DistrictType.LINCE;
+      break;
+    case 6:
+      return DistrictType.JESUSMARIA;
+      break;
+    case 7:
+      return DistrictType.LIMA;
+      break;
+    case 8:
+      return DistrictType.ANCON;
+      break;
+    case 9:
+      return DistrictType.ATE;
+      break;
+    case 10:
+      return DistrictType.BARRANCO;
+      break;
+    case 11:
+      return DistrictType.BRENA;
+      break;
+    case 12:
+      return DistrictType.CARABAYLLO;
+      break;
+    case 13:
+      return DistrictType.COMAS;
+      break;
+    case 14:
+      return DistrictType.OLIVOS;
+      break;
+    case 15:
+      return DistrictType.LURIGANCHO;
+      break;
+    default:
+      return DistrictType.UNDEFINED;
+  }
+}
+
 
 String handleDistrictType(DistrictType districtType) {
   switch (districtType) {

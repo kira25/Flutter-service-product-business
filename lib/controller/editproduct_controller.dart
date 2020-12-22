@@ -23,7 +23,7 @@ class EditProductController extends GetxController {
   FocusNode fquantity;
   FocusNode fnormalprice;
   FocusNode fofferprice;
-
+  List<AdminProduct> admin = [];
   @override
   void onInit() {
     super.onInit();
@@ -45,27 +45,39 @@ class EditProductController extends GetxController {
 
   ProductService productService = ProductService();
 
+  onDeletAdminSizeByStock(int index) {
+    admin = [...adminStock];
+    admin[0].sizeProduct.removeAt(index);
+    adminStock.assignAll(admin);
+  }
+
   onDeleteAdminSizeProduct(int index, int indexProduct) {
-    adminStock[index].sizeProduct.removeAt(indexProduct);
+    admin = [...adminStock];
+
+    admin[index].sizeProduct.removeAt(indexProduct);
+    adminStock.assignAll(admin);
   }
 
   onAdminSizeProductStock(String sizeStock, int index, int indexproduct) {
-    adminStock[index].sizeProduct[indexproduct].sizeStock.value =
-        TextEditingValue(
-            text: sizeStock,
-            selection: TextSelection.fromPosition(
-                TextPosition(offset: sizeStock.length)));
+    admin = [...adminStock];
+    admin[index].sizeProduct[indexproduct].sizeStock.value = TextEditingValue(
+        text: sizeStock,
+        selection:
+            TextSelection.fromPosition(TextPosition(offset: sizeStock.length)));
+    adminStock.assignAll(admin);
   }
 
   onAdminSizeProduct(int index, Sizes newsize, int indexproduct) {
-    adminStock[index].sizeProduct[indexproduct].size = newsize;
+    admin = [...adminStock];
+    admin[index].sizeProduct[indexproduct].size = newsize;
+    adminStock.assignAll(admin);
   }
 
-
   onAdminColorStock(int index, AdminColorType color) {
-    adminStock[index].adminColorType = color;
+    admin = [...adminStock];
+    admin[index].adminColorType = color;
+    adminStock.assignAll(admin);
     print(adminStock[index].adminColorType);
-    update();
   }
 
   onAddAdminStock(AdminProduct adminProduct) {
@@ -73,7 +85,10 @@ class EditProductController extends GetxController {
   }
 
   onAddOnylSize(SizeProduct sizeProduct) {
-    adminStock[0].sizeProduct.add(sizeProduct);
+    admin = [...adminStock];
+
+    admin[0].sizeProduct.add(sizeProduct);
+    adminStock.assignAll(admin);
   }
 
   onAdminStock(int index, String stock) {
@@ -85,7 +100,10 @@ class EditProductController extends GetxController {
   }
 
   onAddSizeProduct(int index, SizeProduct sizeProduct) {
-    adminStock[index].sizeProduct.add(sizeProduct);
+    admin = [...adminStock];
+
+    admin[index].sizeProduct.add(sizeProduct);
+    adminStock.assignAll(admin);
   }
 
   onAdminBySizeStock(String text, int index) {
@@ -96,7 +114,9 @@ class EditProductController extends GetxController {
   }
 
   onAdminSize(int index, Sizes newsize) {
-    adminStock[0].sizeProduct[index].size = newsize;
+    admin = [...adminStock];
+    admin[0].sizeProduct[index].size = newsize;
+    adminStock.assignAll(admin);
   }
 
   onDeleteAdminStock(int index) {
@@ -129,6 +149,7 @@ class EditProductController extends GetxController {
   }
 
   setAdminStock(List<AdminProduct> list) {
+    // adminStock.addAll(list);
     adminStock.assignAll(list);
     print(adminStock);
   }

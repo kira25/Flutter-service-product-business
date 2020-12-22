@@ -7,6 +7,7 @@ import 'package:responsive_screen/responsive_screen.dart';
 import 'package:service_products_business/bloc/products/products_bloc.dart';
 import 'package:service_products_business/bloc/services/services_bloc.dart';
 import 'package:service_products_business/controller/editproduct_controller.dart';
+import 'package:service_products_business/controller/editservices_controller.dart';
 import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/enums.dart';
 import 'package:service_products_business/pages/EditProduct/EditProduct.dart';
@@ -18,7 +19,7 @@ void displayModalBottomSheetAdminStockToEditProduct(context, int indexStock) {
   showModalBottomSheet(
       isScrollControlled: true,
       context: context,
-      builder: (_) {
+      builder: (context) {
         return Container(
             constraints: BoxConstraints(
               maxHeight: MediaQuery.of(context).size.height / 4.0 * 3.0,
@@ -62,7 +63,7 @@ void displayModalBottomSheetAdminStockToEditProduct(context, int indexStock) {
                         child: ListView.builder(
                           physics: BouncingScrollPhysics(),
                           itemCount: 6,
-                          itemBuilder: (_, index) {
+                          itemBuilder: (context, index) {
                             List<Color> color = [
                               kyellowcolor,
                               kintroselected,
@@ -89,6 +90,7 @@ void displayModalBottomSheetAdminStockToEditProduct(context, int indexStock) {
                             ];
 
                             return GetX<EditProductController>(
+                              init: EditProductController(),
                               builder: (controller) {
                                 return Row(
                                   mainAxisAlignment:
@@ -325,6 +327,90 @@ void displayModalBottomSheetPriceService(context) {
                                   onPressed: () =>
                                       BlocProvider.of<ServicesBloc>(context)
                                           .add(OnPriceType(PriceType.OFFERT)))
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ));
+      });
+}
+
+//SERVICE PRICE TY EDIT
+
+void displayModalBottomSheetPriceServiceToEdit(context) {
+  final Function wp = Screen(context).wp;
+  showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (context) {
+        return Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height / 4.0 * 3.0,
+            ),
+            child: Wrap(
+              children: <Widget>[
+                Material(
+                  elevation: 5,
+                  child: Container(
+                    margin: EdgeInsets.only(left: 5, right: 10),
+                    height: 50,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            IconButton(
+                                icon: Icon(Icons.arrow_back),
+                                onPressed: () => Navigator.pop(context)),
+                            SizedBox(
+                              width: wp(22),
+                            ),
+                            Text(
+                              'Nuevo servicio',
+                              style: GoogleFonts.lato(
+                                  fontWeight: FontWeight.bold, fontSize: 15),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                GetX<EditServicesController>(
+                  builder: (state) {
+                    return Container(
+                      padding: EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Normal'),
+                              IconButton(
+                                  icon:
+                                      state.priceType.value == PriceType.NORMAL
+                                          ? Icon(FontAwesomeIcons.dotCircle)
+                                          : Icon(FontAwesomeIcons.circle),
+                                  onPressed: () =>
+                                      state.onPriceType(PriceType.NORMAL))
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('¡Oferta!'),
+                              IconButton(
+                                  icon:
+                                      state.priceType.value == PriceType.OFFERT
+                                          ? Icon(FontAwesomeIcons.dotCircle)
+                                          : Icon(FontAwesomeIcons.circle),
+                                  onPressed: () =>
+                                      state.onPriceType(PriceType.OFFERT))
                             ],
                           ),
                         ],
@@ -764,6 +850,94 @@ void displayModalBottomSheetToEditProduct(context) {
             ));
       });
 }
+//DISTRICT AVAILABLE EDIT
+
+void displayModalBottomSheetDistrictAvailableToEdit(context) {
+  final c = Get.put(EditServicesController());
+  final Function wp = Screen(context).wp;
+  showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (context) {
+        return Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height / 4.0 * 3.0,
+            ),
+            child: ListView(
+              shrinkWrap: true,
+              children: <Widget>[
+                Material(
+                  elevation: 5,
+                  child: Container(
+                    margin: EdgeInsets.only(left: 5, right: 10),
+                    height: 50,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            IconButton(
+                                icon: Icon(Icons.arrow_back),
+                                onPressed: () => Navigator.pop(context)),
+                            SizedBox(
+                              width: wp(15),
+                            ),
+                            Text(
+                              'Disponibilidad en distritos',
+                              style: GoogleFonts.lato(
+                                  fontWeight: FontWeight.bold, fontSize: 15),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                GetBuilder<EditServicesController>(
+                 init: EditServicesController(),
+                  builder: (c) {
+                    return CustomCheckBox(
+                      controller: c,
+                      isEdit: true,
+                      itemBuilder: (checkBox, label, index) {
+                        return Container(
+                          child: ListTile(
+                            title: label,
+                            trailing: checkBox,
+                          ),
+                        );
+                      },
+                      wp: wp(35),
+                      labels: [
+                        DistrictType.ANCON,
+                        DistrictType.ATE,
+                        DistrictType.BARRANCO,
+                        DistrictType.BRENA,
+                        DistrictType.CARABAYLLO,
+                        DistrictType.COMAS,
+                        DistrictType.JESUSMARIA,
+                        DistrictType.LIMA,
+                        DistrictType.LINCE,
+                        DistrictType.LURIGANCHO,
+                        DistrictType.MOLINA,
+                        DistrictType.OLIVOS,
+                        DistrictType.SANBORJA,
+                        DistrictType.SANISIDRO,
+                        DistrictType.SURCO,
+                        DistrictType.SURQUILLO
+                      ],
+                      onSelected: (selected) => c.onDistrictAvailable(selected),
+                    );
+                  },
+                ),
+                MaterialButton(
+                    child: Text('Limpiar seleccion'),
+                    onPressed: () => c.onDistrictAvailable([]))
+              ],
+            ));
+      });
+}
 
 void displayModalBottomSheetDistrictAvailable(context) {
   final Function wp = Screen(context).wp;
@@ -945,6 +1119,101 @@ void displayModalBottomSheetAvailableType(context) {
                                         OnAvailableType(
                                             AvailableType.SHOP_HOME));
                                   })
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ));
+      });
+}
+
+void displayModalBottomSheetAvailableTypeToEdit(context) {
+  final Function wp = Screen(context).wp;
+  showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (context) {
+        return Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height / 4.0 * 3.0,
+            ),
+            child: Wrap(
+              children: <Widget>[
+                Material(
+                  elevation: 5,
+                  child: Container(
+                    margin: EdgeInsets.only(left: 5, right: 10),
+                    height: 50,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            IconButton(
+                                icon: Icon(Icons.arrow_back),
+                                onPressed: () => Navigator.pop(context)),
+                            SizedBox(
+                              width: wp(22),
+                            ),
+                            Text(
+                              'Disponibilidad',
+                              style: GoogleFonts.lato(
+                                  fontWeight: FontWeight.bold, fontSize: 15),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                GetX<EditServicesController>(
+                  builder: (state) {
+                    return Container(
+                      padding: EdgeInsets.all(10),
+                      child: Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('En tienda'),
+                              IconButton(
+                                  icon: state.availableType.value ==
+                                          AvailableType.SHOP
+                                      ? Icon(FontAwesomeIcons.dotCircle)
+                                      : Icon(FontAwesomeIcons.circle),
+                                  onPressed: () =>
+                                      state.onAvailableType(AvailableType.SHOP))
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('A domicilio'),
+                              IconButton(
+                                  icon: state.availableType.value ==
+                                          AvailableType.HOME
+                                      ? Icon(FontAwesomeIcons.dotCircle)
+                                      : Icon(FontAwesomeIcons.circle),
+                                  onPressed: () =>
+                                      state.onAvailableType(AvailableType.HOME))
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Tienda / Domicilio'),
+                              IconButton(
+                                  icon: state.availableType.value ==
+                                          AvailableType.SHOP_HOME
+                                      ? Icon(FontAwesomeIcons.dotCircle)
+                                      : Icon(FontAwesomeIcons.circle),
+                                  onPressed: () => state
+                                      .onAvailableType(AvailableType.SHOP_HOME))
                             ],
                           ),
                         ],

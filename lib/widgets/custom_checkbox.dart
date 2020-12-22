@@ -7,7 +7,9 @@ Licensing: More information can be found here: https://github.com/akshathjain/gr
 */
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:service_products_business/bloc/services/services_bloc.dart';
+import 'package:service_products_business/controller/editservices_controller.dart';
 import 'package:service_products_business/helpers/enums.dart';
 import 'package:service_products_business/helpers/services.dart';
 
@@ -64,6 +66,10 @@ class CustomCheckBox extends StatefulWidget {
 
   final ServicesState state;
 
+  final EditServicesController controller;
+
+  final bool isEdit;
+
   CustomCheckBox({
     Key key,
     @required this.labels,
@@ -81,6 +87,8 @@ class CustomCheckBox extends StatefulWidget {
     this.margin = const EdgeInsets.all(0.0),
     this.wp,
     this.state,
+    this.controller,
+    this.isEdit = false,
   }) : super(key: key);
 
   @override
@@ -88,6 +96,8 @@ class CustomCheckBox extends StatefulWidget {
 }
 
 class _CustomCheckBoxState extends State<CustomCheckBox> {
+  final c = Get.put(EditServicesController());
+
   List<DistrictType> _selected = [];
 
   @override
@@ -95,14 +105,21 @@ class _CustomCheckBoxState extends State<CustomCheckBox> {
     super.initState();
 
     //set the selected to the checked (if not null)
-    _selected = widget.state.districtAvailable.isNotEmpty
-        ? widget.state.districtAvailable
-        : [];
+    if (widget.isEdit == true) {
+      _selected = c.districtAvailable.isNotEmpty ? c.districtAvailable : [];
+      print('selected : $_selected');
+      print('init controller : ${widget.controller.districtAvailable}');
+    } else {
+      _selected = widget.state.districtAvailable.isNotEmpty
+          ? widget.state.districtAvailable
+          : [];
+      print('selected : $_selected');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    //set the selected to the checked (if not null)
+    // set the selected to the checked (if not null)
     // if (widget.checked != null ) {
     //   _selected = [];
     //   _selected.addAll(widget.checked); //use add all to prevent a shallow copy
@@ -112,12 +129,14 @@ class _CustomCheckBoxState extends State<CustomCheckBox> {
 
     for (int i = 0; i < widget.labels.length; i++) {
       Checkbox cb = Checkbox(
-        value:
-            widget.state.districtAvailable.contains(widget.labels.elementAt(i)),
+        value: widget.isEdit == true
+            ? c.districtAvailable.contains(widget.labels.elementAt(i))
+            : widget.state.districtAvailable
+                .contains(widget.labels.elementAt(i)),
         onChanged: (widget.disabled != null &&
                 widget.disabled.contains(widget.labels.elementAt(i)))
             ? null
-            : (bool isChecked) => onChanged(isChecked, i),
+            : (bool isChecked) => onChanged(isChecked, i, widget.controller),
         checkColor: widget.checkColor,
         activeColor:
             widget.activeColor ?? Theme.of(context).toggleableActiveColor,
@@ -165,7 +184,7 @@ class _CustomCheckBoxState extends State<CustomCheckBox> {
     );
   }
 
-  void onChanged(bool isChecked, int i) {
+  void onChanged(bool isChecked, int i, EditServicesController controller) {
     bool isAlreadyContained = _selected.contains(widget.labels.elementAt(i));
 
     if (mounted) {
@@ -174,6 +193,8 @@ class _CustomCheckBoxState extends State<CustomCheckBox> {
           _selected.remove(widget.labels.elementAt(i));
         } else if (isChecked && !isAlreadyContained) {
           _selected.add(widget.labels.elementAt(i));
+
+          print('checked : $_selected');
         }
 
         if (widget.onChange != null)

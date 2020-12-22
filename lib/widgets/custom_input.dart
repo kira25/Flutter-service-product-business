@@ -18,22 +18,23 @@ class CustomInput extends StatelessWidget {
   final Function onFocus;
   final bool autofocus;
 
-  CustomInput(
-      {this.onFocus,
-      this.icon,
-      @required this.placeholder,
-      @required this.textEditingController,
-      this.keyboardType = TextInputType.text,
-      this.isPassword = false,
-      this.function,
-      this.errorText = '',
-      this.border,
-      this.hp,
-      this.hintMaxLines,
-      this.maxlines = 1,
-      this.textInputAction,
-      this.focusNode,
-      this.autofocus});
+  CustomInput({
+    this.onFocus,
+    this.icon,
+    @required this.placeholder,
+    @required this.textEditingController,
+    this.keyboardType = TextInputType.text,
+    this.isPassword = false,
+    this.function,
+    this.errorText = '',
+    this.border,
+    this.hp,
+    this.hintMaxLines,
+    this.maxlines = 1,
+    this.textInputAction,
+    this.focusNode,
+    this.autofocus,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +52,6 @@ class CustomInput extends StatelessWidget {
           color: Colors.grey[200],
           borderRadius: BorderRadius.circular(20)),
       child: TextField(
-        
         onEditingComplete: onFocus,
         focusNode: focusNode,
         autofocus: autofocus != null ? autofocus : true,
@@ -63,7 +63,6 @@ class CustomInput extends StatelessWidget {
         onChanged: function,
         keyboardType: keyboardType,
         decoration: InputDecoration(
-          
             hintMaxLines: hintMaxLines,
             suffixIcon: Icon(icon),
             focusedBorder: InputBorder.none,

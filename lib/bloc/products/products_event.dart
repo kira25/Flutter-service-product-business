@@ -98,6 +98,14 @@ class OnAdminSize extends ProductsEvent {
   OnAdminSize(this.size, this.index);
 }
 
+//ON DELETE ADMIN SIZE BY STOCK
+
+class OnDeletAdminSizeByStock extends ProductsEvent {
+  final int index;
+
+  OnDeletAdminSizeByStock(this.index);
+}
+
 //ADMIN PRODUCT SIZE COLOR
 class OnAddSizeProduct extends ProductsEvent {
   final int index;
@@ -176,32 +184,4 @@ class OnDeleteProduct extends ProductsEvent {
   final String id;
 
   OnDeleteProduct(this.id);
-}
-
-class OnUpdateProduct extends ProductsEvent {
-  final String id;
-
-  OnUpdateProduct(this.id);
-}
-
-class OnLoadProductDataToEdit extends ProductsEvent {
-  final StockType stockType;
-
-  final PriceType priceType;
-  final String normalPrice;
-  final String offerPrice;
-  final AdminStockType adminStockType;
-
-  OnLoadProductDataToEdit(
-      {this.stockType,
-      this.priceType,
-      this.normalPrice,
-      this.offerPrice,
-      this.adminStockType});
-}
-
-class OnLoadProducDataAdminStock extends ProductsEvent {
-  final List<AdminProduct> adminStock;
-
-  OnLoadProducDataAdminStock({this.adminStock});
 }

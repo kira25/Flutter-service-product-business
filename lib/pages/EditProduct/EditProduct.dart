@@ -84,7 +84,7 @@ class EditProduct extends StatelessWidget {
 
           if (resp) {
             showAlert(context,
-                title: 'Producto creado con exito',
+                title: 'Producto actualizado',
                 subtitle: 'Aceptar',
                 child: MainPage());
           } else {
@@ -136,17 +136,18 @@ class EditProduct extends StatelessWidget {
           ),
           //STOCK TYPE
           ProductCustomInput(
+            
             // isCompleted: state.stocktype != StockType.UNDEFINED ? true : false,
             hp: hp(7),
             fontSize: wp(4),
             iconSize: wp(6),
-            function: () => displayModalBottomSheetToEditProduct(context),
             text: handleStockType(controller.stockType.value),
             icon: Icons.keyboard_arrow_down,
           ),
           //ADMIN STOCK TYPE
           controller.stockType.value == StockType.UNIQUE
               ? CustomInput(
+                autofocus: false,
                   hp: hp(7),
                   focusNode: controller.fquantity,
                   textInputAction: TextInputAction.next,
@@ -162,6 +163,7 @@ class EditProduct extends StatelessWidget {
                 )
               : GestureDetector(
                   onTap: () => CustomRouteTransition(
+                    animation: AnimationType.fadeIn,
                       context: context,
                       child: StockPage(
                         isEdited: true,
@@ -214,7 +216,8 @@ class EditProduct extends StatelessWidget {
               icon: Icons.arrow_forward_ios,
               text: handlePriceType(controller.priceType.value)),
           //NORMAL PRICE
-          CustomInput(
+          CustomInput(                autofocus: false,
+
               keyboardType: TextInputType.number,
               focusNode: controller.fnormalprice,
               textInputAction: controller.priceType.value == PriceType.OFFERT
@@ -229,7 +232,8 @@ class EditProduct extends StatelessWidget {
               placeholder: 'Precio Normal (S/)',
               textEditingController: controller.normalPrice.value),
           controller.priceType.value == PriceType.OFFERT
-              ? CustomInput(
+              ? CustomInput(                autofocus: false,
+
                   keyboardType: TextInputType.number,
                   focusNode: controller.fofferprice,
                   textInputAction: TextInputAction.done,

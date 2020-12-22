@@ -22,7 +22,7 @@ class ServicesService {
   final _createService = '${Environment.apiUrl}/service/create';
   final _getServiceByUser = '${Environment.apiUrl}/service/user';
   final _addServiceImages = '${Environment.apiUrl}/service/imageService';
-  final _updateService = '${Environment.apiUrl}/service/update/';
+  final _updateService = '${Environment.apiUrl}/service/update';
   final _deleteService = '${Environment.apiUrl}/service/delete';
 
   Future createService(
@@ -132,4 +132,72 @@ class ServicesService {
   }
 
   //TODO: UPDATE SERVICE
+
+  Future updateService(
+      String deliveryTime,
+      String attentionHours,
+      AvailableType availableType,
+      DepartmentType departmentType,
+      ProvinceType provinceType,
+      DistrictType districtType,
+      String address,
+      List districtAvailables,
+      PriceType priceType,
+      String normalPrice,
+      String offerPrice,
+      String id) async {
+    final token = await _preferencesRepository.getData('token');
+    var data;
+    if (availableType == AvailableType.HOME) {
+      data = {
+        "deliveryTime": deliveryTime,
+        "attentionHours": attentionHours,
+        "availableType": availableType.index,
+        "districtAvailable": districtAvailables ?? [],
+        "priceType": priceType.index,
+        "price": {"normalPrice": normalPrice, "offertPrice": offerPrice}
+      };
+    } else if (availableType == AvailableType.SHOP_HOME) {
+      data = {
+        "deliveryTime": deliveryTime,
+        "attentionHours": attentionHours,
+        "availableType": availableType.index,
+        "location": {
+          "department": departmentType.index ?? null,
+          "city": provinceType.index ?? null,
+          "district": districtType.index ?? null
+        },
+        "address": address ?? null,
+        "districtAvailable": districtAvailables ?? [],
+        "priceType": priceType.index,
+        "price": {"normalPrice": normalPrice, "offertPrice": offerPrice}
+      };
+    } else {
+      data = {
+        "deliveryTime": deliveryTime,
+        "attentionHours": attentionHours,
+        "availableType": availableType.index,
+        "location": {
+          "department": departmentType.index ?? null,
+          "city": provinceType.index ?? null,
+          "district": districtType.index ?? null
+        },
+        "address": address ?? null,
+        "priceType": priceType.index,
+        "price": {"normalPrice": normalPrice, "offertPrice": offerPrice}
+      };
+    }
+
+    final resp = await _dio.put(_updateService,
+        data: data,
+        queryParameters: {"serviceId": id},
+        options: Options(
+            headers: {HttpHeaders.authorizationHeader: 'Bearer $token'}));
+
+    if (resp.data['ok'] == true) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

@@ -75,14 +75,19 @@ class ProductImagePage extends StatelessWidget {
         children: [
           Text(
             'Fotos del producto(Max. 5)',
-            style: GoogleFonts.lato(color: kdarkcolor, fontSize: wp(4.5)),
+            style: GoogleFonts.lato(color: kdarkcolor, fontSize: wp(4)),
           ),
           SizedBox(
             height: hp(3),
           ),
           state.productImage.isNotEmpty
-              ? Expanded(
-                  child: ListView.builder(
+              ? Container(
+                  child: ListView.separated(
+                      separatorBuilder: (context, index) => Divider(
+                            height: hp(3),
+                            color: kprimarycolorlight,
+                          ),
+                      shrinkWrap: true,
                       itemCount: state.productImage.length,
                       itemBuilder: (context, index) {
                         return MaterialButton(
@@ -124,6 +129,9 @@ class ProductImagePage extends StatelessWidget {
                       }),
                 )
               : Container(),
+          SizedBox(
+            height: hp(3),
+          ),
           MaterialButton(
             height: hp(6),
             color: kprimarycolorlight,

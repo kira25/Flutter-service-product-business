@@ -112,64 +112,11 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       yield _mapOnAdminBySizeStock(event, state);
     } else if (event is OnDeleteProduct) {
       yield* _mapOnDeleteProduct(event, state);
-    } else if (event is OnLoadProductDataToEdit) {
-      yield* _mapOnLoadProductDataToEdit(event, state);
-      print(state.adminStock[0]);
-      print(state.stocktype);
-      print(state.adminStockType);
-      print(state.priceType);
-    } else if (event is OnLoadProducDataAdminStock) {
-      print('OnLoadProducDataAdminStock');
-      yield state.copyWith(adminStock: event.adminStock);
-    } else if (event is OnUpdateProduct) {
-      yield* _mapOnUpdateProduct(event, state);
+    }  else if (event is OnDeletAdminSizeByStock) {
+      listProduct = [...state.adminStock];
+      listProduct[0].sizeProduct.removeAt(event.index);
+      yield state.copyWith(adminStock: listProduct);
     }
-  }
-
-  Stream<ProductsState> _mapOnUpdateProduct(
-      OnUpdateProduct event, ProductsState state) async* {
-    List stock = [];
-
-    if (state.stocktype == StockType.UNIQUE) {
-      stock = state.adminStock.map((e) => e.toJsonUnique()).toList();
-    }
-
-    if (state.stocktype == StockType.BY_COLOR) {
-      stock = state.adminStock.map((e) => e.toJsonColor()).toList();
-      print(stock);
-    }
-    if (state.stocktype == StockType.BY_COLOR_SIZE) {
-      stock = state.adminStock.map((e) => e.toJsonSizeColor()).toList();
-    }
-
-    if (state.stocktype == StockType.BY_SIZE) {
-      stock = state.adminStock.map((e) => e.toJsonSize()).toList();
-    }
-
-    final resp = await _productService.updateProduct(
-        event.id,
-        state.stocktype.index,
-        stock,
-        state.priceType.index,
-        state.normalPrice,
-        state.offerPrice ?? "");
-
-    if (resp == true) {
-      yield state.copyWith(isProductEdited: IsProductEdited.SUCCESS);
-      yield state.copyWith(isProductEdited: IsProductEdited.UNDEFINED);
-    } else {
-      yield state.copyWith(isProductEdited: IsProductEdited.FAIL);
-      yield state.copyWith(isProductEdited: IsProductEdited.UNDEFINED);
-    }
-  }
-
-  Stream<ProductsState> _mapOnLoadProductDataToEdit(
-      OnLoadProductDataToEdit event, ProductsState state) async* {
-    print('OnLoadProductDataToEdit');
-    yield state.copyWith(
-        stocktype: event.stockType,
-        priceType: event.priceType,
-        adminStockType: event.adminStockType);
   }
 
   Stream<ProductsState> _mapOnDeleteProduct(
