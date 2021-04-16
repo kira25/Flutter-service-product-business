@@ -4,7 +4,6 @@
 
 import 'dart:convert';
 
-import 'package:service_products_business/helpers/enums.dart';
 
 ServiceResponse serviceResponseFromJson(String str) =>
     ServiceResponse.fromJson(json.decode(str));

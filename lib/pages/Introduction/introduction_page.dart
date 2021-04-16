@@ -9,14 +9,32 @@ import 'package:service_products_business/pages/Login/login_page.dart';
 import 'package:service_products_business/pages/ShopInfo/ShopInfo.dart';
 
 // ignore: must_be_immutable
-class IntroductionPage extends StatelessWidget {
-  PageController pageController = PageController();
+class IntroductionPage extends StatefulWidget {
+  @override
+  _IntroductionPageState createState() => _IntroductionPageState();
+}
 
-  
+class _IntroductionPageState extends State<IntroductionPage> {
+  PageController pageController = PageController(keepPage: true);
+
+  _loadImages() async {
+    await precacheImage(
+      AssetImage('./assets/splash_1.jpg'),
+      context,
+    );
+    await precacheImage(AssetImage('./assets/splash_2.jpg'), context);
+    await precacheImage(AssetImage('./assets/splash_3.jpg'), context);
+  }
+
+  @override
+  void didChangeDependencies() {
+    // TODO: implement didChangeDependencies
+    super.didChangeDependencies();
+    _loadImages();
+  }
 
   @override
   Widget build(BuildContext context) {
-   
     final Function wp = Screen(context).wp;
     final Function hp = Screen(context).hp;
     return BlocListener<AuthBloc, AuthState>(
@@ -26,15 +44,6 @@ class IntroductionPage extends StatelessWidget {
         }
       },
       child: Scaffold(
-          // appBar: AppBar(
-          //   leading: IconButton(
-          //       icon: IconButton(
-          //         icon: Icon(Icons.arrow_back_outlined),
-          //         onPressed: () => BlocProvider.of<AuthBloc>(context)
-          //             .add(AuthenticationLogout()),
-          //       ),
-          //       onPressed: null),
-          // ),
           body: SafeArea(
               child: Container(
         child: Column(children: [
@@ -152,12 +161,15 @@ class IntroSlider extends StatelessWidget {
   final Color second;
   final Color third;
   final String path;
+
   const IntroSlider(
       {this.hp, this.wp, this.first, this.second, this.third, this.path});
 
   @override
   Widget build(BuildContext context) {
     return Container(
+        height: hp(60),
+        width: wp(100),
         padding: EdgeInsets.only(top: hp(50), left: wp(30), right: wp(30)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -181,7 +193,10 @@ class IntroSlider extends StatelessWidget {
                 colorFilter: ColorFilter.mode(
                     Colors.black87.withOpacity(0.6), BlendMode.darken),
                 fit: BoxFit.cover,
-                image: AssetImage(path)),
+                image: Image(
+                  image: ResizeImage(AssetImage(path),
+                      height: 350, width: 350, allowUpscaling: true),
+                ).image),
             borderRadius: BorderRadius.only(
                 bottomRight: Radius.circular(50),
                 bottomLeft: Radius.circular(50)),

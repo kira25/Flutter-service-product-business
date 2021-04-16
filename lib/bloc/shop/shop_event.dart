@@ -109,8 +109,14 @@ class OnRemoveProfileTitle extends ShopEvent {
 }
 
 class OnLoadShopData extends ShopEvent {
+  final shopResponse;
+
+  OnLoadShopData({this.shopResponse});
+
   @override
+  // TODO: implement props
   List<Object> get props => throw UnimplementedError();
+
 }
 
 class OnTabIndexChange extends ShopEvent {

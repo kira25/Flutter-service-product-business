@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:responsive_screen/responsive_screen.dart';
-import 'package:service_products_business/bloc/products/products_bloc.dart';
 import 'package:service_products_business/controller/editproduct_controller.dart';
 import 'package:service_products_business/helpers/botton_sheet.dart';
 import 'package:service_products_business/helpers/colors.dart';
@@ -19,7 +17,7 @@ import 'package:service_products_business/widgets/custom_fab.dart';
 import 'package:service_products_business/widgets/custom_input.dart';
 import 'package:service_products_business/widgets/product_custom_input.dart';
 
-class EditProduct extends StatelessWidget {
+class EditProductPage extends StatelessWidget {
   final String normalPrice;
   final String offerPrice;
   final List<Stock> stock;
@@ -30,7 +28,7 @@ class EditProduct extends StatelessWidget {
   final String name;
   final AdminStockType adminStockType;
 
-  EditProduct({
+  EditProductPage({
     this.normalPrice,
     this.offerPrice,
     this.stock,

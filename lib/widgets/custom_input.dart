@@ -39,9 +39,10 @@ class CustomInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+
       height: hp,
       margin: EdgeInsets.only(bottom: 20),
-      padding: EdgeInsets.only(top: 5, bottom: 5, left: 25, right: 15),
+      padding: EdgeInsets.only(top: 2, bottom: 5, left: 25, right: 15),
       decoration: BoxDecoration(
           border: border,
           boxShadow: [
@@ -67,8 +68,8 @@ class CustomInput extends StatelessWidget {
             suffixIcon: Icon(icon),
             focusedBorder: InputBorder.none,
             hintStyle: errorText.isNotEmpty
-                ? TextStyle(color: Colors.red)
-                : TextStyle(color: kintroNotSelected),
+                ? TextStyle(color: Colors.red, fontSize: 15)
+                : TextStyle(color: kintroNotSelected, fontSize: 15),
             hintText: errorText.isNotEmpty ? errorText : placeholder,
             border: InputBorder.none),
       ),

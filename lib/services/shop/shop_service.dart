@@ -64,26 +64,31 @@ class ShopService {
   }
 
   Future updateShop(File profilePhoto, File profileTitle) async {
-    final token = await _preferencesRepository.getData('token');
+    try {
+      final token = await _preferencesRepository.getData('token');
 
-    FormData data = FormData.fromMap({
-      "profilePhoto": profilePhoto != null
-          ? await MultipartFile.fromFile(profilePhoto.path)
-          : null,
-      "profileTitle": profileTitle != null
-          ? await MultipartFile.fromFile(profileTitle.path)
-          : null
-    });
-    final resp = await _dio.put(_shopUpdate,
-        data: data,
-        options: Options(
-          headers: {HttpHeaders.authorizationHeader: 'Bearer $token'},
-        ));
-    print(resp.data);
-    if (resp.data['ok'] == true) {
-      return true;
-    } else
+      FormData data = FormData.fromMap({
+        "profilePhoto": profilePhoto != null
+            ? await MultipartFile.fromFile(profilePhoto.path)
+            : null,
+        "profileTitle": profileTitle != null
+            ? await MultipartFile.fromFile(profileTitle.path)
+            : null
+      });
+      final resp = await _dio.put(_shopUpdate,
+          data: data,
+          options: Options(
+            headers: {HttpHeaders.authorizationHeader: 'Bearer $token'},
+          ));
+      print(resp.data);
+      if (resp.data['ok'] == true) {
+        return true;
+      } else
+        return false;
+    } catch (e) {
+      print(e);
       return false;
+    }
   }
 
   Future getShopInfo() async {

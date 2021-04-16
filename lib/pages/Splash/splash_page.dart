@@ -8,6 +8,7 @@ import 'package:service_products_business/helpers/route_transitions.dart';
 import 'package:service_products_business/pages/Introduction/introduction_page.dart';
 import 'package:service_products_business/pages/Login/login_page.dart';
 import 'package:service_products_business/pages/Main/main_page.dart';
+import 'package:service_products_business/routes/routes.dart';
 import 'package:service_products_business/widgets/logo.dart';
 
 class SplashPage extends StatefulWidget {
@@ -41,23 +42,44 @@ class _SplashPageState extends State<SplashPage> {
         body: BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state.authenticated == true && state.isShopInfo == false) {
-          CustomRouteTransition(
+          Navigator.pushReplacement(
+            context,
+            FadeInRoute(
+              routeName: INTRODUCTION_PAGE,
+              page: IntroductionPage(),
+            ),
+          );
+         /* CustomRouteTransition(
               child: IntroductionPage(),
               context: context,
               animation: AnimationType.fadeIn,
-              replacement: true);
+              replacement: true);*/
         } else if (state.authenticated == true && state.isShopInfo == true) {
-          CustomRouteTransition(
+          Navigator.pushReplacement(
+            context,
+            FadeInRoute(
+              routeName: ORDER_PAGE,
+              page: MainPage(),
+            ),
+          );
+          /*CustomRouteTransition(
               child: MainPage(),
               context: context,
               animation: AnimationType.fadeIn,
-              replacement: true);
+              replacement: true);*/
         } else {
-          CustomRouteTransition(
+          Navigator.pushReplacement(
+            context,
+            FadeInRoute(
+              routeName: LOGIN_PAGE,
+              page: LoginPage(),
+            ),
+          );
+         /* CustomRouteTransition(
               child: LoginPage(),
               context: context,
               animation: AnimationType.fadeIn,
-              replacement: true);
+              replacement: true);*/
         }
       },
       child: SafeArea(

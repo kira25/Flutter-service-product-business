@@ -42,8 +42,6 @@ class _LoginPageState extends State<LoginPage> {
     fpassword.dispose();
   }
 
- 
-
   @override
   Widget build(BuildContext context) {
     final Function wp = Screen(context).wp;
@@ -51,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
         body: SafeArea(
             child: SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
+                physics: ClampingScrollPhysics(),
                 child:
                     BlocListener<LoginBloc, LoginState>(listener: (_, state) {
                   if (state.status.isSubmissionFailure) {
@@ -147,7 +145,7 @@ class _LoginPageState extends State<LoginPage> {
                                                 .state
                                                 .password
                                                 .invalid
-                                            ? 'Coloque su contraseña'
+                                            ? 'Al menos 4 caracteres'
                                             : '',
                                     placeholder: 'Contraseña',
                                     isPassword: true,
@@ -160,6 +158,7 @@ class _LoginPageState extends State<LoginPage> {
                                       onTap: () => CustomRouteTransition(
                                           animation: AnimationType.fadeIn,
                                           replacement: true,
+
                                           context: context,
                                           child: ForgotPasswordPage()),
                                       child: Text(

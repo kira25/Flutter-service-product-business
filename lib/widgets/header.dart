@@ -9,6 +9,7 @@ class Header extends StatelessWidget {
   final String dialogTitle;
   final Function function;
   final double wp;
+
   const Header({
     Key key,
     this.title,
@@ -33,9 +34,12 @@ class Header extends StatelessWidget {
                 IconButton(
                     icon: Icon(Icons.arrow_back),
                     onPressed: () {
-                      showDiscardProduct(
+                      customShowDialog(
                         context,
-                        function: function,
+                        titleOption1: 'Salir',
+                        actionOption1: function,
+                        titleOption2: 'Seguir editando',
+                        actionOption2: () => Navigator.pop(context),
                         title: dialogTitle,
                       );
                     }),

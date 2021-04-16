@@ -73,7 +73,6 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
-    final Function hp = Screen(context).hp;
 
     return Scaffold(
         appBar: AppBar(
@@ -121,15 +120,13 @@ class _RegisterPageState extends State<RegisterPage> {
                   animation: AnimationType.fadeIn);
             }
           },
-          child: SingleChildScrollView(
-            child: Container(
-              height: hp(100),
-              width: double.infinity,
-              child: Column(
-                children: [
-                  _form(context),
-                ],
-              ),
+          child: Container(
+            width: double.infinity,
+            child: ListView(
+              physics: ClampingScrollPhysics(),
+              children: [
+                _form(context),
+              ],
             ),
           ),
         )));
@@ -140,12 +137,10 @@ class _RegisterPageState extends State<RegisterPage> {
     final Function hp = Screen(context).hp;
 
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: wp(4)),
-        height: hp(100),
+        padding: EdgeInsets.symmetric(horizontal: wp(4), vertical: hp(2)),
         child: BlocBuilder<RegisterBloc, RegisterState>(
           builder: (context, state) {
-            return ListView(
-              physics: BouncingScrollPhysics(),
+            return Column(
               children: [
                 //FORM HEADER
                 _formHeader(hp, wp),
@@ -434,9 +429,6 @@ class _RegisterPageState extends State<RegisterPage> {
                   height: hp(3),
                 ),
                 _sendActionButton(context),
-                SizedBox(
-                  height: hp(3),
-                ),
               ],
             );
           },
@@ -445,7 +437,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   Container _formHeader(Function hp, Function wp) {
     return Container(
-      margin: EdgeInsets.only(top: hp(3), bottom: hp(3)),
+      margin: EdgeInsets.only(bottom: hp(3)),
       padding: EdgeInsets.symmetric(horizontal: wp(4)),
       child: Row(
         children: [

@@ -16,11 +16,11 @@ import 'package:service_products_business/widgets/custom_fab.dart';
 import 'package:service_products_business/widgets/custom_input.dart';
 import 'package:service_products_business/widgets/product_custom_input.dart';
 
-class EditServices extends StatelessWidget {
+class EditServicesPage extends StatelessWidget {
   final c = Get.put(EditServicesController());
   final String id;
 
-  EditServices(this.id);
+  EditServicesPage({this.id});
   @override
   Widget build(BuildContext context) {
     final Function wp = Screen(context).wp;

@@ -8,6 +8,7 @@ import 'package:service_products_business/repository/preferences/preferences_rep
 
 class ProductService {
   ProductService._privateConstructor();
+
   static final ProductService _instance = ProductService._privateConstructor();
 
   factory ProductService() {
@@ -23,6 +24,19 @@ class ProductService {
   final _addProductImages = '${Environment.apiUrl}/products/imageProduct/';
   final _updateProduct = '${Environment.apiUrl}/products/update/';
   final _deleteProduct = '${Environment.apiUrl}/products/delete';
+  final _getProductById = '${Environment.apiUrl}/products/id';
+
+   Future getProductById(String id) async {
+    final resp =
+        await _dio.get(_getProductById, queryParameters: {"productId": id});
+    if (resp.data['ok'] == true) {
+      final products = Product.fromJson(resp.data['product']);
+
+      return products;
+    } else {
+      return false;
+    }
+  }
 
   Future createProduct(
       String name,
@@ -133,7 +147,9 @@ class ProductService {
       "priceType": priceType,
       "price": {
         "normalPrice": int.parse(normalPrice),
-        "offertPrice": offerPrice != null && offerPrice.isNotEmpty ? int.parse(offerPrice) : null,
+        "offertPrice": offerPrice != null && offerPrice.isNotEmpty
+            ? int.parse(offerPrice)
+            : null,
       },
     };
     final resp = await _dio.put('$_updateProduct$id',

@@ -7,6 +7,8 @@ import 'package:service_products_business/bloc/services/services_bloc.dart';
 import 'package:service_products_business/controller/editservices_controller.dart';
 import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/enums.dart';
+import 'package:service_products_business/helpers/route_transitions.dart';
+import 'package:service_products_business/pages/Province/province_page.dart';
 import 'package:service_products_business/routes/routes.dart';
 import 'package:service_products_business/widgets/category_options.dart';
 
@@ -16,6 +18,7 @@ class DepartmentPage extends StatelessWidget {
   final bool isEdit;
 
   DepartmentPage({this.isEdit = false});
+
   @override
   Widget build(BuildContext context) {
     final Function wp = Screen(context).wp;
@@ -45,12 +48,22 @@ class DepartmentPage extends StatelessWidget {
                   function: isEdit == true
                       ? () {
                           c.onDepartmentType(DepartmentType.LIMA);
-                          Navigator.popAndPushNamed(context, PROVINCE_PAGE,arguments: {"isEdit": true});
+                          Navigator.push(
+                              context,
+                              FadeInRoute(
+                                  page: ProvincePage(
+                                    isEdit: true,
+                                  ),
+                                  routeName: PROVINCE_PAGE));
                         }
                       : () {
                           BlocProvider.of<ServicesBloc>(context)
                               .add(OnDepartmentType(DepartmentType.LIMA));
-                          Navigator.popAndPushNamed(context, PROVINCE_PAGE,);
+                          Navigator.push(
+                              context,
+                              FadeInRoute(
+                                  page: ProvincePage(),
+                                  routeName: PROVINCE_PAGE));
                         }),
               CategoryOptions(
                   wp: wp,
@@ -58,26 +71,46 @@ class DepartmentPage extends StatelessWidget {
                   function: isEdit == true
                       ? () {
                           c.onDepartmentType(DepartmentType.AREQUIPA);
-                          Navigator.popAndPushNamed(context, PROVINCE_PAGE,arguments: {"isEdit": true});
+                          Navigator.push(
+                              context,
+                              FadeInRoute(
+                                  page: ProvincePage(
+                                    isEdit: true,
+                                  ),
+                                  routeName: PROVINCE_PAGE));
                         }
                       : () {
-                    BlocProvider.of<ServicesBloc>(context)
-                        .add(OnDepartmentType(DepartmentType.AREQUIPA));
-                    Navigator.popAndPushNamed(context, PROVINCE_PAGE);
-                  }),
+                          BlocProvider.of<ServicesBloc>(context)
+                              .add(OnDepartmentType(DepartmentType.AREQUIPA));
+                          Navigator.push(
+                              context,
+                              FadeInRoute(
+                                  page: ProvincePage(),
+                                  routeName: PROVINCE_PAGE));
+                        }),
               CategoryOptions(
                   wp: wp,
                   option: 'Ica',
                   function: isEdit == true
                       ? () {
                           c.onDepartmentType(DepartmentType.ICA);
-                          Navigator.popAndPushNamed(context, PROVINCE_PAGE,arguments: {"isEdit": true});
+                          Navigator.push(
+                              context,
+                              FadeInRoute(
+                                  page: ProvincePage(
+                                    isEdit: true,
+                                  ),
+                                  routeName: PROVINCE_PAGE));
                         }
-                      :() {
-                    BlocProvider.of<ServicesBloc>(context)
-                        .add(OnDepartmentType(DepartmentType.ICA));
-                    Navigator.popAndPushNamed(context, PROVINCE_PAGE);
-                  }),
+                      : () {
+                          BlocProvider.of<ServicesBloc>(context)
+                              .add(OnDepartmentType(DepartmentType.ICA));
+                          Navigator.push(
+                              context,
+                              FadeInRoute(
+                                  page: ProvincePage(),
+                                  routeName: PROVINCE_PAGE));
+                        }),
               CategoryOptions(
                   border: false,
                   wp: wp,
@@ -85,13 +118,23 @@ class DepartmentPage extends StatelessWidget {
                   function: isEdit == true
                       ? () {
                           c.onDepartmentType(DepartmentType.LAMBAYEQUE);
-                          Navigator.popAndPushNamed(context, PROVINCE_PAGE,arguments: {"isEdit": true});
+                          Navigator.push(
+                              context,
+                              FadeInRoute(
+                                  page: ProvincePage(
+                                    isEdit: true,
+                                  ),
+                                  routeName: PROVINCE_PAGE));
                         }
-                      :() {
-                    BlocProvider.of<ServicesBloc>(context)
-                        .add(OnDepartmentType(DepartmentType.LAMBAYEQUE));
-                    Navigator.popAndPushNamed(context, PROVINCE_PAGE);
-                  }),
+                      : () {
+                          BlocProvider.of<ServicesBloc>(context)
+                              .add(OnDepartmentType(DepartmentType.LAMBAYEQUE));
+                          Navigator.push(
+                              context,
+                              FadeInRoute(
+                                  page: ProvincePage(),
+                                  routeName: PROVINCE_PAGE));
+                        }),
             ],
           ),
         )),

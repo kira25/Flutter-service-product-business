@@ -7,15 +7,20 @@ import 'package:service_products_business/bloc/services/services_bloc.dart';
 import 'package:service_products_business/controller/editservices_controller.dart';
 import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/enums.dart';
+import 'package:service_products_business/helpers/route_transitions.dart';
+import 'package:service_products_business/routes/routes.dart';
 import 'package:service_products_business/widgets/category_options.dart';
 
 class DistrictPage extends StatelessWidget {
-      final c = Get.put(EditServicesController());
+  final c = Get.put(EditServicesController());
+
+  final bool isEdit;
+
+  DistrictPage({this.isEdit});
 
   @override
   Widget build(BuildContext context) {
     final Function wp = Screen(context).wp;
-    Map args = ModalRoute.of(context).settings.arguments;
 
     return Scaffold(
       appBar: AppBar(
@@ -30,108 +35,128 @@ class DistrictPage extends StatelessWidget {
           title: Text('Selecciona distrito',
               style: GoogleFonts.lato(
                   fontWeight: FontWeight.bold, color: kdarkcolor))),
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: SafeArea(
-            child: Container(
-          margin: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-          child: Column(
-            children: [
-              CategoryOptions(
-                  wp: wp,
-                  option: 'Jesus Maria',
-                  function: args["isEdit"] == true
-                      ? () {
-                          c.onDistrictType(DistrictType.JESUSMARIA);
-                          Navigator.pop(context);
-                        }
-                      : () {
-                    BlocProvider.of<ServicesBloc>(context)
-                        .add(OnDistrictType(DistrictType.JESUSMARIA));
-                    Navigator.pop(context);
-                  }),
-              CategoryOptions(
-                  wp: wp,
-                  option: 'Lince',
-                  function:  args["isEdit"] == true
-                      ? () {
-                          c.onDistrictType(DistrictType.LINCE);
-                          Navigator.pop(context);
-                        }
-                      : () {
-                    BlocProvider.of<ServicesBloc>(context)
-                        .add(OnDistrictType(DistrictType.LINCE));
-                    Navigator.pop(context);
-                  }),
-              CategoryOptions(
-                  wp: wp,
-                  option: 'La Molina',
-                  function: args["isEdit"] == true
-                      ? () {
-                          c.onDistrictType(DistrictType.MOLINA);
-                          Navigator.pop(context);
-                        }
-                      :  () {
-                    BlocProvider.of<ServicesBloc>(context)
-                        .add(OnDistrictType(DistrictType.MOLINA));
-                    Navigator.pop(context);
-                  }),
-              CategoryOptions(
-                  wp: wp,
-                  option: 'San Borja',
-                  function:  args["isEdit"] == true
-                      ? () {
-                          c.onDistrictType(DistrictType.SANBORJA);
-                          Navigator.pop(context);
-                        }
-                      : () {
-                    BlocProvider.of<ServicesBloc>(context)
-                        .add(OnDistrictType(DistrictType.SANBORJA));
-                    Navigator.pop(context);
-                  }),
-              CategoryOptions(
-                  wp: wp,
-                  option: 'San Isidro',
-                  function: args["isEdit"] == true
-                      ? () {
-                          c.onDistrictType(DistrictType.SANISIDRO);
-                          Navigator.pop(context);
-                        }
-                      :  () {
-                    BlocProvider.of<ServicesBloc>(context)
-                        .add(OnDistrictType(DistrictType.SANISIDRO));
-                    Navigator.pop(context);
-                  }),
-              CategoryOptions(
-                  wp: wp,
-                  option: 'Surco',
-                  function: args["isEdit"] == true
-                      ? () {
-                          c.onDistrictType(DistrictType.SURCO);
-                          Navigator.pop(context);
-                        }
-                      :  () {
-                    BlocProvider.of<ServicesBloc>(context)
-                        .add(OnDistrictType(DistrictType.SURCO));
-                    Navigator.pop(context);
-                  }),
-              CategoryOptions(
-                border: false,
-                  wp: wp,
-                  option: 'Surquillo',
-                  function:  args["isEdit"] == true
-                      ? () {
-                          c.onDistrictType(DistrictType.SURQUILLO);
-                          Navigator.pop(context);
-                        }
-                      : () {
-                    BlocProvider.of<ServicesBloc>(context)
-                        .add(OnDistrictType(DistrictType.SURQUILLO));
-                    Navigator.pop(context);
-                  }),
-            ],
-          ),
-        )),
+      body: WillPopScope(
+        onWillPop: () async => false,
+        child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: SafeArea(
+              child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+            child: Column(
+              children: [
+                CategoryOptions(
+                    wp: wp,
+                    option: 'Jesus Maria',
+                    function: isEdit == true
+                        ? () {
+                            c.onDistrictType(DistrictType.JESUSMARIA);
+
+                            CustomNavigatorPop(
+                                context: context, popPage: EDIT_SERVICES_PAGE);
+                          }
+                        : () {
+                            BlocProvider.of<ServicesBloc>(context)
+                                .add(OnDistrictType(DistrictType.JESUSMARIA));
+                            CustomNavigatorPop(
+                                context: context, popPage: ADD_SERVICES_PAGE);
+                          }),
+                CategoryOptions(
+                    wp: wp,
+                    option: 'Lince',
+                    function: isEdit == true
+                        ? () {
+                            c.onDistrictType(DistrictType.LINCE);
+                            CustomNavigatorPop(
+                                context: context, popPage: EDIT_SERVICES_PAGE);
+                          }
+                        : () {
+                            BlocProvider.of<ServicesBloc>(context)
+                                .add(OnDistrictType(DistrictType.LINCE));
+                            CustomNavigatorPop(
+                                context: context, popPage: ADD_SERVICES_PAGE);
+                          }),
+                CategoryOptions(
+                    wp: wp,
+                    option: 'La Molina',
+                    function: isEdit == true
+                        ? () {
+                            c.onDistrictType(DistrictType.MOLINA);
+                            CustomNavigatorPop(
+                                context: context, popPage: EDIT_SERVICES_PAGE);
+                          }
+                        : () {
+                            BlocProvider.of<ServicesBloc>(context)
+                                .add(OnDistrictType(DistrictType.MOLINA));
+                            CustomNavigatorPop(
+                                context: context, popPage: ADD_SERVICES_PAGE);
+                          }),
+                CategoryOptions(
+                    wp: wp,
+                    option: 'San Borja',
+                    function: isEdit == true
+                        ? () {
+                            c.onDistrictType(DistrictType.SANBORJA);
+                            CustomNavigatorPop(
+                                context: context, popPage: EDIT_SERVICES_PAGE);
+                          }
+                        : () {
+                            BlocProvider.of<ServicesBloc>(context)
+                                .add(OnDistrictType(DistrictType.SANBORJA));
+                            CustomNavigatorPop(
+                                context: context, popPage: ADD_SERVICES_PAGE);
+                          }),
+                CategoryOptions(
+                    wp: wp,
+                    option: 'San Isidro',
+                    function: isEdit == true
+                        ? () {
+                            c.onDistrictType(DistrictType.SANISIDRO);
+                            CustomNavigatorPop(
+                                context: context, popPage: EDIT_SERVICES_PAGE);
+                          }
+                        : () {
+                            BlocProvider.of<ServicesBloc>(context)
+                                .add(OnDistrictType(DistrictType.SANISIDRO));
+                            CustomNavigatorPop(
+                                context: context, popPage: ADD_SERVICES_PAGE);
+                          }),
+                CategoryOptions(
+                    wp: wp,
+                    option: 'Surco',
+                    function: isEdit == true
+                        ? () {
+                            c.onDistrictType(DistrictType.SURCO);
+                            CustomNavigatorPop(
+                                context: context, popPage: EDIT_SERVICES_PAGE);
+                          }
+                        : () {
+                            BlocProvider.of<ServicesBloc>(context)
+                                .add(OnDistrictType(DistrictType.SURCO));
+                            CustomNavigatorPop(
+                                context: context, popPage: ADD_SERVICES_PAGE);
+                          }),
+                CategoryOptions(
+                    border: false,
+                    wp: wp,
+                    option: 'Surquillo',
+                    function: isEdit == true
+                        ? () {
+                            c.onDistrictType(DistrictType.SURQUILLO);
+                            CustomNavigatorPop(
+                                context: context, popPage: EDIT_SERVICES_PAGE);
+                          }
+                        : () {
+                            BlocProvider.of<ServicesBloc>(context)
+                                .add(OnDistrictType(DistrictType.SURQUILLO));
+                            CustomNavigatorPop(
+                              context: context,
+                              popPage: PROVINCE_PAGE,
+                            );
+                          }),
+              ],
+            ),
+          )),
+        ),
       ),
     );
   }

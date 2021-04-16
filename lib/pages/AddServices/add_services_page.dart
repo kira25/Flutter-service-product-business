@@ -12,6 +12,7 @@ import 'package:service_products_business/helpers/services.dart';
 import 'package:service_products_business/pages/Department/department_page.dart';
 import 'package:service_products_business/pages/Main/main_page.dart';
 import 'package:service_products_business/pages/ServiceImage/service_image_page.dart';
+import 'package:service_products_business/routes/routes.dart';
 import 'package:service_products_business/widgets/custom_fab.dart';
 import 'package:service_products_business/widgets/custom_input.dart';
 import 'package:service_products_business/widgets/header.dart';
@@ -39,6 +40,7 @@ class _AddServicesPageState extends State<AddServicesPage> {
   FocusNode fofferprice;
   FocusNode fattentionHours;
   FocusNode faddress;
+
   @override
   void initState() {
     super.initState();
@@ -73,11 +75,11 @@ class _AddServicesPageState extends State<AddServicesPage> {
             CustomRouteTransition(context: context, child: ServiceImagePage()),
         text: 'Siguiente',
       ),
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+      body: WillPopScope(
+        onWillPop: () async => false,
         child: SafeArea(
             child: Container(
-          child: Column(
+          child: ListView(
             children: [
               Header(
                 function: () {
@@ -110,8 +112,7 @@ class _AddServicesPageState extends State<AddServicesPage> {
     return Container(
       height: hp(76),
       margin: EdgeInsets.only(left: 30, right: 30, top: 20),
-      child: ListView(
-        physics: BouncingScrollPhysics(),
+      child: Column(
         children: [
           Text('Información de servicio',
               style: GoogleFonts.lato(
@@ -209,7 +210,7 @@ class _AddServicesPageState extends State<AddServicesPage> {
               },
               hp: hp(7),
               textInputAction: TextInputAction.next,
-              placeholder: 'Horario de atencion(Lun a Vie 5am a 6pm)',
+              placeholder: 'Horario de atencion (Lun a Vie 5am a 6pm)',
               textEditingController: attentionHours),
 
           Text('Disponibilidad',
@@ -234,10 +235,10 @@ class _AddServicesPageState extends State<AddServicesPage> {
           state.availableType == AvailableType.HOME
               ? Container()
               : GestureDetector(
-                  onTap: () => CustomRouteTransition(
-                      context: context,
-                      child: DepartmentPage(),
-                      animation: AnimationType.fadeIn),
+                  onTap: () => Navigator.push(
+                      context,
+                      FadeInRoute(
+                          routeName: DEPARTMENT_PAGE, page: DepartmentPage())),
                   child: Container(
                     height: hp(7),
                     margin: EdgeInsets.only(bottom: 20),

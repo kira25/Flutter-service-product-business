@@ -10,7 +10,6 @@ import 'package:service_products_business/controller/editproduct_controller.dart
 import 'package:service_products_business/controller/editservices_controller.dart';
 import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/enums.dart';
-import 'package:service_products_business/pages/EditProduct/EditProduct.dart';
 import 'package:service_products_business/widgets/custom_checkbox.dart';
 
 void displayModalBottomSheetAdminStockToEditProduct(context, int indexStock) {
@@ -589,7 +588,6 @@ void displayModalBottomSheetPriceToEditProduct(context) {
 }
 
 void displayModalBottomSheetStock(context) {
-  final Function wp = Screen(context).wp;
   showModalBottomSheet(
       isDismissible: false,
       isScrollControlled: true,
@@ -716,7 +714,6 @@ void displayModalBottomSheetStock(context) {
 //UPDATE STOCK AND ADMINSTOCK TYPE
 
 void displayModalBottomSheetToEditProduct(context) {
-  final Function wp = Screen(context).wp;
   showModalBottomSheet(
       isDismissible: false,
       isScrollControlled: true,

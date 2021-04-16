@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:service_products_business/bloc/auth/auth_bloc.dart';
 import 'package:service_products_business/bloc/forgotpassword/forgotpassword_bloc.dart';
 import 'package:service_products_business/bloc/login/login_bloc.dart';
@@ -11,7 +13,13 @@ import 'package:service_products_business/bloc/services/services_bloc.dart';
 import 'package:service_products_business/bloc/shop/shop_bloc.dart';
 import 'package:service_products_business/routes/routes.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SystemChrome.setPreferredOrientations(
+    [DeviceOrientation.portraitUp],
+  ); // To turn off landscape mode
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -33,9 +41,7 @@ class MyApp extends StatelessWidget {
         BlocProvider<ShopBloc>(
           create: (_) => ShopBloc(),
         ),
-        BlocProvider(
-          create: (_) => OrdersProductsBloc(),
-        ),
+        BlocProvider(create: (_) => OrdersProductsBloc()),
         BlocProvider(
           create: (_) => OrdersServicesBloc(),
         ),
@@ -49,6 +55,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Kallpa Business',
+        theme: ThemeData(fontFamily: GoogleFonts.lato().fontFamily),
         initialRoute: SPLASH_PAGE,
         routes: appRoutes,
       ),

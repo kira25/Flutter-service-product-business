@@ -12,6 +12,7 @@ import 'package:service_products_business/models/shop_response.dart';
 import 'package:service_products_business/services/shop/shop_service.dart';
 
 part 'shop_event.dart';
+
 part 'shop_state.dart';
 
 class ShopBloc extends Bloc<ShopEvent, ShopState> {
@@ -56,7 +57,7 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
       //REMOVE PROFILE TITLE
       yield _mapOnRemoveProfileTitle(event, state);
     } else if (event is OnLoadShopData) {
-      yield await _mapOnLoadShopInfo(event, state);
+      yield state.copyWith(shopResponse: event.shopResponse);
     } else if (event is OnTabIndexChange) {
       yield state.copyWith(tabindex: event.index);
     } else if (event is OnCleanShopData) {
@@ -64,18 +65,18 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
     }
   }
 
-  Future<ShopState> _mapOnLoadShopInfo(
-      OnLoadShopData event, ShopState state) async {
+  void mapOnLoadShopData() async {
     print('OnLoadShopData');
     final resp = await _shopService.getShopInfo();
     print(resp[1].ok);
     if (resp[0]) {
-      return state.copyWith(shopResponse: resp[1]);
+      add(OnLoadShopData(shopResponse: resp[1]));
     } else {
-      return state.copyWith(shopResponse: null);
+      add(OnLoadShopData(shopResponse: null));
     }
   }
 
+//PROFILE TITLE PHOTO
   ShopState _mapOnRemoveProfileTitle(
       OnRemoveProfileTitle event, ShopState state) {
     print('OnRemoveProfileTitle');
@@ -83,7 +84,7 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
     filesImage[1] = null;
     print(filesImage);
 
-    return state.copyWith(profilePhoto: null, imageList: filesImage);
+    return state.copyWith(imageList: filesImage);
   }
 
   Future<ShopState> _mapOnProfileTitle(
@@ -92,7 +93,8 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
     final profilePicker = ImagePicker();
     final picketFile =
         await profilePicker.getImage(source: ImageSource.gallery);
-    print(File(picketFile.path).uri);
+    if (picketFile.path == null)
+      return state.copyWith(profilePhoto: null, imageList: state.listImages);
     filesImage[1] = File(picketFile.path);
     if (picketFile != null) {
       return state.copyWith(
@@ -102,6 +104,7 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
     }
   }
 
+//PROFILE PHOTO
   ShopState _mapOnRemoveProfilePhoto(
       OnRemoveProfilePhoto event, ShopState state) {
     print('OnRemoveProfilePhoto');
@@ -109,7 +112,7 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
     filesImage[0] = null;
     print(filesImage);
 
-    return state.copyWith(profilePhoto: null, imageList: filesImage);
+    return state.copyWith(imageList: filesImage);
   }
 
   Future<ShopState> _mapOnProfilePhoto(
@@ -118,17 +121,20 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
     final profilePicker = ImagePicker();
     final picketFile =
         await profilePicker.getImage(source: ImageSource.gallery);
-    print(File(picketFile.path).uri);
+    print("profile_photo : ${picketFile.path}");
+    if (picketFile.path == null)
+      return state.copyWith(imageList: state.listImages);
+
     filesImage[0] = File(picketFile.path);
 
     if (picketFile != null) {
-      return state.copyWith(
-          profilePhoto: File(picketFile.path), imageList: filesImage);
+      return state.copyWith(imageList: filesImage);
     } else {
-      return state.copyWith(profilePhoto: null, imageList: state.listImages);
+      return state.copyWith(imageList: state.listImages);
     }
   }
 
+//DELIVERY
   ShopState _mapDeliveryChange(DeliveryChange event, ShopState state) {
     print('DeliveryChange');
     return state.copyWith(deliveryTime: event.deliveryTime);
@@ -160,19 +166,15 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
 
   ShopState _mapFacebookChange(FacebookChange event, ShopState state) {
     final facebook = Facebook.dirty(event.facebook);
+
     return state.copyWith(
-        facebook: facebook,
-        shopStatus:
-            facebook == null ? FormzStatus.valid : Formz.validate([facebook]));
+        facebook: facebook, shopStatus: Formz.validate([facebook]));
   }
 
   ShopState _mapInstagramChange(InstagramChange event, ShopState state) {
     final instagram = Instagram.dirty(event.instagram);
     return state.copyWith(
-        instagram: instagram,
-        shopStatus: instagram == null
-            ? FormzStatus.valid
-            : Formz.validate([instagram]));
+        instagram: instagram, shopStatus: Formz.validate([instagram]));
   }
 
   ShopState _mapBankAccountChange(BankAccountChange event, ShopState state) {
@@ -208,8 +210,10 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
           state.interbankAccount.value,
           "",
           "");
+
       final update = await _shopService.updateShop(
           state.listImages[0], state.listImages[1]);
+
       print(resp);
       print(update);
       if (resp && update) {
@@ -218,8 +222,9 @@ class ShopBloc extends Bloc<ShopEvent, ShopState> {
         yield state.copyWith(shopStatus: FormzStatus.submissionFailure);
       }
     } catch (e) {
-      print(e);
+      print('error : $e');
       yield state.copyWith(failShop: true);
+      print(state.failShop);
     }
   }
 }

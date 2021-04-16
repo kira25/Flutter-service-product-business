@@ -13,14 +13,18 @@ import 'package:service_products_business/widgets/custom_fab.dart';
 class ProductImagePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final productBloc =
+        BlocProvider.of<ProductsBloc>(context).state.filesProduct;
     final Function wp = Screen(context).wp;
     final Function hp = Screen(context).hp;
     return Scaffold(
       floatingActionButton: CustomFloatingActionButton(
         wp: wp,
         text: 'Crear producto',
-        onPressed: () =>
-            BlocProvider.of<ProductsBloc>(context).add(OnHandleCreateProduct()),
+        onPressed: productBloc.length == 0
+            ? null
+            : () => BlocProvider.of<ProductsBloc>(context)
+                .add(OnHandleCreateProduct()),
       ),
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
@@ -55,6 +59,8 @@ class ProductImagePage extends StatelessWidget {
                 _header(context),
                 BlocBuilder<ProductsBloc, ProductsState>(
                   builder: (context, state) {
+                    print(state.filesProduct);
+                    print(state.isProductCreated);
                     return _imageProducts(hp, wp, context, state);
                   },
                 ),
@@ -98,16 +104,21 @@ class ProductImagePage extends StatelessWidget {
                           onPressed: () => print(''),
                           elevation: 3,
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              CircleAvatar(
-                                  radius: wp(5),
-                                  backgroundImage: Image.file(File(
-                                          state.productImage[index]["product"]))
-                                      .image),
-                              Text(
-                                '${state.productImage[index]["product"].split('/').last}',
-                                style: GoogleFonts.lato(fontSize: 10),
+                              Row(
+                                children: [
+                                  CircleAvatar(
+                                      radius: wp(5),
+                                      backgroundImage: Image.file(File(state
+                                              .productImage[index]["product"]))
+                                          .image),
+                                  SizedBox(width: wp(3),),
+                                  Text(
+                                    'Producto ${index+1}',
+                                    style: GoogleFonts.lato(fontSize: wp(4)),
+                                  ),
+                                ],
                               ),
                               CircleAvatar(
                                 backgroundColor: kwrongAnswer,

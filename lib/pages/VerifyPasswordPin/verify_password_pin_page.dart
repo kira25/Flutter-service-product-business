@@ -119,7 +119,7 @@ class VerifyPasswordPinPage extends StatelessWidget {
                     onTap: () {
                       BlocProvider.of<ForgotpasswordBloc>(context)
                           .add(SendEmail());
-                      _scaffoldKey.currentState.showSnackBar(SnackBar(
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                           duration: Duration(seconds: 3),
                           content: Text('Codigo enviado',
                               style: TextStyle(fontSize: wp(4)))));

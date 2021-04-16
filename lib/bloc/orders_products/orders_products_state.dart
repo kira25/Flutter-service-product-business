@@ -1,31 +1,28 @@
 part of 'orders_products_bloc.dart';
 
-class OrdersProductsState extends Equatable {
-  final bool showPending;
-  final bool showFollowing;
-  final bool showCompleted;
-  final bool showRejected;
+enum IsOrderProduct { UNDEFINED, SUCCESS, FAIL, OFFLINE }
+
+class OrdersProductsState {
+  final OrderProductTabs orderProductTabs;
+  final IsOrderProduct isOrderProduct;
+  final List<OrderProductResponse> listOrderProducts;
+  final DeliveryType deliveryType;
 
   const OrdersProductsState(
-      {this.showPending = true,
-      this.showFollowing = false,
-      this.showCompleted = false,
-      this.showRejected = false});
+      {this.isOrderProduct = IsOrderProduct.UNDEFINED,
+      this.listOrderProducts = const [],
+      this.orderProductTabs = OrderProductTabs.PENDING,
+      this.deliveryType = DeliveryType.MOTORCYCLE});
 
-  OrdersProductsState copyWith({
-    bool showPending,
-    bool showFollowing,
-    bool showCompleted,
-    bool showRejected,
-  }) {
+  OrdersProductsState copyWith(
+      {IsOrderProduct isOrderProduct,
+      OrderProductTabs orderProductTabs,
+      List<OrderProductResponse> listOrderProducts,
+      DeliveryType deliveryType}) {
     return OrdersProductsState(
-        showCompleted: showCompleted ?? this.showCompleted,
-        showFollowing: showFollowing ?? this.showFollowing,
-        showPending: showPending ?? this.showPending,
-        showRejected: showRejected ?? this.showRejected);
+        deliveryType: deliveryType ?? this.deliveryType,
+        isOrderProduct: isOrderProduct ?? this.isOrderProduct,
+        orderProductTabs: orderProductTabs ?? this.orderProductTabs,
+        listOrderProducts: listOrderProducts ?? this.listOrderProducts);
   }
-
-  @override
-  List<Object> get props =>
-      [showCompleted, showFollowing, showPending, showRejected];
 }

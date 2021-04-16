@@ -9,6 +9,7 @@ import 'package:service_products_business/models/service_response.dart';
 import 'package:service_products_business/services/services/services_service.dart';
 
 part 'services_event.dart';
+
 part 'services_state.dart';
 
 class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
@@ -74,7 +75,8 @@ class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
     } else if (event is OnDeleteServiceImage) {
       yield _mapOnDeleteImageService(event, state);
     } else if (event is OnLoadShopServices) {
-      yield await _mapOnLoadShopServices(event, state);
+      yield state.copyWith(
+          serviceResponse: event.response, isServices: event.isService);
     } else if (event is OnDeleteService) {
       yield* _mapOnDeleteService(event, state);
     }
@@ -92,15 +94,17 @@ class ServicesBloc extends Bloc<ServicesEvent, ServicesState> {
     }
   }
 
-  Future<ServicesState> _mapOnLoadShopServices(
-      OnLoadShopServices event, ServicesState state) async {
+  mapOnLoadShopServices() async {
     print('OnLoadShopServices');
     final resp = await _servicesService.getServiceByUser();
     if (resp[0]) {
-      return state.copyWith(serviceResponse: resp[1], isServices: true);
+      add(OnLoadShopServices(response: resp[1], isService: true));
+      /*return state.copyWith(serviceResponse: resp[1], isServices: true);*/
     } else {
-      return state.copyWith(
-          serviceResponse: ServiceResponse(), isServices: false);
+      add(OnLoadShopServices(response: null, isService: false));
+
+      /* return state.copyWith(
+          serviceResponse: ServiceResponse(), isServices: false);*/
     }
   }
 

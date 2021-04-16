@@ -202,8 +202,8 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
 
     yield state.copyWith(isProductCreated: IsProductCreated.LOADING);
     final resp = await _productService.createProduct(
-        state.productName,
-        state.description,
+        state.productName.trim(),
+        state.description.trim(),
         state.category,
         state.subCategory,
         state.stocktype.index,

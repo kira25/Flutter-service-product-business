@@ -92,12 +92,14 @@ showAlert(
 }
 
 //DISCARD CREATE PRODUCT OR SERVICE
-showDiscardProduct(
-  BuildContext context, {
-  String title,
- 
-  Function function
-}) {
+customShowDialog(BuildContext context,
+    {String title,
+    String titleOption1,
+    Color color1 = kdarkcolor,
+    Function actionOption1,
+    String titleOption2,
+    Color color2 = kdarkcolor,
+    Function actionOption2}) {
   final Function wp = Screen(context).wp;
   final Function hp = Screen(context).hp;
   if (Platform.isIOS) {
@@ -120,20 +122,20 @@ showDiscardProduct(
         ),
         actions: [
           MaterialButton(
-              child: Text('Salir',
+              child: Text(titleOption1,
                   style:
-                      GoogleFonts.lato(fontSize: wp(4), color: kwrongAnswer)),
+                      GoogleFonts.lato(fontSize: wp(4))),
               elevation: 5,
-              textColor: kintroselected,
-              onPressed: function),
+              textColor: color1,
+              onPressed: actionOption1),
           MaterialButton(
               child: Text(
-                'Seguir editando',
+                titleOption2,
                 style: GoogleFonts.lato(fontSize: wp(4)),
               ),
               elevation: 5,
-              textColor: kintroselected,
-              onPressed: () => Navigator.pop(context)),
+              textColor: color2,
+              onPressed:  actionOption2),
         ],
       ),
     );
@@ -167,23 +169,23 @@ showDiscardProduct(
         Padding(
           padding: EdgeInsets.only(right: wp(6)),
           child: MaterialButton(
-              child: Text('Salir',
+              child: Text(titleOption1,
                   style:
-                      GoogleFonts.lato(fontSize: wp(4), color: kwrongAnswer)),
+                      GoogleFonts.lato(fontSize: wp(4),)),
               elevation: 5,
-              textColor: kintroselected,
-              onPressed: function),
+              textColor: color1,
+              onPressed: actionOption1),
         ),
         Padding(
           padding: EdgeInsets.only(right: wp(6)),
           child: MaterialButton(
               child: Text(
-                'Seguir editando',
+                titleOption2,
                 style: GoogleFonts.lato(fontSize: wp(4)),
               ),
               elevation: 5,
-              textColor: kdarkcolor,
-              onPressed: () => Navigator.pop(context)),
+              textColor: color2,
+              onPressed:  actionOption2),
         ),
       ],
     ),

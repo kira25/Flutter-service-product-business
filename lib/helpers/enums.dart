@@ -20,22 +20,24 @@ enum ProductSubCategory {
   UNDEFINED
 }
 
+enum OrderProductTabs{
+  PENDING,
+  FOLLOWING,
+  COMPLETED,
+  REJECTED
+}
+
 enum AdminStockType {
   ADMIN_STOCK_UNIQUE,
   ADMIN_STOCK_COLOR,
   ADMIN_STOCK_BY_SIZE,
   ADMIN_STOCK_BY_COLOR_SIZE,
   UNDEFINED
-  
 }
 
 enum StockType { UNIQUE, BY_COLOR, BY_SIZE, BY_COLOR_SIZE, UNDEFINED }
 
-enum PriceType {
-  NORMAL,
-  OFFERT,
-  UNDEFINED
-}
+enum PriceType { NORMAL, OFFERT, UNDEFINED }
 
 enum AdminColorType { YELLOW, BLUE, GREY, BLACK, RED, PINK }
 
@@ -69,4 +71,19 @@ enum DistrictType {
 enum GroupedButtonsOrientation {
   HORIZONTAL,
   VERTICAL,
+}
+
+enum OrderProductStage {
+  PENDING,
+  ENLISTING_ORDER,
+  ASSIGNING_DELIVERY_MAN,
+  ON_WAY_STORE,
+  ON_WAY_DELIVERY_POINT,
+  COMPLETED,
+  REJECTED
+}
+
+enum DeliveryType{
+  MOTORCYCLE,
+  BICYCLE
 }

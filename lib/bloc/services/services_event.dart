@@ -97,7 +97,12 @@ class OnDeleteServiceImage extends ServicesEvent {
 
 class OnAddServiceImage extends ServicesEvent {}
 
-class OnLoadShopServices extends ServicesEvent {}
+class OnLoadShopServices extends ServicesEvent {
+  final ServiceResponse response;
+  final bool isService;
+
+  OnLoadShopServices({this.response, this.isService});
+}
 
 class OnDeleteService extends ServicesEvent{
   final String id;

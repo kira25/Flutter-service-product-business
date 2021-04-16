@@ -75,8 +75,8 @@ class Shop {
             List<Social>.from(json["social"].map((x) => Social.fromJson(x))),
         bankAccount: json["bankAccount"],
         interbankAccount: json["interbankAccount"],
-        profilePhoto: json["profilePhoto"],
-        profileTitle: json["profileTitle"],
+        profilePhoto: json["profilePhoto"] ?? "",
+        profileTitle: json["profileTitle"] ?? "",
         userId: json["userId"],
         title: json["title"],
         email: json["email"],
@@ -113,7 +113,7 @@ class Social {
 
   factory Social.fromJson(Map<String, dynamic> json) => Social(
         id: json["_id"],
-        name: json["name"],
+        name: json["name"] ?? "",
       );
 
   Map<String, dynamic> toJson() => {

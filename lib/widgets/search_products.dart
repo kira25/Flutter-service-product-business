@@ -12,10 +12,11 @@ import 'package:service_products_business/helpers/products.dart';
 import 'package:service_products_business/helpers/route_transitions.dart';
 import 'package:service_products_business/models/AdminProduct/admin_product.dart';
 import 'package:service_products_business/models/product_response.dart';
-import 'package:service_products_business/pages/EditProduct/EditProduct.dart';
+import 'package:service_products_business/pages/EditProduct/edit_product_page.dart';
 
 class SearchProducts extends SearchDelegate {
   SearchProducts(this.listProducts, this.hp, this.wp);
+
   final List<Product> listProducts;
   final Function hp;
   final Function wp;
@@ -48,6 +49,7 @@ class SearchProducts extends SearchDelegate {
   }
 
   String selectedResult;
+
   @override
   Widget buildResults(BuildContext context) {
     return Container(
@@ -83,55 +85,55 @@ class SearchProducts extends SearchDelegate {
                       color: kprimarycolorlight,
                     ),
                     onTap: () {
-                      
-                          List<AdminProduct> list2 = [];
-                          if (suggestionList[index].stock.length != 0) {
-                            List<Map<String, dynamic>> list = suggestionList[index]
-                                .stock
-                                .map((e) => e.toJson())
-                                .toList();
-                            print(list);
+                      List<AdminProduct> list2 = [];
+                      if (suggestionList[index].stock.length != 0) {
+                        List<Map<String, dynamic>> list = suggestionList[index]
+                            .stock
+                            .map((e) => e.toJson())
+                            .toList();
+                        print(list);
 
-                            list2 = list
-                                .map((e) => AdminProduct.fromJsonAdmin(e))
-                                .toList();
-                          }
+                        list2 = list
+                            .map((e) => AdminProduct.fromJsonAdmin(e))
+                            .toList();
+                      }
 
-                          controller.setDataToEdit(
-                              handleIntToStockType(suggestionList[index].stockType),
-                              handleIntToStockType(suggestionList[index].stockType) ==
-                                      StockType.UNIQUE
-                                  ? AdminStockType.ADMIN_STOCK_UNIQUE
-                                  : handleIntToStockType(
-                                              suggestionList[index].stockType) ==
-                                          StockType.BY_COLOR
-                                      ? AdminStockType.ADMIN_STOCK_COLOR
+                      controller.setDataToEdit(
+                          handleIntToStockType(suggestionList[index].stockType),
+                          handleIntToStockType(
+                                      suggestionList[index].stockType) ==
+                                  StockType.UNIQUE
+                              ? AdminStockType.ADMIN_STOCK_UNIQUE
+                              : handleIntToStockType(
+                                          suggestionList[index].stockType) ==
+                                      StockType.BY_COLOR
+                                  ? AdminStockType.ADMIN_STOCK_COLOR
+                                  : handleIntToStockType(suggestionList[index]
+                                              .stockType) ==
+                                          StockType.BY_SIZE
+                                      ? AdminStockType.ADMIN_STOCK_BY_SIZE
                                       : handleIntToStockType(
-                                                  suggestionList[index].stockType) ==
-                                              StockType.BY_SIZE
-                                          ? AdminStockType.ADMIN_STOCK_BY_SIZE
-                                          : handleIntToStockType(suggestionList[index]
+                                                  suggestionList[index]
                                                       .stockType) ==
-                                                  StockType.BY_COLOR_SIZE
-                                              ? AdminStockType
-                                                  .ADMIN_STOCK_BY_COLOR_SIZE
-                                              : AdminStockType
-                                                  .ADMIN_STOCK_UNIQUE,
-                              handleIntToPriceType(suggestionList[index].priceType),
-                              suggestionList[index].price.normalPrice.toString(),
-                              suggestionList[index].price.offertPrice.toString(),
-                              suggestionList[index].stock);
+                                              StockType.BY_COLOR_SIZE
+                                          ? AdminStockType
+                                              .ADMIN_STOCK_BY_COLOR_SIZE
+                                          : AdminStockType.ADMIN_STOCK_UNIQUE,
+                          handleIntToPriceType(suggestionList[index].priceType),
+                          suggestionList[index].price.normalPrice.toString(),
+                          suggestionList[index].price.offertPrice.toString(),
+                          suggestionList[index].stock);
 
-                          controller.setAdminStock(list2);
+                      controller.setAdminStock(list2);
 
-                          CustomRouteTransition(
-                              context: context,
-                              child: EditProduct(
-                                name: suggestionList[index].name,
-                                id: suggestionList[index].id,
-                                adminStock: list2,
-                              ),
-                              animation: AnimationType.fadeIn);
+                      CustomRouteTransition(
+                          context: context,
+                          child: EditProductPage(
+                            name: suggestionList[index].name,
+                            id: suggestionList[index].id,
+                            adminStock: list2,
+                          ),
+                          animation: AnimationType.fadeIn);
                     },
                   ),
                   IconSlideAction(

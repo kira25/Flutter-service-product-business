@@ -15,8 +15,8 @@ class CustomRouteTransition {
       @required this.child,
       this.animation = AnimationType.normal,
       this.duration = const Duration(milliseconds: 300),
-      this.replacement = false}){
-         switch (animation) {
+      this.replacement = false}) {
+    switch (animation) {
       case AnimationType.normal:
         _normalTransition();
         break;
@@ -24,9 +24,9 @@ class CustomRouteTransition {
         _fadeInTransition();
         break;
     }
-      }
+  }
 
-       void _normalTransition() => !replacement
+  void _normalTransition() => !replacement
       ? Navigator.push(
           context, MaterialPageRoute(builder: (context) => this.child))
       : Navigator.pushReplacement(
@@ -47,4 +47,47 @@ class CustomRouteTransition {
         ? Navigator.push(context, route)
         : Navigator.pushReplacement(context, route);
   }
+}
+
+class CustomNavigatorPop {
+  final BuildContext context;
+  final String popPage;
+  final Widget newRoute;
+
+  CustomNavigatorPop(
+      {this.newRoute, @required this.context, @required this.popPage}) {
+    Navigator.popUntil(context, ModalRoute.withName(popPage));
+    /*Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(
+          builder: (context) => newRoute,
+        ),
+        (ModalRoute.withName(popPage)));*/
+  }
+}
+
+class FadeInRoute extends PageRouteBuilder {
+  final Widget page;
+
+  FadeInRoute({this.page, String routeName})
+      : super(
+    settings: RouteSettings(name: routeName),            // set name here
+    pageBuilder: (
+        BuildContext context,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+        ) =>
+    page,
+    transitionsBuilder: (
+        BuildContext context,
+        Animation<double> animation,
+        Animation<double> secondaryAnimation,
+        Widget child,
+        ) =>
+        FadeTransition(
+          opacity: animation,
+          child: child,
+        ),
+    transitionDuration: Duration(milliseconds: 500),
+  );
 }

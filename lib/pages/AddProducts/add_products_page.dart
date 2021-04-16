@@ -8,22 +8,22 @@ import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/enums.dart';
 import 'package:service_products_business/helpers/products.dart';
 import 'package:service_products_business/helpers/route_transitions.dart';
+import 'package:service_products_business/helpers/show_alert.dart';
 import 'package:service_products_business/pages/Category/category_page.dart';
 import 'package:service_products_business/pages/Main/main_page.dart';
 import 'package:service_products_business/pages/ProductImage/product_image_page.dart';
 import 'package:service_products_business/pages/Stock/stock_page.dart';
 import 'package:service_products_business/widgets/custom_fab.dart';
 import 'package:service_products_business/widgets/custom_input.dart';
-import 'package:service_products_business/widgets/header.dart';
 import 'package:service_products_business/widgets/product_custom_input.dart';
 
 // ignore: must_be_immutable
-class AddProducts extends StatefulWidget {
+class AddProductsPage extends StatefulWidget {
   @override
-  _AddProductsState createState() => _AddProductsState();
+  _AddProductsStatePage createState() => _AddProductsStatePage();
 }
 
-class _AddProductsState extends State<AddProducts> {
+class _AddProductsStatePage extends State<AddProductsPage> {
   TextEditingController name = TextEditingController();
 
   TextEditingController info = TextEditingController();
@@ -66,50 +66,84 @@ class _AddProductsState extends State<AddProducts> {
     final Function hp = Screen(context).hp;
 
     return Scaffold(
+      appBar: AppBar(
+        elevation: 5,
+        backgroundColor: Colors.white,
+        actions: [
+          Container(
+            margin: EdgeInsets.symmetric(vertical: hp(1.5), horizontal: wp(2)),
+            width: 60,
+            child: Center(
+                child: Text(
+              '1/2',
+              style: GoogleFonts.lato(color: kprimarycolorlight),
+            )),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [
+                  primaryColor,
+                  secondaryColor,
+                ],
+              ),
+            ),
+          )
+        ],
+        title: Text(
+          'Nuevo producto',
+          style: GoogleFonts.lato(
+              color: Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: wp(4.5)),
+        ),
+        leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: kdarkcolor,
+            ),
+            onPressed: () {
+              customShowDialog(
+                context,
+                titleOption1: 'Salir',
+                actionOption1: () => CustomRouteTransition(
+                    replacement: true, context: context, child: MainPage()),
+                titleOption2: 'Seguir editando',
+                actionOption2: () => Navigator.pop(context),
+                title: 'Se descartará la informacion de tu\n nuevo producto',
+              );
+            }),
+      ),
       floatingActionButton: CustomFloatingActionButton(
         wp: wp,
         onPressed: () =>
             CustomRouteTransition(context: context, child: ProductImagePage()),
         text: 'Siguiente',
       ),
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: SafeArea(
-            child: Container(
-          child: Column(
-            children: [
-              Header(
-                title: 'Nuevo producto',
-                subtitle: '1/2',
-                dialogTitle:
-                    'Se descartará la informacion de tu\n nuevo producto',
-                function: () {
-                  CustomRouteTransition(
-                      replacement: true, context: context, child: MainPage());
-                  BlocProvider.of<ProductsBloc>(context)
-                      .add(OnCleanProductData());
-                },
-              ),
-              //PRODUCT INFORMATION
-              BlocBuilder<ProductsBloc, ProductsState>(
-                builder: (context, state) {
-                  return _form(hp, wp, context, state);
-                },
-              ),
-            ],
-          ),
-        )),
-      ),
+      body: SafeArea(
+          child: Container(
+        width: double.infinity,
+        child: ListView(
+          children: [
+            //PRODUCT INFORMATION
+            BlocBuilder<ProductsBloc, ProductsState>(
+              builder: (context, state) {
+                return _form(hp, wp, context, state);
+              },
+            ),
+          ],
+        ),
+      )),
     );
   }
 
   Container _form(
       Function hp, Function wp, BuildContext context, ProductsState state) {
     return Container(
-      height: hp(76),
-      margin: EdgeInsets.only(left: 30, right: 30, top: 20),
-      child: ListView(
-        physics: BouncingScrollPhysics(),
+      margin: EdgeInsets.only(left: 30, right: 30, top: 20, bottom: 70),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('Información de producto',
               style: GoogleFonts.lato(
@@ -172,7 +206,7 @@ class _AddProductsState extends State<AddProducts> {
                   Text(
                     '${handleProductCategory(state.category)}- ${handleProductSubcategory(state.subCategory)}',
                     style: GoogleFonts.oswald(
-                        color: Colors.black, fontSize: wp(4.5)),
+                        color: Colors.black, fontSize: wp(4)),
                   ),
                   Icon(
                     Icons.arrow_forward_ios,
@@ -311,58 +345,4 @@ class _AddProductsState extends State<AddProducts> {
       ),
     );
   }
-
-  // Widget _header(BuildContext context) {
-  //   return Material(
-  //     elevation: 5,
-  //     child: Container(
-  //       margin: EdgeInsets.only(left: 5, right: 10),
-  //       height: 50,
-  //       child: Row(
-  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //         children: [
-  //           Row(
-  //             children: [
-  //               IconButton(
-  //                   icon: Icon(Icons.arrow_back),
-  //                   onPressed: () {
-  //                     showDiscardProduct(
-  //                       context,
-
-  //                       title:
-  //                           'Se descartará la informacion de tu\n nuevo producto',
-  //                     );
-  //                   }),
-  //               Text(
-  //                 'Nuevo producto',
-  //                 style: GoogleFonts.lato(
-  //                     fontWeight: FontWeight.bold, fontSize: 15),
-  //               ),
-  //             ],
-  //           ),
-  //           Container(
-  //             height: 30,
-  //             width: 60,
-  //             child: Center(
-  //                 child: Text(
-  //               '1/2',
-  //               style: GoogleFonts.lato(color: kprimarycolorlight),
-  //             )),
-  //             decoration: BoxDecoration(
-  //               borderRadius: BorderRadius.circular(20),
-  //               gradient: LinearGradient(
-  //                 begin: Alignment.centerLeft,
-  //                 end: Alignment.centerRight,
-  //                 colors: [
-  //                   primaryColor,
-  //                   secondaryColor,
-  //                 ],
-  //               ),
-  //             ),
-  //           )
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 }

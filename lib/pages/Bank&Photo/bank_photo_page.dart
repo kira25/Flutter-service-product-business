@@ -22,11 +22,6 @@ class _BankPhotoPageState extends State<BankPhotoPage> {
   TextEditingController interbankAccount = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final Function wp = Screen(context).wp;
     final Function hp = Screen(context).hp;
@@ -85,7 +80,7 @@ class _BankPhotoPageState extends State<BankPhotoPage> {
                         title: new Text("Something go wrong"),
                       ));
             }
-            if (state.failShop) {
+            if (state.failShop == true) {
               showDialog(
                   context: _,
                   builder: (_) => new AlertDialog(
@@ -109,9 +104,9 @@ class _BankPhotoPageState extends State<BankPhotoPage> {
                 _header(hp, wp, context),
                 BlocBuilder<ShopBloc, ShopState>(
                   builder: (context, state) {
-                    print(state.profilePhoto);
-                    print(state.profileTitle);
-                    print(state.listImages);
+                    print(state.shopStatus);
+                    print("list_images : ${state.listImages}");
+
                     return _form(hp, wp, state, context);
                   },
                 ),
@@ -128,7 +123,8 @@ class _BankPhotoPageState extends State<BankPhotoPage> {
     return Container(
       margin: EdgeInsets.only(left: 30, right: 30, top: 20),
       height: hp(76),
-      child: ListView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Foto de perfil y portada',
@@ -153,7 +149,7 @@ class _BankPhotoPageState extends State<BankPhotoPage> {
                       CircleAvatar(
                           radius: wp(5),
                           backgroundImage:
-                              Image.file(state.profilePhoto).image),
+                              Image.file(state.listImages[0]).image),
                       Text(
                         '${state.listImages[0].path.split('/').last}',
                         style: GoogleFonts.lato(fontSize: 10),
@@ -202,7 +198,7 @@ class _BankPhotoPageState extends State<BankPhotoPage> {
                       CircleAvatar(
                           radius: wp(5),
                           backgroundImage:
-                              Image.file(state.profileTitle).image),
+                              Image.file(state.listImages[1]).image),
                       Text(
                         '${state.listImages[1].path.split('/').last}',
                         style: GoogleFonts.lato(fontSize: 10),
@@ -289,7 +285,6 @@ class _BankPhotoPageState extends State<BankPhotoPage> {
     return Material(
       elevation: 5,
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 15),
         height: 50,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -300,6 +295,7 @@ class _BankPhotoPageState extends State<BankPhotoPage> {
                   Navigator.pop(context);
                 }),
             Container(
+              margin: EdgeInsets.only(right: wp(3)),
               height: 30,
               width: 60,
               child: Center(

@@ -42,6 +42,7 @@ class _ShopInfoPageState extends State<ShopInfoPage> {
   @override
   void initState() {
     super.initState();
+    print(facebook.text);
     fdescription = FocusNode();
     flocation = FocusNode();
     faddress = FocusNode();
@@ -71,6 +72,7 @@ class _ShopInfoPageState extends State<ShopInfoPage> {
           return visible
               ? Container()
               : Column(
+
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     MaterialButton(
@@ -81,6 +83,7 @@ class _ShopInfoPageState extends State<ShopInfoPage> {
                       child: Container(
                           height: 45,
                           width: wp(80),
+                          margin: EdgeInsets.symmetric(horizontal: wp(2)),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10.0),
                             gradient: LinearGradient(
@@ -95,6 +98,7 @@ class _ShopInfoPageState extends State<ShopInfoPage> {
                           child: Center(
                             child: Text(
                               'Siguiente',
+                              textAlign: TextAlign.center,
                               style: GoogleFonts.oswald(
                                   color: Colors.white, fontSize: wp(4.5)),
                             ),
@@ -104,68 +108,68 @@ class _ShopInfoPageState extends State<ShopInfoPage> {
                 );
         },
       ),
-      body: SingleChildScrollView(
-        child: SafeArea(
-            child: Container(
-          child: Column(
-            children: [
-              //HEADER
-              Material(
-                elevation: 5,
-                child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 15),
-                  height: 50,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Bienvenido',
-                        style: GoogleFonts.lato(
-                            fontWeight: FontWeight.bold, fontSize: wp(5)),
-                      ),
-                      Container(
-                        height: 30,
-                        width: 60,
-                        child: Center(
-                            child: Text(
-                          '1/2',
-                          style: GoogleFonts.lato(color: kprimarycolorlight),
-                        )),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          gradient: LinearGradient(
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                            colors: [
-                              primaryColor,
-                              secondaryColor,
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
+      appBar: AppBar(
+        elevation: 5,
+        backgroundColor: Colors.white,
+        leadingWidth: 150,
+        actions: [
+          Container(
+            margin: EdgeInsets.symmetric(vertical: hp(1.5), horizontal: wp(2)),
+            width: 60,
+            child: Center(
+                child: Text(
+              '1/2',
+              style: GoogleFonts.lato(color: kprimarycolorlight),
+            )),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20),
+              gradient: LinearGradient(
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+                colors: [
+                  primaryColor,
+                  secondaryColor,
+                ],
               ),
-              BlocBuilder<ShopBloc, ShopState>(
-                builder: (context, state) {
-                  return _form(hp, wp, state, context);
-                },
-              ),
-            ],
+            ),
+          )
+        ],
+        leading: Padding(
+          padding: EdgeInsets.only(left: wp(4)),
+          child: Center(
+            child: Text(
+              'Bienvenido',
+              style: GoogleFonts.lato(
+                  color: kdarkcolor,
+                  fontWeight: FontWeight.bold,
+                  fontSize: wp(5)),
+            ),
           ),
-        )),
+        ),
       ),
+      body: SafeArea(
+          child: Container(
+        width: double.infinity,
+        child: ListView(
+          children: [
+         //FORM SHOP INFO
+            BlocBuilder<ShopBloc, ShopState>(
+              builder: (context, state) {
+                return _form(hp, wp, state, context);
+              },
+            ),
+          ],
+        ),
+      )),
     );
   }
 
   Widget _form(
       Function hp, Function wp, ShopState state, BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: 30, right: 30, top: 20),
-      height: hp(76),
-      child: ListView(
-        physics: BouncingScrollPhysics(),
+      margin: EdgeInsets.only(left: 30, right: 30, top: 20,bottom: 70),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Completar los siguientes datos de tu tienda antes de empezar.',
@@ -265,7 +269,7 @@ class _ShopInfoPageState extends State<ShopInfoPage> {
           CustomInput(
             focusNode: faddress,
             onFocus: () {
-              fdescription.unfocus();
+              faddress.unfocus();
               FocusScope.of(context).requestFocus(fwhatsaap);
             },
             textInputAction: TextInputAction.next,
@@ -289,7 +293,7 @@ class _ShopInfoPageState extends State<ShopInfoPage> {
           CustomInput(
             focusNode: fwhatsaap,
             onFocus: () {
-              fdescription.unfocus();
+              fwhatsaap.unfocus();
               FocusScope.of(context).requestFocus(ffacebook);
             },
             textInputAction: TextInputAction.next,
@@ -305,9 +309,7 @@ class _ShopInfoPageState extends State<ShopInfoPage> {
             textEditingController: whatsapp,
             hintMaxLines: 1,
           ),
-          SizedBox(
-            height: hp(3),
-          ),
+
           Text('Link de redes sociales (opcional)',
               style: GoogleFonts.lato(
                   fontWeight: FontWeight.bold, fontSize: wp(4.5))),
@@ -317,7 +319,7 @@ class _ShopInfoPageState extends State<ShopInfoPage> {
           CustomInput(
             focusNode: ffacebook,
             onFocus: () {
-              fdescription.unfocus();
+              ffacebook.unfocus();
               FocusScope.of(context).requestFocus(finstagram);
             },
             textInputAction: TextInputAction.next,
@@ -329,7 +331,7 @@ class _ShopInfoPageState extends State<ShopInfoPage> {
           ),
           CustomInput(
             focusNode: finstagram,
-            onFocus: () => fdescription.unfocus(),
+            onFocus: () => finstagram.unfocus(),
             textInputAction: TextInputAction.done,
             function: (value) =>
                 BlocProvider.of<ShopBloc>(context).add(InstagramChange(value)),

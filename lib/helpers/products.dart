@@ -1,4 +1,9 @@
 import 'package:service_products_business/helpers/enums.dart';
+import 'package:service_products_business/models/product_response.dart';
+import 'package:service_products_business/services/product/product_service.dart';
+
+
+ProductService _productService = ProductService();
 
 
 Sizes handleResponseToSize ( int size){
@@ -355,4 +360,9 @@ PriceType handleIntToPriceType(int price) {
     default:
       return PriceType.NORMAL;
   }
+}
+
+Future<Product> getOrderedProductById(String id) async {
+  final data = await _productService.getProductById(id);
+  return data;
 }

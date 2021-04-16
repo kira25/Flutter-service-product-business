@@ -5,7 +5,7 @@ const String local = '10.0.2.2';
 
 class Environment {
   static String apiUrl =
-      Platform.isAndroid ? 'http://$myip:5000' : 'http://$myip:5000';
+      Platform.isAndroid ? 'http://$local:8080' : 'http://$local:8080';
   static String socketUrl =
-      Platform.isAndroid ? 'http://$myip:5001' : 'http://$myip:5001';
+      Platform.isAndroid ? 'http://$local:5001' : 'http://$local:5001';
 }
