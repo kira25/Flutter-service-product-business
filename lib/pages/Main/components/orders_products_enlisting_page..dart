@@ -19,18 +19,18 @@ class ListItem {
 }
 
 // ignore: must_be_immutable
-class OrderProductsFollowingDetails extends StatelessWidget {
+class OrderProductsEnlistingPage extends StatelessWidget {
   final OrderProductResponse ordersProductsFollowing;
   final Function hp;
   final int indexOrder;
 
-  OrderProductsFollowingDetails(
+  OrderProductsEnlistingPage(
       {this.ordersProductsFollowing, this.hp, this.indexOrder});
 
 
   List<ListItem> listDelivery = [
     ListItem(DeliveryType.MOTORCYCLE, 'Motorizado'),
-    ListItem(DeliveryType.BICYCLE, 'Bicicleta')
+    ListItem(DeliveryType.CAR, 'Carro')
   ];
 
   @override

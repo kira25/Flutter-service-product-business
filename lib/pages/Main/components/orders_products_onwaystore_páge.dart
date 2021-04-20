@@ -8,12 +8,12 @@ import 'package:service_products_business/helpers/products.dart';
 import 'package:service_products_business/models/OrderProduct_response.dart';
 import 'package:service_products_business/models/product_response.dart';
 
-class OrdersProductsOnWayStore extends StatelessWidget {
+class OrdersProductsOnWayStorePage extends StatelessWidget {
   final OrderProductResponse ordersProductsFollowing;
   final Function hp;
   final int indexOrder;
 
-  OrdersProductsOnWayStore(
+  OrdersProductsOnWayStorePage(
       {Key key, this.ordersProductsFollowing, this.hp, this.indexOrder})
       : super(key: key);
 

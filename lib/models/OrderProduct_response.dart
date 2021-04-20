@@ -11,8 +11,7 @@ String orderProductResponseToJson(OrderProductResponse data) =>
     json.encode(data.toJson());
 
 class OrderProductResponse {
-  OrderProductResponse({
-    this.id,
+  OrderProductResponse({this.id,
     this.sellerId,
     this.clientAddress,
     this.selectedProducts,
@@ -25,7 +24,8 @@ class OrderProductResponse {
     this.createdAt,
     this.orderState,
     this.v,
-  });
+    this.deliveryType,
+    this.deliveryId});
 
   String id;
   String sellerId;
@@ -40,26 +40,30 @@ class OrderProductResponse {
   int totalPrice;
   DateTime createdAt;
   int v;
+  int deliveryType;
+  String deliveryId;
 
   factory OrderProductResponse.fromJson(Map<String, dynamic> json) =>
       OrderProductResponse(
-        id: json["_id"],
-        sellerId: json["sellerId"],
-        clientAddress: json["clientAddress"],
-        selectedProducts: List<SelectedProducts>.from(
-            json["selectedProducts"].map((x) => SelectedProducts.fromJson(x))),
-        orderId: json["orderId"],
-        clientId: json["clientId"],
-        clientName: json["clientName"],
-        clientCellphone: json["clientCellphone"],
-        amountProducts: json["amountProducts"],
-        totalPrice: json["totalPrice"],
-        createdAt: DateTime.parse(json["createdAt"]),
-        orderState: json["orderState"],
-        v: json["__v"],
-      );
+          id: json["_id"],
+          sellerId: json["sellerId"],
+          clientAddress: json["clientAddress"],
+          selectedProducts: List<SelectedProducts>.from(json["selectedProducts"]
+              .map((x) => SelectedProducts.fromJson(x))),
+          orderId: json["orderId"],
+          clientId: json["clientId"],
+          clientName: json["clientName"],
+          clientCellphone: json["clientCellphone"],
+          amountProducts: json["amountProducts"],
+          totalPrice: json["totalPrice"],
+          createdAt: DateTime.parse(json["createdAt"]),
+          orderState: json["orderState"],
+          v: json["__v"],
+          deliveryId: json["deliveryId"],
+          deliveryType: json["deliveryType"]);
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() =>
+      {
         "_id": id,
         "sellerId": sellerId,
         "clientAddress": clientAddress,
@@ -73,18 +77,19 @@ class OrderProductResponse {
         "createdAt": createdAt.toIso8601String(),
         "orderState": orderState,
         "__v": v,
+        "deliveryType": deliveryType,
+        "deliveryId": deliveryId
       };
 }
 
 class SelectedProducts {
-  SelectedProducts(
-      {this.id,
-      this.amount,
-      this.color,
-      this.price,
-      this.productId,
-      this.size,
-      this.accepted});
+  SelectedProducts({this.id,
+    this.amount,
+    this.color,
+    this.price,
+    this.productId,
+    this.size,
+    this.accepted});
 
   String id;
   int amount;
@@ -104,7 +109,8 @@ class SelectedProducts {
           size: json["size"] == null ? null : json["size"],
           accepted: json["accepted"]);
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() =>
+      {
         "_id": id,
         "amount": amount,
         "accepted": accepted,

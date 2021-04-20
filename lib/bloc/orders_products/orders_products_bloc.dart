@@ -21,8 +21,7 @@ class OrdersProductsBloc
 
   @override
   Stream<OrdersProductsState> mapEventToState(
-    OrdersProductsEvent event,
-  ) async* {
+      OrdersProductsEvent event,) async* {
     if (event is OnProductPending) {
       yield state.copyWith(orderProductTabs: OrderProductTabs.PENDING);
     } else if (event is OnProductFollowing) {
@@ -43,8 +42,61 @@ class OrdersProductsBloc
       yield state.copyWith(
           isOrderProduct: IsOrderProduct.UNDEFINED,
           orderProductTabs: OrderProductTabs.PENDING);
-    }else if( event is OnChangeDeliveryType){
+    } else if (event is OnChangeDeliveryType) {
       yield state.copyWith(deliveryType: event.deliveryType);
+    } else if (event is OnProductRejectedInitialListOrderProduct) {
+      yield state.copyWith(listRejectedProducts: event.list);
+    } else if (event is OnProductRejectedDateFilter) {
+      yield state.copyWith(dateRejected: event.date);
+    } else if (event is OnProductCompletedInitialListOrderProduct) {
+      yield state.copyWith(listCompletedProducts: event.list);
+    } else if (event is OnProductCompletedDateFilter) {
+      yield state.copyWith(dateCompleted: event.date);
+    }
+  }
+
+  //ORDER PRODUCT COMPLETED
+
+  mapOnProductCompletedDateFilter(DateTime date) {
+    add(OnProductCompletedDateFilter(date));
+  }
+
+  mapOnProductCompletedInitialListOrderProduct({List list, bool filter}) {
+    if (filter == false) {
+      add(OnProductCompletedInitialListOrderProduct(list: list));
+    } else {
+      listproducts = [...state.listOrderProducts];
+      final List<OrderProductResponse>
+      filterOrderProductsRejected = state.listOrderProducts
+          .where((element) => element.orderState == 5)
+          .toList();
+      var filter = filterOrderProductsRejected
+          .where((element) =>
+      element.createdAt.month == state.dateCompleted.month).toList();
+      add(OnProductCompletedInitialListOrderProduct(list: filter));
+    }
+  }
+
+
+  //ORDER PRODUCT REJECTED
+
+  mapOnProductRejectedDateFilter(DateTime date) {
+    add(OnProductRejectedDateFilter(date));
+  }
+
+  mapOnProductRejectedInitialListOrderProduct({List list, bool filter}) {
+    if (filter == false) {
+      add(OnProductRejectedInitialListOrderProduct(list: list));
+    } else {
+      listproducts = [...state.listOrderProducts];
+      final List<OrderProductResponse>
+      filterOrderProductsRejected = state.listOrderProducts
+          .where((element) => element.orderState == 6)
+          .toList();
+      var filter = filterOrderProductsRejected
+          .where((element) =>
+      element.createdAt.month == state.dateRejected.month).toList();
+      add(OnProductRejectedInitialListOrderProduct(list: filter));
     }
   }
 
@@ -52,10 +104,13 @@ class OrdersProductsBloc
     add(OnCleanOrderProductState());
   }
 
-  mapOnProductPendingChangeOrderState(
-      List list, OrderProductStage stage, String id,{int deliveryType}) async {
+
+  mapOnProductPendingChangeOrderState(List list, OrderProductStage stage,
+      String id,
+      {int deliveryType}) async {
     final resp = await _orderProductService.updateOrderProductStage(
-        list, stage.index, id, deliveryType: deliveryType);
+        list, stage.index, id,
+        deliveryType: deliveryType);
     if (resp == true)
       add(OnProductPendingChangeOrderState(resp: IsOrderProduct.SUCCESS));
     else if (resp == false)
@@ -92,9 +147,7 @@ class OrdersProductsBloc
     });
   }
 
-  mapOnDeliveryType(DeliveryType deliveryType){
+  mapOnDeliveryType(DeliveryType deliveryType) {
     add(OnChangeDeliveryType(deliveryType));
   }
-
-
 }

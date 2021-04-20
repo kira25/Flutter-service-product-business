@@ -32,6 +32,8 @@ dependencies:
   provider: ^4.3.2+2
   intl: ^0.16.1
   nanoid: 0.1.0
+  flutter_holo_date_picker: 0.3.4
+
 
 
 

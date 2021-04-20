@@ -28,8 +28,10 @@ import 'package:service_products_business/pages/AddServices/add_services_page.da
 import 'package:service_products_business/pages/EditProduct/edit_product_page.dart';
 import 'package:service_products_business/pages/EditServices/edit_services_page.dart';
 import 'package:service_products_business/pages/Login/login_page.dart';
+import 'package:service_products_business/pages/Main/components/orders_products_completed.dart';
 import 'package:service_products_business/pages/Main/components/orders_products_following.dart';
 import 'package:service_products_business/pages/Main/components/orders_products_pending.dart';
+import 'package:service_products_business/pages/Main/components/orders_products_rejected.dart';
 import 'package:service_products_business/routes/routes.dart';
 import 'package:service_products_business/widgets/search_products.dart';
 import 'package:service_products_business/widgets/search_services.dart';
@@ -250,14 +252,22 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                             filterOrderProductsFollowing = state
                                 .listOrderProducts
                                 .where((element) =>
-                                    element.orderState != 1 ||
-                                    element.orderState != 5 ||
+                                    element.orderState != 1 &&
+                                    element.orderState != 5 &&
                                     element.orderState != 6)
                                 .toList();
                         final List<OrderProductResponse>
                             filterOrderProductsPending = state.listOrderProducts
                                 .where((element) => element.orderState == 0)
                                 .toList();
+                        final List<OrderProductResponse>
+                        filterOrderProductsCompleted = state.listOrderProducts
+                            .where((element) => element.orderState == 5)
+                            .toList();
+                        final List<OrderProductResponse>
+                        filterOrderProductsRejected = state.listOrderProducts
+                            .where((element) => element.orderState == 6)
+                            .toList();
                         if (state.orderProductTabs ==
                             OrderProductTabs.PENDING) {
                           if (filterOrderProductsPending.isEmpty) {
@@ -287,18 +297,34 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                           }
                         } else if (state.orderProductTabs ==
                             OrderProductTabs.COMPLETED) {
-                          return OrdersProducts(
-                            hp: hp,
-                            title: 'No tienes pedidos completados',
-                            subtitle: 'Verifica tus pedidos entregados',
-                          );
+                          if(filterOrderProductsCompleted.isEmpty){
+                            return OrdersProducts(
+                              hp: hp,
+                              title: 'No tienes pedidos completados',
+                              subtitle: 'Verifica tus pedidos entregados',
+                            );
+                          }else{
+                            return OrdersProductsCompleted(
+                              hp: hp,
+                              listOrderProduct: filterOrderProductsCompleted,
+                            );
+                          }
+
                         } else if (state.orderProductTabs ==
                             OrderProductTabs.REJECTED) {
-                          return OrdersProducts(
-                            hp: hp,
-                            title: 'No tienes pedidos rechazados',
-                            subtitle: 'Verifica tus pedidos rechazados',
-                          );
+                          if(filterOrderProductsRejected.isEmpty){
+                            return OrdersProducts(
+                              hp: hp,
+                              title: 'No tienes pedidos rechazados',
+                              subtitle: 'Verifica tus pedidos rechazados',
+                            );
+                          }else{
+                            return OrdersProductsRejected(
+                              hp: hp,
+                              listOrderProduct: filterOrderProductsRejected,
+                            );
+                          }
+
                         } else {
                           return Container();
                         }

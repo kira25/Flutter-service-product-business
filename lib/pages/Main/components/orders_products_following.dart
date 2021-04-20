@@ -4,10 +4,10 @@ import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/enums.dart';
 import 'package:service_products_business/helpers/route_transitions.dart';
 import 'package:service_products_business/models/OrderProduct_response.dart';
-import 'package:service_products_business/pages/Main/components/orders_products_assigning_details.dart';
-import 'package:service_products_business/pages/Main/components/orders_products_deliverypoint.dart';
-import 'package:service_products_business/pages/Main/components/orders_products_following_details..dart';
-import 'package:service_products_business/pages/Main/components/orders_products_onwaystore.dart';
+import 'package:service_products_business/pages/Main/components/orders_products_assigning_page.dart';
+import 'package:service_products_business/pages/Main/components/orders_products_deliverypoint_page.dart';
+import 'package:service_products_business/pages/Main/components/orders_products_enlisting_page..dart';
+import 'package:service_products_business/pages/Main/components/orders_products_onwaystore_páge.dart';
 
 class OrdersProductsFollowing extends StatelessWidget {
   final List<OrderProductResponse> listOrderProduct;
@@ -33,7 +33,7 @@ class OrdersProductsFollowing extends StatelessWidget {
                   )):
               ordersFollowing.orderState == 3 ? CustomRouteTransition(
                   context: context,
-                  child: OrdersProductsOnWayStore(
+                  child: OrdersProductsOnWayStorePage(
                     ordersProductsFollowing: ordersFollowing,
                     indexOrder: index,
                     hp: hp,
@@ -41,14 +41,14 @@ class OrdersProductsFollowing extends StatelessWidget {
               ordersFollowing.orderState == 2
                   ? CustomRouteTransition(
                   context: context,
-                  child: OrdersProductsAssigning(
+                  child: OrdersProductsAssigningPage(
                     ordersProductsFollowing: ordersFollowing,
                     indexOrder: index,
                     hp: hp,
                   ))
                   : CustomRouteTransition(
                   context: context,
-                  child: OrderProductsFollowingDetails(
+                  child: OrderProductsEnlistingPage(
                     ordersProductsFollowing: ordersFollowing,
                     indexOrder: index,
                     hp: hp,

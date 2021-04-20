@@ -85,5 +85,5 @@ enum OrderProductStage {
 
 enum DeliveryType{
   MOTORCYCLE,
-  BICYCLE
+  CAR
 }

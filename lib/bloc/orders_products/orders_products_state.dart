@@ -7,19 +7,36 @@ class OrdersProductsState {
   final IsOrderProduct isOrderProduct;
   final List<OrderProductResponse> listOrderProducts;
   final DeliveryType deliveryType;
+  final DateTime dateRejected;
+  final DateTime dateCompleted;
+  final List<OrderProductResponse> listCompletedProducts;
+  final List<OrderProductResponse> listRejectedProducts;
 
   const OrdersProductsState(
-      {this.isOrderProduct = IsOrderProduct.UNDEFINED,
+      {this.listCompletedProducts = const [],
+      this.listRejectedProducts = const [],
+      this.dateRejected,
+      this.dateCompleted,
+      this.isOrderProduct = IsOrderProduct.UNDEFINED,
       this.listOrderProducts = const [],
       this.orderProductTabs = OrderProductTabs.PENDING,
       this.deliveryType = DeliveryType.MOTORCYCLE});
 
   OrdersProductsState copyWith(
-      {IsOrderProduct isOrderProduct,
+      {List<OrderProductResponse> listRejectedProducts,
+      List<OrderProductResponse> listCompletedProducts,
+      DateTime dateCompleted,
+      DateTime dateRejected,
+      IsOrderProduct isOrderProduct,
       OrderProductTabs orderProductTabs,
       List<OrderProductResponse> listOrderProducts,
       DeliveryType deliveryType}) {
     return OrdersProductsState(
+        listCompletedProducts:
+            listCompletedProducts ?? this.listCompletedProducts,
+        listRejectedProducts: listRejectedProducts ?? this.listRejectedProducts,
+        dateCompleted: dateCompleted ?? this.dateCompleted,
+        dateRejected: dateRejected ?? this.dateRejected,
         deliveryType: deliveryType ?? this.deliveryType,
         isOrderProduct: isOrderProduct ?? this.isOrderProduct,
         orderProductTabs: orderProductTabs ?? this.orderProductTabs,

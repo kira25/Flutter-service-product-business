@@ -4,7 +4,7 @@ import 'package:service_products_business/helpers/colors.dart';
 import 'package:service_products_business/helpers/format_date.dart';
 import 'package:service_products_business/helpers/route_transitions.dart';
 import 'package:service_products_business/models/OrderProduct_response.dart';
-import 'package:service_products_business/pages/Main/components/orders_products_pending_details.dart';
+import 'package:service_products_business/pages/Main/components/orders_products_pending_details_page.dart';
 
 class OrdersProductsPending extends StatelessWidget {
   final List<OrderProductResponse> listOrderProduct;
@@ -22,7 +22,7 @@ class OrdersProductsPending extends StatelessWidget {
             return GestureDetector(
               onTap: () => CustomRouteTransition(
                   context: context,
-                  child: OrdersProductsPendingDetail(
+                  child: OrdersProductsPendingDetailPage(
                     ordersProductsPending: ordersPending,
                     indexOrder: index,
                     hp: hp,

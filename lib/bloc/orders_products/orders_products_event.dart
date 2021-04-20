@@ -54,12 +54,39 @@ class OnProductCompletedData extends OrdersProductsEvent {
   OnProductCompletedData(this.data);
 }
 
+class OnProductCompletedInitialListOrderProduct extends OrdersProductsEvent{
+  final List<OrderProductResponse> list ;
+  final DateTime date ;
+
+  OnProductCompletedInitialListOrderProduct({this.list, this.date});
+}
+
+class OnProductCompletedDateFilter extends OrdersProductsEvent{
+  final DateTime date;
+
+  OnProductCompletedDateFilter(this.date);
+}
+
+
 //REJECT PRODUCTS
 
 class OnProductRejectedData extends OrdersProductsEvent {
   final dynamic data;
 
   OnProductRejectedData(this.data);
+}
+
+class OnProductRejectedInitialListOrderProduct extends OrdersProductsEvent{
+  final List<OrderProductResponse> list ;
+  final DateTime date ;
+
+  OnProductRejectedInitialListOrderProduct({this.list, this.date});
+}
+
+class OnProductRejectedDateFilter extends OrdersProductsEvent{
+  final DateTime date;
+
+  OnProductRejectedDateFilter(this.date);
 }
 
 //LOAD ORDE RPRODUCTS

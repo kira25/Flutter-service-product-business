@@ -14,20 +14,14 @@ import 'package:service_products_business/pages/Main/main_page.dart';
 import 'package:service_products_business/services/product/product_service.dart';
 import 'package:service_products_business/widgets/floating_order_product_button.dart';
 
-class OrdersProductsPendingDetail extends StatelessWidget {
+class OrdersProductsPendingDetailPage extends StatelessWidget {
   final OrderProductResponse ordersProductsPending;
   final Function hp;
   final int indexOrder;
 
-  OrdersProductsPendingDetail(
+  OrdersProductsPendingDetailPage(
       {this.ordersProductsPending, this.hp, this.indexOrder});
 
-  final ProductService _productService = ProductService();
-
-  Future<Product> getOrderedProductById(String id) async {
-    final data = await _productService.getProductById(id);
-    return data;
-  }
 
   @override
   Widget build(BuildContext context) {
